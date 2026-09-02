@@ -22,6 +22,9 @@ function App() {
     },
   ]);
 
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+
   const deleteTask = (id) => {
     const newTasks = tasks.filter((task) => {
       return task.id !== id;
@@ -35,6 +38,10 @@ function App() {
   const addTask = (event) => {
     event.preventDefault();
 
+    if (title.trim() === "") {
+      return;
+    }
+
     const newTask = {
       id: Date.now(),
       title: title,
@@ -43,6 +50,7 @@ function App() {
     };
 
     setTask([...tasks, newTask]);
+    setTitle("");
   };
 
   const toggleTask = (id) => {
@@ -54,6 +62,28 @@ function App() {
         };
       }
 
+      return task;
+    });
+
+    setTask(updateTasks);
+  };
+
+  const toggleImportant = (id) => {
+    const updateTask = tasks.map((task) => {
+      if (id === task.id) {
+        return { ...task, important: !task.important };
+      }
+      return task;
+    });
+
+    setTask(updateTask);
+  };
+
+  const editTask = (id, newTask) => {
+    const updateTasks = tasks.map((task) => {
+      if (id === task.id) {
+        return { ...task, title: newTask };
+      }
       return task;
     });
 
@@ -72,6 +102,7 @@ function App() {
           onChange={(event) => {
             setTitle(event.target.value);
           }}
+          value={title}
           type="text"
           className="rounded-lg w-1/2 px-2 py-3"
           placeholder="New task..."
@@ -79,25 +110,55 @@ function App() {
         <button className="bg-gray-400 px-5 rounded-xl">Add</button>
       </form>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-1 gap-y-4">
         {tasks.map((task) => (
           <div
-            className="bg-white p-4 rounded-lg shadow flex justify-between cursor-pointer hover:scale-x-105 transition-all"
+            className="bg-white p-4 rounded-lg shadow grid grid-cols-4 cursor-pointer  transition-all"
             key={task.id}
             onClick={() => toggleTask(task.id)}
           >
-            <span>{task.title}</span>
+            {editingId === task.id ? (
+              <input
+                value={editTitle}
+                onChange={(event) => {
+                  setEditTitle(event.target.value);
+                }}
+                type="text"
+              />
+            ) : (
+              <span>{task.title}</span>
+            )}
+            <span
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleImportant(task.id);
+              }}
+            >
+              {task.important ? "⭐" : "☆"}
+            </span>
 
             <span>{task.completed ? "✅" : "⭕"}</span>
 
             <button
               onClick={(event) => {
-                (event.stopPropagation(), deleteTask(task.id));
+                event.stopPropagation();
+                deleteTask(task.id);
               }}
-              className="border border-red-400 px-2 py-1 rounded-lg text-red-700 transition-all cursor-pointer"
+              className="border border-red-400 px-2 py-1 rounded-lg text-red-700 hover:scale-105 transition-all cursor-pointer"
             >
               {" "}
               Delete 🗑️
+            </button>
+
+            <button
+              onClick={(event) => {
+                event.stopPropagation();
+                setEditingId(task.id);
+                setEditTitle(task.title);
+              }}
+              className="border border-blue-400 px-2 py-1 rounded-lg text-blue-700 cursor-pointer transition-all"
+            >
+              Edit ✏️
             </button>
           </div>
         ))}
