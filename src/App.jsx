@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const [tasks, setTask] = useState([
@@ -91,7 +93,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10 font-mono">
+    <div className="min-h-screen bg-gray-100 font-mono flex flex-row">
+      <Sidebar />
+      <Dashboard tasks={tasks} />
+      {/* 
       <h1 className="text-4xl font-bold mb-8">TaskFlow</h1>
 
       <form
@@ -160,9 +165,20 @@ function App() {
             >
               Edit ✏️
             </button>
+            {editingId === task.id && (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  editTask(task.id, editTitle);
+                  setEditingId(null);
+                }}
+              >
+                Save changes
+              </button>
+            )}
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
