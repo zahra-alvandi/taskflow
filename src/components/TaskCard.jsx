@@ -79,7 +79,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
               setIsEditing(true);
             }
           }}
-          className="p-1 text-gray-400 hover:text-blue-500 transition"
+          className="p-1 text-gray-400 hover:text-blue-500 hover:cursor-pointer transition"
         >
           {isEditing ? "✓" : <Pencil size={20} />}
         </button>
