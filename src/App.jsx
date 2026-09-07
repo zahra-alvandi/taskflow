@@ -92,10 +92,34 @@ function App() {
     setTask(updateTasks);
   };
 
+  const [filter, setFilter] = useState("all");
+
+  const filteredTask = tasks.filter((task) => {
+    if (filter === "important") {
+      return task.important && !task.completed;
+    }
+
+    if (filter === "completed") {
+      return task.completed;
+    }
+
+    if (filter === "pending") {
+      return !task.completed;
+    }
+
+    return true;
+  });
+
   return (
     <div className="min-h-screen bg-gray-100 font-mono flex flex-row">
-      <Sidebar />
-      <Dashboard tasks={tasks} />
+      <Sidebar setFilter={setFilter} filter={filter} />
+      <Dashboard
+        tasks={filteredTask}
+        toggleTask={toggleTask}
+        toggleImportant={toggleImportant}
+        deleteTask={deleteTask}
+        editTask={editTask}
+      />
       {/* 
       <h1 className="text-4xl font-bold mb-8">TaskFlow</h1>
 

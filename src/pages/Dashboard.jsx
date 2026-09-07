@@ -2,7 +2,7 @@ import { HandMetal, ListTodo, CheckCircle, Star, Clock } from "lucide-react";
 import StatCard from "../components/StatsCard";
 import TaskList from "../components/TaskList";
 
-function Dashboard({ tasks }) {
+function Dashboard({ tasks, toggleTask, toggleImportant, deleteTask, editTask }) {
   const statcards = [
     {
       id: 1,
@@ -56,7 +56,7 @@ function Dashboard({ tasks }) {
           );
         })}
       </div>
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} toggleTask={toggleTask} toggleImportant={toggleImportant} deleteTask={deleteTask} editTask={editTask} />
     </main>
   );
 }
