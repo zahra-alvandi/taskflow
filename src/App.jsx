@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
+import AddTask from "./components/AddTasks";
 
 function App() {
   const [tasks, setTask] = useState([
@@ -35,9 +36,9 @@ function App() {
     setTask(newTasks);
   };
 
-  const [title, setTitle] = useState("");
 
-  const addTask = (event) => {
+
+  const addTask = (event, title) => {
     event.preventDefault();
 
     if (title.trim() === "") {
@@ -48,11 +49,11 @@ function App() {
       id: Date.now(),
       title: title,
       completed: false,
-      important: true,
+      important: false,
     };
 
     setTask([...tasks, newTask]);
-    setTitle("");
+
   };
 
   const toggleTask = (id) => {
@@ -111,98 +112,18 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 font-mono flex flex-row">
+    <div className="min-h-screen bg-gray-100 font-mono flex">
       <Sidebar setFilter={setFilter} filter={filter} />
       <Dashboard
         tasks={filteredTask}
+        allTasks={tasks}
+        filter={filter}
         toggleTask={toggleTask}
         toggleImportant={toggleImportant}
         deleteTask={deleteTask}
         editTask={editTask}
+        addTask={addTask}
       />
-      {/* 
-      <h1 className="text-4xl font-bold mb-8">TaskFlow</h1>
-
-      <form
-        onSubmit={addTask}
-        className="border flex justify-between px-5 py-6 rounded-lg mb-5 border-gray-400 shadow-md shadow-gray-400"
-      >
-        <input
-          onChange={(event) => {
-            setTitle(event.target.value);
-          }}
-          value={title}
-          type="text"
-          className="rounded-lg w-1/2 px-2 py-3"
-          placeholder="New task..."
-        />
-        <button className="bg-gray-400 px-5 rounded-xl">Add</button>
-      </form>
-
-      <div className="grid grid-cols-1 gap-y-4">
-        {tasks.map((task) => (
-          <div
-            className="bg-white p-4 rounded-lg shadow grid grid-cols-4 cursor-pointer  transition-all"
-            key={task.id}
-            onClick={() => toggleTask(task.id)}
-          >
-            {editingId === task.id ? (
-              <input
-                value={editTitle}
-                onChange={(event) => {
-                  setEditTitle(event.target.value);
-                }}
-                type="text"
-              />
-            ) : (
-              <span>{task.title}</span>
-            )}
-            <span
-              onClick={(event) => {
-                event.stopPropagation();
-                toggleImportant(task.id);
-              }}
-            >
-              {task.important ? "⭐" : "☆"}
-            </span>
-
-            <span>{task.completed ? "✅" : "⭕"}</span>
-
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                deleteTask(task.id);
-              }}
-              className="border border-red-400 px-2 py-1 rounded-lg text-red-700 hover:scale-105 transition-all cursor-pointer"
-            >
-              {" "}
-              Delete 🗑️
-            </button>
-
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                setEditingId(task.id);
-                setEditTitle(task.title);
-              }}
-              className="border border-blue-400 px-2 py-1 rounded-lg text-blue-700 cursor-pointer transition-all"
-            >
-              Edit ✏️
-            </button>
-            {editingId === task.id && (
-              <button
-                onClick={(event) => {
-                  event.stopPropagation();
-                  editTask(task.id, editTitle);
-                  setEditingId(null);
-                }}
-              >
-                Save changes
-              </button>
-            )}
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 }
