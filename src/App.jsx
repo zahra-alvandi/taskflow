@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
+import BottomNav from "./components/BottomNav";
 import Dashboard from "./pages/Dashboard";
 import AddTask from "./components/AddTasks";
 
@@ -27,6 +28,7 @@ function App() {
 
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [activeNav, setActiveNav] = useState(null);
 
   const deleteTask = (id) => {
     const newTasks = tasks.filter((task) => {
@@ -35,8 +37,6 @@ function App() {
 
     setTask(newTasks);
   };
-
-
 
   const addTask = (event, title) => {
     event.preventDefault();
@@ -53,7 +53,6 @@ function App() {
     };
 
     setTask([...tasks, newTask]);
-
   };
 
   const toggleTask = (id) => {
@@ -123,6 +122,12 @@ function App() {
         deleteTask={deleteTask}
         editTask={editTask}
         addTask={addTask}
+      />
+      <BottomNav
+        setFilter={setFilter}
+        filter={filter}
+        activeNav={activeNav}
+        setActiveNav={setActiveNav}
       />
     </div>
   );

@@ -8,7 +8,7 @@ import {
 
 function Sidebar({ setFilter, filter }) {
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 p-6 hidden md:block">
+    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 p-6 hidden md:flex md:flex-col">
       <h1 className="text-2xl font-bold mb-10">TaskFlow</h1>
 
       <nav className="space-y-2">

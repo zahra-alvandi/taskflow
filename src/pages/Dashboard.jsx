@@ -10,6 +10,7 @@ import StatCard from "../components/StatsCard";
 import TaskList from "../components/TaskList";
 import AddTask from "../components/AddTasks";
 import { useState } from "react";
+import BottomNav from "../components/BottomNav";
 
 function Dashboard({
   tasks,
@@ -91,7 +92,7 @@ function Dashboard({
   ];
 
   return (
-    <main className="flex-1 p-8">
+    <main className="flex-1 p-8 pb-24 md:pb-8">
       <header className="mb-8">
         <p className="flex gap-3 text-sm text-gray-500 mb-2">
           Welcome back
