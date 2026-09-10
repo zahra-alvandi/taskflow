@@ -11,18 +11,21 @@ function App() {
       title: "Learn JavaScript",
       completed: false,
       important: true,
+      priority: "low",
     },
     {
       id: 2,
       title: "Practice React",
       completed: false,
       important: false,
+      priority: "medium",
     },
     {
       id: 3,
       title: "Build TaskFlow",
       completed: true,
       important: true,
+      priority: "high",
     },
   ]);
 
@@ -38,7 +41,7 @@ function App() {
     setTask(newTasks);
   };
 
-  const addTask = (event, title) => {
+  const addTask = (event, title, priority) => {
     event.preventDefault();
 
     if (title.trim() === "") {
@@ -50,6 +53,7 @@ function App() {
       title: title,
       completed: false,
       important: false,
+      priority: priority,
     };
 
     setTask([...tasks, newTask]);

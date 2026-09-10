@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { Star, Trash2, Pencil } from "lucide-react";
 
 function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
@@ -56,9 +56,25 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
             </h3>
           )}
 
-          <p className="text-sm text-gray-400 mt-1">
-            {task.completed ? "Completed" : "In progress"}
-          </p>
+          {!isEditing && (
+            <div className="flex items-center gap-2 mt-1">
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  task.priority === "high"
+                    ? "bg-red-100 text-red-600"
+                    : task.priority === "medium"
+                      ? "bg-yellow-100 text-yellow-600"
+                      : "bg-green-100 text-green-600"
+                }`}
+              >
+                {task.priority}
+              </span>
+
+              <span className="text-xs text-gray-400">
+                {task.completed ? "Completed" : "In progress"}
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
