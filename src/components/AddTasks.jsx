@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function AddTask({ addTask }) {
   const [title, setTitle] = useState("");
@@ -9,12 +9,29 @@ function AddTask({ addTask }) {
     medium: "text-yellow-600 bg-yellow-50 border-yellow-100",
     low: "text-green-600 bg-green-50 border-green-100",
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".priority-picker")) {
+        setShowPriority(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
   return (
     <div>
       <form
         onSubmit={(event) => {
           addTask(event, title, priority);
           setTitle("");
+          setPriority("medium");
+
+          setShowPriority(false);
         }}
         className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex gap-3 mb-6"
       >
@@ -28,7 +45,7 @@ function AddTask({ addTask }) {
           placeholder="New task..."
         />
 
-        <div className="relative">
+        <div className="priority-picker relative">
           <button
             type="button"
             onClick={() => setShowPriority(!showPriority)}
@@ -58,9 +75,12 @@ function AddTask({ addTask }) {
                   setPriority("high");
                   setShowPriority(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-red-50 text-red-600 transition"
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-red-50 text-red-600 transition ${priority === "high" ? "bg-red-50" : "hover:bg-red-50"}`}
               >
-                High
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500" />
+                  <span>High</span>
+                </div>
               </button>
 
               <button
@@ -69,9 +89,14 @@ function AddTask({ addTask }) {
                   setPriority("medium");
                   setShowPriority(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-yellow-50 text-yellow-600 transition"
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm text-yellow-600 transition ${
+                  priority === "medium" ? "bg-yellow-50" : "hover:bg-yellow-50"
+                }`}
               >
-                Medium
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
+                  <span>Medium</span>
+                </div>
               </button>
 
               <button
@@ -80,9 +105,12 @@ function AddTask({ addTask }) {
                   setPriority("low");
                   setShowPriority(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-green-50 text-green-600 transition"
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm text-green-600 transition ${priority === "low" ? "bg-green-50" : "hover:bg-green-50"}`}
               >
-                Low
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  <span>Low</span>
+                </div>
               </button>
             </div>
           )}
