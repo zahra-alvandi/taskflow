@@ -75,6 +75,9 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
               </span>
             </div>
           )}
+          {task.dueDate && (
+            <p className="text-xs text-gray-400 mt-1">Due {task.dueDate}</p>
+          )}
         </div>
       </div>
 

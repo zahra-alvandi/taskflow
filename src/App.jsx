@@ -12,6 +12,7 @@ function App() {
       completed: false,
       important: true,
       priority: "low",
+      dueDate: null,
     },
     {
       id: 2,
@@ -19,6 +20,7 @@ function App() {
       completed: false,
       important: false,
       priority: "medium",
+      dueDate: null,
     },
     {
       id: 3,
@@ -26,6 +28,7 @@ function App() {
       completed: true,
       important: true,
       priority: "high",
+      dueDate: null,
     },
   ]);
 
@@ -41,7 +44,7 @@ function App() {
     setTask(newTasks);
   };
 
-  const addTask = (event, title, priority) => {
+  const addTask = (event, title, priority, dueDate) => {
     event.preventDefault();
 
     if (title.trim() === "") {
@@ -54,6 +57,7 @@ function App() {
       completed: false,
       important: false,
       priority: priority,
+      dueDate: dueDate,
     };
 
     setTask([...tasks, newTask]);

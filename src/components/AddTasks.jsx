@@ -9,6 +9,7 @@ function AddTask({ addTask }) {
     medium: "text-yellow-600 bg-yellow-50 border-yellow-100",
     low: "text-green-600 bg-green-50 border-green-100",
   };
+  const [dueDate, setDueDate] = useState("");
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -27,7 +28,7 @@ function AddTask({ addTask }) {
     <div>
       <form
         onSubmit={(event) => {
-          addTask(event, title, priority);
+          addTask(event, title, priority, dueDate);
           setTitle("");
           setPriority("medium");
 
@@ -115,6 +116,13 @@ function AddTask({ addTask }) {
             </div>
           )}
         </div>
+
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(event) => setdueDate(event.target.value)}
+          className="px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-600 outline-none focus:border-gray-400 transition"
+        />
 
         <button className="px-6 py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-700 transition cursor-pointer">
           Add
