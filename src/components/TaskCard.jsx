@@ -4,6 +4,25 @@ import { Star, Trash2, Pencil } from "lucide-react";
 function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
+
+  const formatDueDate = (date) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const isOverdue = (date) => {
+    const today = new Date();
+    const dueDate = new Date(date);
+
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+
+    return dueDate < today;
+  };
+
   return (
     <div
       onClick={() => toggleTask(task.id)}
@@ -76,7 +95,17 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
             </div>
           )}
           {task.dueDate && (
-            <p className="text-xs text-gray-400 mt-1">Due {task.dueDate}</p>
+            <p
+              className={`text-xs mt-1 ${
+                isOverdue(task.dueDate) && !task.completed
+                  ? "text-red-500 font-medium"
+                  : "text-gray-400"
+              }`}
+            >
+              {isOverdue(task.dueDate) && !task.completed
+                ? `Overdue · ${formatDueDate(task.dueDate)}`
+                : `Due ${formatDueDate(task.dueDate)}`}
+            </p>
           )}
         </div>
       </div>

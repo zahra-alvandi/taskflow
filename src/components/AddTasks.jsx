@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Calendar } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function AddTask({ addTask }) {
   const [title, setTitle] = useState("");
@@ -31,7 +34,7 @@ function AddTask({ addTask }) {
           addTask(event, title, priority, dueDate);
           setTitle("");
           setPriority("medium");
-
+          setDueDate("");
           setShowPriority(false);
         }}
         className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex gap-3 mb-6"
@@ -117,11 +120,42 @@ function AddTask({ addTask }) {
           )}
         </div>
 
-        <input
-          type="date"
-          value={dueDate}
-          onChange={(event) => setdueDate(event.target.value)}
-          className="px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-600 outline-none focus:border-gray-400 transition"
+        <DatePicker
+          selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
+          onChange={(date) => {
+            if (date) {
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, "0");
+              const day = String(date.getDate()).padStart(2, "0");
+
+              setDueDate(`${year}-${month}-${day}`);
+            } else {
+              setDueDate("");
+            }
+          }}
+          shouldCloseOnSelect={true}
+          dateFormat="MMM d, yyyy"
+          placeholderText="Due date"
+          customInput={
+            <button
+              type="button"
+              className="w-full min-w-[140px] whitespace-nowrap px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-600 hover:bg-gray-100 hover:cursor-pointer transition flex items-center gap-2"
+            >
+              <Calendar size={18} />
+              <span>
+                {dueDate
+                  ? new Date(dueDate + "T00:00:00").toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      },
+                    )
+                  : "Due date"}
+              </span>
+            </button>
+          }
         />
 
         <button className="px-6 py-3 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-700 transition cursor-pointer">
