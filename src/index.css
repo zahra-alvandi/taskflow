@@ -1,40 +1,144 @@
 @import "tailwindcss";
 
+/* ================================
+   TaskFlow — Soft Neumorphism
+================================ */
+
+:root {
+  --app-bg: #e8e9ed;
+  --surface: #e8e9ed;
+
+  --text-primary: #292c33;
+  --text-secondary: #6f737c;
+  --text-muted: #9a9da5;
+
+  --shadow-dark: rgba(163, 166, 175, 0.45);
+  --shadow-light: rgba(255, 255, 255, 0.85);
+
+  --shadow-soft:
+    8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+
+  --shadow-soft-small:
+    5px 5px 12px rgba(163, 166, 175, 0.35),
+    -5px -5px 12px rgba(255, 255, 255, 0.8);
+
+  --shadow-inset:
+    inset 4px 4px 9px rgba(163, 166, 175, 0.3),
+    inset -4px -4px 9px rgba(255, 255, 255, 0.75);
+}
+
+/* ================================
+   Base
+================================ */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html {
+  background: var(--app-bg);
+}
+
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  font-family: monospace;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ================================
+   React DatePicker
+================================ */
+
 .react-datepicker {
-  border: 1px solid #e5e7eb !important;
-  border-radius: 16px !important;
+  border: none !important;
+  border-radius: 18px !important;
+  background: var(--surface) !important;
   font-family: inherit !important;
   overflow: hidden;
+
+  box-shadow: var(--shadow-soft) !important;
 }
 
 .react-datepicker__header {
-  background: white !important;
-  border-bottom: 1px solid #f3f4f6 !important;
+  background: var(--surface) !important;
+  border-bottom: none !important;
+  padding-top: 14px !important;
 }
 
 .react-datepicker__current-month {
-  color: #111827 !important;
+  color: var(--text-primary) !important;
   font-weight: 600 !important;
 }
 
 .react-datepicker__day-name {
-  color: #9ca3af !important;
+  color: var(--text-muted) !important;
 }
 
 .react-datepicker__day {
-  border-radius: 8px !important;
+  color: var(--text-secondary) !important;
+  border-radius: 9px !important;
+  transition: all 0.2s ease;
 }
 
 .react-datepicker__day:hover {
-  border-radius: 8px !important;
+  background: var(--surface) !important;
+  border-radius: 9px !important;
+
+  box-shadow: var(--shadow-soft-small) !important;
 }
 
 .react-datepicker__day--selected {
-  background: #111827 !important;
-  color: white !important;
+  background: #3f434b !important;
+  color: #ffffff !important;
+  border-radius: 9px !important;
+
+  box-shadow:
+    inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.12) !important;
 }
 
 .react-datepicker__day--keyboard-selected {
-  background: #f3f4f6 !important;
-  color: #111827 !important;
+  background: var(--surface) !important;
+  color: var(--text-primary) !important;
+
+  box-shadow: var(--shadow-soft-small) !important;
+}
+
+.react-datepicker__day--outside-month {
+  color: #b7b9bf !important;
+}
+
+/* ================================
+   DatePicker Navigation
+================================ */
+
+.react-datepicker__navigation {
+  top: 12px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: var(--text-secondary) !important;
+}
+
+.react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+  border-color: var(--text-primary) !important;
+}
+
+/* ================================
+   DatePicker Triangle
+================================ */
+
+.react-datepicker__triangle {
+  display: none !important;
 }

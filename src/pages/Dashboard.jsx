@@ -92,7 +92,7 @@ function Dashboard({
   ];
 
   return (
-    <main className="flex-1 p-8 pb-24 md:pb-8">
+    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8">
       <header className="mb-8">
         <p className="flex gap-3 text-sm text-gray-500 mb-2">
           Welcome back
@@ -101,7 +101,7 @@ function Dashboard({
 
         <h2 className="text-3xl font-bold">Good morning</h2>
       </header>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {statcards.map((statcard) => {
           return (
             <StatCard
@@ -120,7 +120,7 @@ function Dashboard({
       <div className="relative mb-6">
         <Search
           size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
         />
 
         <input
@@ -128,14 +128,14 @@ function Dashboard({
           placeholder="Search tasks..."
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          className="w-full pl-11 pr-4 py-3 rounded-xl bg-white border border-gray-200 outline-none focus:border-gray-400 transition"
+          className="w-full min-w-0 pl-11 pr-10 py-3 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition focus:shadow-[var(--shadow-inset)]"
         />
 
         {search && (
           <button
             type="button"
             onClick={() => setSearch("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition"
           >
             ×
           </button>

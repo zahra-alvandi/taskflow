@@ -119,7 +119,7 @@ function App() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-100 font-mono flex">
+    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
       <Sidebar setFilter={setFilter} filter={filter} />
       <Dashboard
         tasks={filteredTask}

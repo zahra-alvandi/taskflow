@@ -9,19 +9,21 @@ import {
 
 function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
   return (
-    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-white/90 backdrop-blur-md border border-gray-200/80 px-3 py-2.5 flex justify-around rounded-3xl shadow-xl md:hidden">
+    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-[var(--surface)] px-2 py-2 flex justify-around rounded-3xl shadow-[var(--shadow-soft)] md:hidden z-50">
       <button
         onClick={() => setActiveNav("dashboard")}
         className={`relative flex flex-col items-center justify-center w-14 h-14 transition-all duration-300 ease-out ${
-          activeNav === "dashboard" ? "-translate-y-4" : "text-gray-400"
+          activeNav === "dashboard"
+            ? "text-[var(--text-primary)]"
+            : "text-[var(--text-muted)]"
         }`}
       >
-        {activeNav === "dashboard" && (
-          <div className="absolute -top-3 w-16 h-16 bg-white rounded-full" />
-        )}
-
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full">
-          <LayoutDashboard size={22} />
+        <div
+          className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+            activeNav === "dashboard" ? "shadow-[var(--shadow-inset)]" : ""
+          }`}
+        >
+          <LayoutDashboard size={21} />
         </div>
 
         {activeNav === "dashboard" && (
@@ -40,12 +42,12 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
           activeNav === "all" ? "-translate-y-4" : "text-gray-400"
         }`}
       >
-        {activeNav === "all" && (
-          <div className="absolute -top-3 w-16 h-16 bg-white rounded-full" />
-        )}
-
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full">
-          <ListTodo size={22} />
+        <div
+          className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+            activeNav === "all" ? "shadow-[var(--shadow-inset)]" : ""
+          }`}
+        >
+          <ListTodo size={21} />
         </div>
 
         {activeNav === "all" && (
@@ -64,12 +66,12 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
           activeNav === "important" ? "-translate-y-4" : "text-gray-400"
         }`}
       >
-        {activeNav === "important" && (
-          <div className="absolute -top-3 w-16 h-16 bg-white rounded-full" />
-        )}
-
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full">
-          <Star size={22} />
+        <div
+          className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+            activeNav === "important" ? "shadow-[var(--shadow-inset)]" : ""
+          }`}
+        >
+          <Star size={21} />
         </div>
 
         {activeNav === "important" && (
@@ -88,12 +90,12 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
           activeNav === "completed" ? "-translate-y-4" : "text-gray-400"
         }`}
       >
-        {activeNav === "completed" && (
-          <div className="absolute -top-3 w-16 h-16 bg-white rounded-full" />
-        )}
-
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full">
-          <CheckCircle size={22} />
+        <div
+          className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+            activeNav === "completed" ? "shadow-[var(--shadow-inset)]" : ""
+          }`}
+        >
+          <CheckCircle size={21} />
         </div>
 
         {activeNav === "completed" && (
@@ -112,12 +114,12 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
           activeNav === "pending" ? "-translate-y-4" : "text-gray-400"
         }`}
       >
-        {activeNav === "pending" && (
-          <div className="absolute -top-3 w-16 h-16 bg-white rounded-full" />
-        )}
-
-        <div className="relative z-10 flex items-center justify-center w-11 h-11 rounded-full">
-          <Clock size={22} />
+        <div
+          className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
+            activeNav === "pending" ? "shadow-[var(--shadow-inset)]" : ""
+          }`}
+        >
+          <Clock size={21} />
         </div>
 
         {activeNav === "pending" && (

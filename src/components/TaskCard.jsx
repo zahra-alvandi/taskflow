@@ -25,13 +25,14 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
 
   return (
     <div
-      onClick={() => toggleTask(task.id)}
-      className={`bg-white p-4 rounded-2xl border border-gray-100
-        flex items-center justify-between
-        hover:shadow-md hover:cursor-pointer transition-all duration-300
-        ${task.completed ? "opacity-60" : ""}`}
-    >
-      <div className="flex items-center gap-4">
+  onClick={() => toggleTask(task.id)}
+  className={`w-full min-w-0 bg-[var(--surface)] p-4 rounded-2xl
+    shadow-[var(--shadow-soft-small)]
+    flex items-center gap-3 my-5
+    hover:cursor-pointer transition-all duration-300
+    ${task.completed ? "opacity-60" : ""}`}
+>
+      <div className="flex items-center gap-1 shrink-0 ml-auto self-center md:ml-0">
         <button
           onClick={(event) => {
             event.stopPropagation();
@@ -46,7 +47,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
           {task.completed && "✓"}
         </button>
 
-        <div>
+        <div className="min-w-0 flex-1">
           {isEditing ? (
             <input
               type="text"
@@ -110,7 +111,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 shrink-0 ml-auto self-center">
         <button
           onClick={(event) => {
             event.stopPropagation();
@@ -127,7 +128,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
               setIsEditing(true);
             }
           }}
-          className="p-1 text-gray-400 hover:text-blue-500 hover:cursor-pointer transition"
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:shadow-[var(--shadow-soft-small)] transition"
         >
           {isEditing ? "✓" : <Pencil size={20} />}
         </button>
@@ -137,7 +138,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
             event.stopPropagation();
             toggleImportant(task.id);
           }}
-          className="p-1"
+          className="w-9 h-9 rounded-xl flex items-center justify-center hover:shadow-[var(--shadow-soft-small)] transition"
         >
           <Star
             size={22}
@@ -151,7 +152,7 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
             event.stopPropagation();
             deleteTask(task.id);
           }}
-          className="p-1 text-gray-400 hover:text-red-500 hover:cursor-pointer transition"
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-red-500 hover:shadow-[var(--shadow-soft-small)] transition"
         >
           <Trash2 size={22} />
         </button>

@@ -7,61 +7,62 @@ import {
 } from "lucide-react";
 
 function Sidebar({ setFilter, filter }) {
+  const navItems = [
+    {
+      id: "all",
+      label: "All Tasks",
+      icon: <ListTodo size={20} />,
+    },
+    {
+      id: "important",
+      label: "Important",
+      icon: <Star size={20} />,
+    },
+    {
+      id: "completed",
+      label: "Completed",
+      icon: <CircleCheckBig size={20} />,
+    },
+    {
+      id: "pending",
+      label: "Pending",
+      icon: <Clock size={20} />,
+    },
+  ];
+
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-gray-200 p-6 hidden md:flex md:flex-col">
-      <h1 className="text-2xl font-bold mb-10">TaskFlow</h1>
+    <aside className="hidden md:flex md:flex-col w-64 min-h-screen p-6 bg-[#dedfe4]">
+      <h1 className="text-2xl font-bold mb-10 px-2">
+        TaskFlow
+      </h1>
 
-      <nav className="space-y-2">
-        <button className="w-full flex items-center gap-3 text-left px-4 py-3 rounded-xl font-medium hover:cursor-pointer ">
-          <LayoutDashboard size={20} />
-          Dashboard
-        </button>
+      <button
+        onClick={() => setFilter("all")}
+        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
+          filter === "all"
+            ? "shadow-[var(--shadow-inset)] text-[var(--text-primary)]"
+            : "text-[var(--text-secondary)] hover:shadow-[var(--shadow-soft-small)]"
+        }`}
+      >
+        <LayoutDashboard size={20} />
+        Dashboard
+      </button>
 
-        <button
-          onClick={() => setFilter("all")}
-          className={`w-full flex items-center gap-3 text-left px-4 py-3 rounded-xl hover:cursor-pointer transition ${
-            filter === "all" ? "bg-gray-100 font-medium" : "hover:bg-gray-100"
-          }`}
-        >
-          <ListTodo size={20} />
-          All Tasks
-        </button>
-
-        <button
-          onClick={() => setFilter("important")}
-          className={`w-full flex items-center gap-3 text-left px-4 py-3 rounded-xl hover:cursor-pointer transition ${
-            filter === "important"
-              ? "bg-gray-100 font-medium"
-              : "hover:bg-gray-100"
-          }`}
-        >
-          <Star size={20} />
-          Important
-        </button>
-
-        <button
-          onClick={() => setFilter("completed")}
-          className={`w-full flex items-center gap-3 text-left px-4 py-3 rounded-xl hover:cursor-pointer transition ${
-            filter === "completed"
-              ? "bg-gray-100 font-medium"
-              : "hover:bg-gray-100"
-          }`}
-        >
-          <CircleCheckBig size={20} />
-          Completed
-        </button>
-
-        <button
-          onClick={() => setFilter("pending")}
-          className={`w-full flex items-center gap-3 text-left px-4 py-3 rounded-xl  hover:cursor-pointer transition ${
-            filter === "pending"
-              ? "bg-gray-100 font-medium"
-              : "hover:bg-gray-100"
-          }`}
-        >
-          <Clock size={20} />
-          Pending
-        </button>
+      <nav className="space-y-2 mt-3">
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setFilter(item.id)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
+              filter === item.id
+                ? "shadow-[var(--shadow-inset)] text-[var(--text-primary)]"
+                : "text-[var(--text-secondary)] hover:shadow-[var(--shadow-soft-small)]"
+            }`}
+          >
+            {item.icon}
+            {item.label}
+          </button>
+        ))}
       </nav>
     </aside>
   );
