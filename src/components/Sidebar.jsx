@@ -31,16 +31,14 @@ function Sidebar({ setFilter, filter }) {
   ];
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 min-h-screen p-6 bg-[#dedfe4]">
-      <h1 className="text-2xl font-bold mb-10 px-2">
-        TaskFlow
-      </h1>
+    <aside className="hidden md:flex md:flex-col w-64 min-h-screen p-6 bg-[var(--sidebar-bg)]">
+      <h1 className="text-2xl font-bold mb-10 px-2">TaskFlow</h1>
 
       <button
         onClick={() => setFilter("all")}
         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
           filter === "all"
-            ? "shadow-[var(--shadow-inset)] text-[var(--text-primary)]"
+            ? "shadow-[var(--shadow-inset)] text-[var(--primary)] font-medium"
             : "text-[var(--text-secondary)] hover:shadow-[var(--shadow-soft-small)]"
         }`}
       >
@@ -55,7 +53,7 @@ function Sidebar({ setFilter, filter }) {
             onClick={() => setFilter(item.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
               filter === item.id
-                ? "shadow-[var(--shadow-inset)] text-[var(--text-primary)]"
+                ? "shadow-[var(--shadow-inset)] text-[var(--primary)] font-medium"
                 : "text-[var(--text-secondary)] hover:shadow-[var(--shadow-soft-small)]"
             }`}
           >

@@ -1,31 +1,82 @@
 @import "tailwindcss";
 
 /* ================================
-   TaskFlow — Soft Neumorphism
+   TaskFlow — Design System
 ================================ */
 
 :root {
-  --app-bg: #e8e9ed;
-  --surface: #e8e9ed;
+  /* Colors */
+  --app-bg: #f4f5f7;
+  --surface: #f8f9fb;
+  --sidebar-bg: #e7e9ee;
 
-  --text-primary: #292c33;
-  --text-secondary: #6f737c;
-  --text-muted: #9a9da5;
+  --text-primary: #252733;
+  --text-secondary: #737785;
+  --text-muted: #a0a3ae;
 
-  --shadow-dark: rgba(163, 166, 175, 0.45);
-  --shadow-light: rgba(255, 255, 255, 0.85);
+  --primary: #5b5ce2;
+  --primary-hover: #4f50d2;
+  --primary-soft: #ececff;
+
+  --success: #42a77a;
+  --warning: #d99a3d;
+  --danger: #d96868;
+
+  /* Shadows */
+  --shadow-dark: rgba(190, 193, 201, 0.55);
+  --shadow-light: rgba(255, 255, 255, 0.95);
 
   --shadow-soft:
-    8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+    8px 8px 18px var(--shadow-dark),
+    -8px -8px 18px var(--shadow-light);
 
   --shadow-soft-small:
-    5px 5px 12px rgba(163, 166, 175, 0.35),
-    -5px -5px 12px rgba(255, 255, 255, 0.8);
+    5px 5px 12px rgba(190, 193, 201, 0.4),
+    -5px -5px 12px rgba(255, 255, 255, 0.9);
 
   --shadow-inset:
-    inset 4px 4px 9px rgba(163, 166, 175, 0.3),
-    inset -4px -4px 9px rgba(255, 255, 255, 0.75);
+    inset 4px 4px 9px rgba(190, 193, 201, 0.35),
+    inset -4px -4px 9px rgba(255, 255, 255, 0.8);
 }
+
+
+/* ================================
+   Dark Mode
+================================ */
+
+.dark {
+  --app-bg: #181a20;
+  --surface: #22252e;
+  --sidebar-bg: #20232b;
+
+  --text-primary: #f0f1f5;
+  --text-secondary: #9699a8;
+  --text-muted: #686c7b;
+
+  --primary: #7778f2;
+  --primary-hover: #8586f5;
+  --primary-soft: #2d2e48;
+
+  --success: #55b98b;
+  --warning: #e0a653;
+  --danger: #df7777;
+
+  --shadow-dark: rgba(8, 9, 12, 0.6);
+  --shadow-light: rgba(55, 58, 68, 0.45);
+
+  --shadow-soft:
+    8px 8px 18px var(--shadow-dark),
+    -8px -8px 18px var(--shadow-light);
+
+  --shadow-soft-small:
+    5px 5px 12px rgba(8, 9, 12, 0.5),
+    -5px -5px 12px rgba(55, 58, 68, 0.35);
+
+  --shadow-inset:
+    inset 4px 4px 9px rgba(8, 9, 12, 0.4),
+    inset -4px -4px 9px rgba(55, 58, 68, 0.3);
+}
+
 
 /* ================================
    Base
@@ -56,6 +107,7 @@ body {
   box-sizing: border-box;
 }
 
+
 /* ================================
    React DatePicker
 ================================ */
@@ -64,6 +116,7 @@ body {
   border: none !important;
   border-radius: 18px !important;
   background: var(--surface) !important;
+  color: var(--text-primary) !important;
   font-family: inherit !important;
   overflow: hidden;
 
@@ -99,7 +152,7 @@ body {
 }
 
 .react-datepicker__day--selected {
-  background: #3f434b !important;
+  background: var(--primary) !important;
   color: #ffffff !important;
   border-radius: 9px !important;
 
@@ -109,15 +162,16 @@ body {
 }
 
 .react-datepicker__day--keyboard-selected {
-  background: var(--surface) !important;
+  background: var(--primary-soft) !important;
   color: var(--text-primary) !important;
 
   box-shadow: var(--shadow-soft-small) !important;
 }
 
 .react-datepicker__day--outside-month {
-  color: #b7b9bf !important;
+  color: var(--text-muted) !important;
 }
+
 
 /* ================================
    DatePicker Navigation
@@ -131,9 +185,11 @@ body {
   border-color: var(--text-secondary) !important;
 }
 
-.react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+.react-datepicker__navigation:hover
+.react-datepicker__navigation-icon::before {
   border-color: var(--text-primary) !important;
 }
+
 
 /* ================================
    DatePicker Triangle
