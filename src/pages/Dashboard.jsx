@@ -93,13 +93,33 @@ function Dashboard({
 
   return (
     <main className="flex-1 min-w-0 w-full px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8">
-      <header className="mb-8">
-        <p className="flex gap-3 text-sm text-gray-500 mb-2">
-          Welcome back
-          <HandMetal size={20} />
-        </p>
+      <header className="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div>
+          <p className="text-sm text-[var(--text-secondary)] mb-2">
+            Welcome back <span className="ml-1">👋</span>
+          </p>
 
-        <h2 className="text-3xl font-bold">Good morning</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Good morning</h2>
+
+          <p className="text-sm text-[var(--text-secondary)] mt-2">
+            Let&apos;s make today productive.
+          </p>
+        </div>
+
+        <div className="relative w-full lg:w-80">
+          <Search
+            size={19}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+          />
+
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:shadow-[var(--shadow-inset)] transition"
+          />
+        </div>
       </header>
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {statcards.map((statcard) => {
@@ -117,30 +137,7 @@ function Dashboard({
 
       <AddTask addTask={addTask} />
 
-      <div className="relative mb-6">
-        <Search
-          size={20}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
-        />
-
-        <input
-          type="text"
-          placeholder="Search tasks..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="w-full min-w-0 pl-11 pr-10 py-3 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition focus:shadow-[var(--shadow-inset)]"
-        />
-
-        {search && (
-          <button
-            type="button"
-            onClick={() => setSearch("")}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition"
-          >
-            ×
-          </button>
-        )}
-      </div>
+      
 
       <h2 className="text-xl font-bold my-4">{pageTitle}</h2>
 

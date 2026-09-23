@@ -1,16 +1,61 @@
 function StatCard({ title, value, icon, description }) {
+  const styles = {
+    "Total Tasks": {
+      icon: "text-[var(--primary)]",
+    },
+    Completed: {
+      icon: "text-[var(--success)]",
+    },
+    Important: {
+      icon: "text-[var(--warning)]",
+    },
+    Pending: {
+      icon: "text-blue-500",
+    },
+  };
+
+  const style = styles[title] || styles["Total Tasks"];
+
   return (
-    <div className="bg-[var(--surface)] p-4 rounded-2xl shadow-[var(--shadow-soft-small)] transition-all duration-300">
-      <div className="flex justify-between items-start">
+    <div
+      className="
+        bg-[var(--surface)]
+        p-5
+        rounded-3xl
+        shadow-[var(--shadow-soft)]
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-[var(--shadow-soft-hover)]
+      "
+    >
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-gray-500 text-sm">{title}</p>
+          <p className="text-sm text-[var(--text-secondary)]">
+            {title}
+          </p>
 
-          <h3 className="text-2xl sm:text-3xl font-bold mt-2">{value}</h3>
+          <h3 className="text-4xl font-bold mt-3 tracking-tight text-[var(--text-primary)]">
+            {value}
+          </h3>
 
-          <p className="text-xs text-gray-400 mt-2">{description}</p>
+          <p className="text-xs text-[var(--text-muted)] mt-2">
+            {description}
+          </p>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-[var(--surface)] text-[var(--text-secondary)] shadow-[var(--shadow-soft-small)]">
+        <div
+          className={`
+            w-12 h-12
+            rounded-2xl
+            flex
+            items-center
+            justify-center
+            bg-[var(--surface)]
+            shadow-[var(--shadow-soft-small)]
+            ${style.icon}
+          `}
+        >
           {icon}
         </div>
       </div>

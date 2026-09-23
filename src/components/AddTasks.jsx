@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -7,12 +7,13 @@ function AddTask({ addTask }) {
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
   const [showPriority, setShowPriority] = useState(false);
-  const priorityStyles = {
-    high: "text-red-600 bg-red-50 border-red-100",
-    medium: "text-yellow-600 bg-yellow-50 border-yellow-100",
-    low: "text-green-600 bg-green-50 border-green-100",
-  };
   const [dueDate, setDueDate] = useState("");
+
+  const priorityStyles = {
+    high: "text-[var(--danger)] bg-red-50",
+    medium: "text-[var(--warning)] bg-amber-50",
+    low: "text-[var(--success)] bg-emerald-50",
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -26,44 +27,54 @@ function AddTask({ addTask }) {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  });
-  return (
-    <div>
-      <form
-        onSubmit={(event) => {
-          addTask(event, title, priority, dueDate);
-          setTitle("");
-          setPriority("medium");
-          setDueDate("");
-          setShowPriority(false);
-        }}
-        className="bg-[var(--surface)] p-3 sm:p-4 rounded-2xl shadow-[var(--shadow-soft-small)] flex flex-col gap-3 mb-6"
-      >
-        <input
-          onChange={(event) => {
-            setTitle(event.target.value);
-          }}
-          value={title}
-          type="text"
-          className="w-full min-w-0 px-4 py-3 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition"
-          placeholder="New task..."
-        />
+  }, []);
 
-        <div className="flex gap-2 w-full">
-          <div className="priority-picker relative">
+  const handleSubmit = (event) => {
+    addTask(event, title, priority, dueDate);
+
+    setTitle("");
+    setPriority("medium");
+    setDueDate("");
+    setShowPriority(false);
+  };
+
+  return (
+    <div className="mb-8">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[var(--surface)] p-5 rounded-3xl shadow-[var(--shadow-soft-small)]"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold tracking-tight">Add New Task</h2>
+
+          <Plus size={20} className="text-[var(--primary)]" />
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-3">
+          {/* Title */}
+          <input
+            onChange={(event) => setTitle(event.target.value)}
+            value={title}
+            type="text"
+            placeholder="What do you want to do?"
+            className="flex-1 min-w-0 px-4 py-3 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition"
+          />
+
+          {/* Priority */}
+          <div className="priority-picker relative lg:w-32 shrink-0">
             <button
               type="button"
               onClick={() => setShowPriority(!showPriority)}
-              className={`flex-1 px-3 py-3 rounded-xl border text-sm font-medium capitalize transition ${priorityStyles[priority]}`}
+              className={`w-full px-3 py-3 rounded-xl text-sm font-medium capitalize transition ${priorityStyles[priority]}`}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <span
                   className={`w-2 h-2 rounded-full ${
                     priority === "high"
-                      ? "bg-red-500"
+                      ? "bg-[var(--danger)]"
                       : priority === "medium"
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
+                        ? "bg-[var(--warning)]"
+                        : "bg-[var(--success)]"
                   }`}
                 />
 
@@ -72,59 +83,33 @@ function AddTask({ addTask }) {
                 <span className="text-xs opacity-60">⌄</span>
               </div>
             </button>
+
             {showPriority && (
-              <div className="absolute top-full right-0 mt-2 w-32 bg-white border border-gray-200 rounded-xl shadow-lg p-1 z-10">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPriority("high");
-                    setShowPriority(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-red-50 text-red-600 transition ${priority === "high" ? "bg-red-50" : "hover:bg-red-50"}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500" />
-                    <span>High</span>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPriority("medium");
-                    setShowPriority(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm text-yellow-600 transition ${
-                    priority === "medium"
-                      ? "bg-yellow-50"
-                      : "hover:bg-yellow-50"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-yellow-500"></span>
-                    <span>Medium</span>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPriority("low");
-                    setShowPriority(false);
-                  }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm text-green-600 transition ${priority === "low" ? "bg-green-50" : "hover:bg-green-50"}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                    <span>Low</span>
-                  </div>
-                </button>
+              <div className="absolute top-full left-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
+                {["high", "medium", "low"].map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => {
+                      setPriority(item);
+                      setShowPriority(false);
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm capitalize transition ${
+                      priority === item
+                        ? "bg-[var(--primary-soft)] text-[var(--primary)]"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
               </div>
             )}
           </div>
 
+          {/* Date */}
           <DatePicker
-            wrapperClassName="flex-1 min-w-0"
+            wrapperClassName="lg:w-40 shrink-0"
             selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
             onChange={(date) => {
               if (date) {
@@ -139,11 +124,11 @@ function AddTask({ addTask }) {
             }}
             shouldCloseOnSelect={true}
             dateFormat="MMM d, yyyy"
-            placeholderText="Due date"
+            placeholderText="Pick a date"
             customInput={
               <button
                 type="button"
-                className="w-full min-w-0 whitespace-nowrap px-3 py-3 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] hover:cursor-pointer transition flex items-center justify-center gap-2 overflow-hidden"
+                className="w-full px-3 py-3 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <Calendar size={18} />
                 <span className="truncate">
@@ -156,14 +141,19 @@ function AddTask({ addTask }) {
                           year: "numeric",
                         },
                       )
-                    : "Due date"}
+                    : "Pick a date"}
                 </span>
               </button>
             }
           />
 
-          <button className="px-4 py-3 rounded-xl bg-[#3f434b] text-white font-medium hover:bg-[#353941] transition cursor-pointer">
-            Add
+          {/* Add */}
+          <button
+            type="submit"
+            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(91,92,226,0.25)] hover:bg-[var(--primary-hover)] transition"
+          >
+            <Plus size={18} />
+            Add Task
           </button>
         </div>
       </form>
