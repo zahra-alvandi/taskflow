@@ -4,9 +4,10 @@ import {
   Star,
   CircleCheckBig,
   Clock,
+  Settings
 } from "lucide-react";
 
-function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
+function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
   return (
     <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-[var(--surface)] px-3 py-3 rounded-3xl shadow-[var(--shadow-soft)] md:hidden z-50">
       <div className="flex items-center justify-around">
@@ -153,6 +154,29 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav }) {
               Pending
             </span>
           )}
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveNav("settings");
+            setPage("settings");
+          }}
+          className={`
+    flex
+    items-center
+    justify-center
+    w-12
+    h-12
+    rounded-2xl
+    transition
+    ${
+      activeNav === "settings"
+        ? "text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+        : "text-[var(--text-muted)]"
+    }
+  `}
+        >
+          <Settings size={22} />
         </button>
       </div>
     </nav>

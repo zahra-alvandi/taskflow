@@ -10,9 +10,9 @@ function AddTask({ addTask }) {
   const [dueDate, setDueDate] = useState("");
 
   const priorityStyles = {
-    high: "text-[var(--danger)] bg-red-50",
-    medium: "text-[var(--warning)] bg-amber-50",
-    low: "text-[var(--success)] bg-emerald-50",
+    high: "text-[var(--danger)] bg-[var(--danger-soft)]",
+    medium: "text-[var(--warning)] bg-[var(--warning-soft)]",
+    low: "text-[var(--success)] bg-[var(--success-soft)]",
   };
 
   useEffect(() => {
@@ -150,7 +150,7 @@ function AddTask({ addTask }) {
           {/* Add */}
           <button
             type="submit"
-            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(91,92,226,0.25)] hover:bg-[var(--primary-hover)] transition"
+            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(99,102,241,0.28)] hover:bg-[var(--primary-hover)] transition"
           >
             <Plus size={18} />
             Add Task

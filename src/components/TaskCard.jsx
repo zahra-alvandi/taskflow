@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { Star, Trash2, Pencil, Calendar } from "lucide-react";
 
-function TaskCard({
-  task,
-  toggleTask,
-  toggleImportant,
-  deleteTask,
-  editTask,
-}) {
+function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
 
@@ -30,9 +24,9 @@ function TaskCard({
   };
 
   const priorityStyles = {
-    high: "bg-red-50 text-[var(--danger)]",
-    medium: "bg-amber-50 text-[var(--warning)]",
-    low: "bg-emerald-50 text-[var(--success)]",
+    high: "bg-[var(--danger-soft)] text-[var(--danger)]",
+    medium: "bg-[var(--warning-soft)] text-[var(--warning)]",
+    low: "bg-[var(--success-soft)] text-[var(--success)]",
   };
 
   const saveEdit = () => {
@@ -162,14 +156,11 @@ function TaskCard({
           }}
           className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
             task.important
-              ? "text-[var(--warning)] bg-amber-50"
-              : "text-[var(--text-muted)] hover:text-[var(--warning)] hover:bg-amber-50"
+              ? "text-[var(--warning)] bg-[var(--warning-soft)]"
+              : "text-[var(--text-muted)] hover:text-[var(--warning)] hover:bg-[var(--warning-soft)]"
           }`}
         >
-          <Star
-            size={18}
-            fill={task.important ? "currentColor" : "none"}
-          />
+          <Star size={18} fill={task.important ? "currentColor" : "none"} />
         </button>
 
         <button
@@ -177,7 +168,7 @@ function TaskCard({
             event.stopPropagation();
             deleteTask(task.id);
           }}
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-red-50 transition"
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition"
         >
           <Trash2 size={18} />
         </button>

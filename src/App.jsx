@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import BottomNav from "./components/BottomNav";
 import Dashboard from "./pages/Dashboard";
 import AddTask from "./components/AddTasks";
+import Settings from "./pages/SettingsPage";
 
 function App() {
   const [tasks, setTask] = useState([
@@ -118,24 +119,31 @@ function App() {
     return true;
   });
 
+  const [page, setPage] = useState("dashboard");
+
   return (
-    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
-      <Sidebar setFilter={setFilter} filter={filter} />
-      <Dashboard
-        tasks={filteredTask}
-        allTasks={tasks}
-        filter={filter}
-        toggleTask={toggleTask}
-        toggleImportant={toggleImportant}
-        deleteTask={deleteTask}
-        editTask={editTask}
-        addTask={addTask}
-      />
+    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex">
+      <Sidebar setFilter={setFilter} filter={filter} setPage={setPage} />
+      {page === "settings" ? (
+        <Settings />
+      ) : (
+        <Dashboard
+          tasks={filteredTask}
+          allTasks={tasks}
+          filter={filter}
+          toggleTask={toggleTask}
+          toggleImportant={toggleImportant}
+          deleteTask={deleteTask}
+          editTask={editTask}
+          addTask={addTask}
+        />
+      )}
       <BottomNav
         setFilter={setFilter}
         filter={filter}
         activeNav={activeNav}
         setActiveNav={setActiveNav}
+        setPage={setPage}
       />
     </div>
   );

@@ -2,15 +2,19 @@ function StatCard({ title, value, icon, description }) {
   const styles = {
     "Total Tasks": {
       icon: "text-[var(--primary)]",
+      bg: "bg-[var(--primary-soft)]",
     },
     Completed: {
       icon: "text-[var(--success)]",
+      bg: "bg-[var(--success-soft)]",
     },
     Important: {
       icon: "text-[var(--warning)]",
+      bg: "bg-[var(--warning-soft)]",
     },
     Pending: {
       icon: "text-blue-500",
+      bg: "bg-[var(--info-soft)]",
     },
   };
 
@@ -31,29 +35,21 @@ function StatCard({ title, value, icon, description }) {
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-[var(--text-secondary)]">
-            {title}
-          </p>
+          <p className="text-sm text-[var(--text-secondary)]">{title}</p>
 
-          <h3 className="text-4xl font-bold mt-3 tracking-tight text-[var(--text-primary)]">
-            {value}
-          </h3>
+          <h3 className="text-4xl font-bold mt-3 tracking-tight">{value}</h3>
 
-          <p className="text-xs text-[var(--text-muted)] mt-2">
-            {description}
-          </p>
+          <p className="text-xs text-[var(--text-muted)] mt-2">{description}</p>
         </div>
 
         <div
           className={`
             w-12 h-12
             rounded-2xl
-            flex
-            items-center
-            justify-center
-            bg-[var(--surface)]
-            shadow-[var(--shadow-soft-small)]
+            flex items-center justify-center
+            ${style.bg}
             ${style.icon}
+            shadow-[var(--shadow-soft-small)]
           `}
         >
           {icon}
