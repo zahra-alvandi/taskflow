@@ -4,7 +4,7 @@ import {
   Star,
   CircleCheckBig,
   Clock,
-  Settings
+  Settings,
 } from "lucide-react";
 
 function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
@@ -16,6 +16,7 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           onClick={() => {
             setActiveNav("dashboard");
             setFilter("all");
+            setPage("dashboard");
           }}
           className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
             activeNav === "dashboard"
@@ -45,6 +46,7 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           onClick={() => {
             setActiveNav("all");
             setFilter("all");
+            setPage("dashboard");
           }}
           className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
             activeNav === "all"
@@ -74,6 +76,7 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           onClick={() => {
             setActiveNav("important");
             setFilter("important");
+            setPage("dashboard");
           }}
           className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
             activeNav === "important"
@@ -103,6 +106,7 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           onClick={() => {
             setActiveNav("completed");
             setFilter("completed");
+            setPage("dashboard");
           }}
           className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
             activeNav === "completed"
@@ -132,6 +136,7 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           onClick={() => {
             setActiveNav("pending");
             setFilter("pending");
+            setPage("dashboard");
           }}
           className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
             activeNav === "pending"

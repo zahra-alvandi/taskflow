@@ -2,8 +2,8 @@ import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import BottomNav from "./components/BottomNav";
 import Dashboard from "./pages/Dashboard";
-import AddTask from "./components/AddTasks";
-import Settings from "./pages/SettingsPage";
+import SettingsPage from "./pages/SettingsPage";
+import PageTransition from "./components/PageTransition";
 
 function App() {
   const [tasks, setTask] = useState([
@@ -33,111 +33,74 @@ function App() {
     },
   ]);
 
-  const [editingId, setEditingId] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [activeNav, setActiveNav] = useState(null);
+  const [page, setPage] = useState("dashboard");
+  const [activeNav, setActiveNav] = useState("dashboard");
+  const [filter, setFilter] = useState("all");
 
-  const deleteTask = (id) => {
-    const newTasks = tasks.filter((task) => {
-      return task.id !== id;
-    });
-
-    setTask(newTasks);
-  };
+  const deleteTask = (id) => setTask(tasks.filter((t) => t.id !== id));
 
   const addTask = (event, title, priority, dueDate) => {
     event.preventDefault();
-
-    if (title.trim() === "") {
-      return;
-    }
-
-    const newTask = {
-      id: Date.now(),
-      title: title,
-      completed: false,
-      important: false,
-      priority: priority,
-      dueDate: dueDate,
-    };
-
-    setTask([...tasks, newTask]);
+    if (title.trim() === "") return;
+    setTask([
+      ...tasks,
+      {
+        id: Date.now(),
+        title,
+        completed: false,
+        important: false,
+        priority,
+        dueDate,
+      },
+    ]);
   };
 
-  const toggleTask = (id) => {
-    const updateTasks = tasks.map((task) => {
-      if (id === task.id) {
-        return {
-          ...task,
-          completed: !task.completed,
-        };
-      }
+  const toggleTask = (id) =>
+    setTask(
+      tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
+    );
 
-      return task;
-    });
+  const toggleImportant = (id) =>
+    setTask(
+      tasks.map((t) => (t.id === id ? { ...t, important: !t.important } : t)),
+    );
 
-    setTask(updateTasks);
-  };
-
-  const toggleImportant = (id) => {
-    const updateTask = tasks.map((task) => {
-      if (id === task.id) {
-        return { ...task, important: !task.important };
-      }
-      return task;
-    });
-
-    setTask(updateTask);
-  };
-
-  const editTask = (id, newTask) => {
-    const updateTasks = tasks.map((task) => {
-      if (id === task.id) {
-        return { ...task, title: newTask };
-      }
-      return task;
-    });
-
-    setTask(updateTasks);
-  };
-
-  const [filter, setFilter] = useState("all");
+  const editTask = (id, newTitle) =>
+    setTask(tasks.map((t) => (t.id === id ? { ...t, title: newTitle } : t)));
 
   const filteredTask = tasks.filter((task) => {
-    if (filter === "important") {
-      return task.important && !task.completed;
-    }
-
-    if (filter === "completed") {
-      return task.completed;
-    }
-
-    if (filter === "pending") {
-      return !task.completed;
-    }
-
+    if (filter === "important") return task.important && !task.completed;
+    if (filter === "completed") return task.completed;
+    if (filter === "pending") return !task.completed;
     return true;
   });
 
-  const [page, setPage] = useState("dashboard");
-
   return (
-    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex">
-      <Sidebar setFilter={setFilter} filter={filter} setPage={setPage} />
-      {page === "settings" ? (
-        <Settings />
-      ) : (
-        <Dashboard
-          tasks={filteredTask}
-          allTasks={tasks}
-          filter={filter}
-          toggleTask={toggleTask}
-          toggleImportant={toggleImportant}
-          deleteTask={deleteTask}
-          editTask={editTask}
-          addTask={addTask}
-        />
-      )}
+    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
+      <Sidebar
+        setFilter={setFilter}
+        filter={filter}
+        page={page}
+        setPage={setPage}
+      />
+
+      <PageTransition transitionKey={page === "settings" ? "settings" : filter}>
+        {page === "settings" ? (
+          <SettingsPage />
+        ) : (
+          <Dashboard
+            tasks={filteredTask}
+            allTasks={tasks}
+            filter={filter}
+            toggleTask={toggleTask}
+            toggleImportant={toggleImportant}
+            deleteTask={deleteTask}
+            editTask={editTask}
+            addTask={addTask}
+          />
+        )}
+      </PageTransition>
+
       <BottomNav
         setFilter={setFilter}
         filter={filter}

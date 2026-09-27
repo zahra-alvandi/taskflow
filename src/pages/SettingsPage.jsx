@@ -6,15 +6,7 @@ function SettingsPage() {
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   return (
-    <main
-      className="
-  flex-1
-  min-h-screen
-  p-5
-  md:p-8
-  pb-32
-"
-    >
+    <main className="flex-1 min-h-screen p-5 md:p-8 pb-32">
       <h1 className="text-3xl font-bold text-[var(--text-primary)]">
         Settings
       </h1>
@@ -23,40 +15,43 @@ function SettingsPage() {
         Customize your TaskFlow experience.
       </p>
 
-      <section
-        className="
-        mt-8
-        bg-[var(--surface)]
-        rounded-3xl
-        p-5
-        shadow-[var(--shadow-soft)]
-      "
-      >
-        <h2 className="font-semibold mb-5">Appearance</h2>
+      <section className="mt-8 bg-[var(--surface)] rounded-3xl p-5 shadow-[var(--shadow-soft)]">
+        <h2 className="font-semibold mb-5 text-[var(--text-primary)]">
+          Appearance
+        </h2>
 
-        <button
-          onClick={() => {
-            setActiveNav("settings");
-            setPage("settings");
-          }}
-          className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
-            activeNav === "settings"
-              ? "text-[var(--primary)] -translate-y-3"
-              : "text-[var(--text-muted)]"
-          }`}
-        >
-          <div
-            className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 `}
-          >
-            <Settings size={21} strokeWidth={2} />
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {darkMode ? (
+              <Moon size={22} className="text-[var(--primary)]" />
+            ) : (
+              <Sun size={22} className="text-[var(--primary)]" />
+            )}
+
+            <div>
+              <p className="font-medium text-[var(--text-primary)]">
+                Dark Mode
+              </p>
+
+              <p className="text-sm text-[var(--text-secondary)]">
+                {darkMode ? "Enabled" : "Disabled"}
+              </p>
+            </div>
           </div>
 
-          {activeNav === "settings" && (
-            <span className="absolute -bottom-1 text-[10px] font-semibold whitespace-nowrap">
-              Settings
-            </span>
-          )}
-        </button>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className={`relative w-12 h-7 rounded-full transition-colors duration-300 ${
+              darkMode ? "bg-[var(--primary)]" : "bg-gray-300"
+            }`}
+          >
+            <span
+              className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${
+                darkMode ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </div>
       </section>
     </main>
   );
