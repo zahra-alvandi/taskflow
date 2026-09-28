@@ -67,6 +67,12 @@ export default {
     lightMode: "Light Mode",
     darkMode: "Dark Mode",
   },
+
+  subtask: {
+    addPlaceholder: "Add a subtask...",
+    count: "{completed} of {total}",
+  },
+
   actions: {
     add: "Add",
     edit: "Edit",
@@ -75,5 +81,6 @@ export default {
     delete: "Delete",
     undo: "Undo",
     deleteConfirm: "Delete this task?",
+    addSubtask: "Add subtask",
   },
 };

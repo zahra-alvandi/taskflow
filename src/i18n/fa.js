@@ -41,6 +41,10 @@ export default {
       high: "زیاد",
       medium: "متوسط",
       low: "کم",
+      titlePlaceholder: "چه کاری داری؟ ",
+      subtasksFound: "زیرتسک پیدا شد",
+      autoDetected: "تشخیص خودکار",
+      inferred: "(حدسی)",
     },
   },
   stats: {
@@ -73,6 +77,12 @@ export default {
     lightMode: "حالت روشن",
     darkMode: "حالت تاریک",
   },
+
+  subtask: {
+    addPlaceholder: "زیرتسک اضافه کن...",
+    count: "{completed} از {total}",
+  },
+
   actions: {
     add: "افزودن",
     edit: "ویرایش",
@@ -81,5 +91,6 @@ export default {
     delete: "حذف",
     undo: "برگردون",
     deleteConfirm: "این کار حذف بشه؟",
+    addSubtask: "افزودن زیرتسک",
   },
 };
