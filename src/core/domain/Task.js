@@ -32,7 +32,7 @@ export function createTask({
     important,
     priority,
     dueDate,
-    dueTime, 
+    dueTime,
     projectId,
     tags,
     subtasks,
@@ -69,4 +69,43 @@ export function isOverdue(task) {
   const due = new Date(task.dueDate);
   due.setHours(0, 0, 0, 0);
   return due < today;
+}
+
+/* ================================
+   Subtask Helpers
+================================ */
+
+export function addSubtaskToTask(task, subtask) {
+  return updateTask(task, {
+    subtasks: [...task.subtasks, subtask],
+  });
+}
+
+export function removeSubtaskFromTask(task, subtaskId) {
+  return updateTask(task, {
+    subtasks: task.subtasks.filter((s) => s.id !== subtaskId),
+  });
+}
+
+export function toggleSubtaskInTask(task, subtaskId) {
+  return updateTask(task, {
+    subtasks: task.subtasks.map((s) =>
+      s.id === subtaskId ? { ...s, completed: !s.completed } : s,
+    ),
+  });
+}
+
+export function updateSubtaskInTask(task, subtaskId, patch) {
+  return updateTask(task, {
+    subtasks: task.subtasks.map((s) =>
+      s.id === subtaskId ? { ...s, ...patch } : s,
+    ),
+  });
+}
+
+export function getSubtaskProgress(task) {
+  const total = task.subtasks.length;
+  const completed = task.subtasks.filter((s) => s.completed).length;
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+  return { total, completed, percent };
 }

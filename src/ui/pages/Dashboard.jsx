@@ -23,6 +23,10 @@ function Dashboard({
   deleteTask,
   editTask,
   addTask,
+  addSubtask,
+  removeSubtask,
+  toggleSubtask,
+  editSubtask,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -185,6 +189,10 @@ function Dashboard({
             toggleImportant={toggleImportant}
             deleteTask={deleteTask}
             editTask={editTask}
+            onAddSubtask={addSubtask}
+            onToggleSubtask={toggleSubtask}
+            onEditSubtask={editSubtask}
+            onDeleteSubtask={removeSubtask}
           />
         )}
       </div>

@@ -21,6 +21,10 @@ function App() {
     toggleImportant,
     editTask,
     deleteTask,
+    addSubtask,
+    removeSubtask,
+    toggleSubtask,
+    editSubtask,
   } = useTasks(taskRepository);
 
   const { lang, changeLang } = useLanguage();
@@ -50,6 +54,10 @@ function App() {
             deleteTask={deleteTask}
             editTask={editTask}
             addTask={addTask}
+            addSubtask={addSubtask}
+            removeSubtask={removeSubtask}
+            toggleSubtask={toggleSubtask}
+            editSubtask={editSubtask}
           />
         )}
       </PageTransition>

@@ -3,7 +3,12 @@ import {
   createTask,
   toggleTask as toggleTaskEntity,
   updateTask,
+  addSubtaskToTask,
+  removeSubtaskFromTask,
+  toggleSubtaskInTask,
+  updateSubtaskInTask,
 } from "../../core/domain/Task";
+import { createSubtask } from "../../core/domain/Subtask";
 
 export function useTasks(repository) {
   const [tasks, setTasks] = useState([]);
@@ -36,6 +41,7 @@ export function useTasks(repository) {
         dueDate: payload.dueDate ?? null,
         dueTime: payload.dueTime ?? null,
         tags: payload.tags ?? [],
+        subtasks: payload.subtasks ?? [],
       });
       await repository.save(task);
       await refresh();
@@ -85,6 +91,69 @@ export function useTasks(repository) {
     [repository, refresh],
   );
 
+  /* ================================
+     Subtasks
+  ================================ */
+
+  const addSubtask = useCallback(
+    async (taskId, title) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const subtask = createSubtask({ title });
+      const next = addSubtaskToTask(task, subtask);
+      await repository.save(next);
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
+  const removeSubtask = useCallback(
+    async (taskId, subtaskId) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const next = removeSubtaskFromTask(task, subtaskId);
+      await repository.save(next);
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
+  const toggleSubtask = useCallback(
+    async (taskId, subtaskId) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      let next = toggleSubtaskInTask(task, subtaskId);
+
+      const allDone =
+        next.subtasks.length > 0 && next.subtasks.every((s) => s.completed);
+      if (allDone && !next.completed) {
+        next = updateTask(next, {
+          completed: true,
+          completedAt: new Date().toISOString(),
+        });
+      }
+
+      await repository.save(next);
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
+  const editSubtask = useCallback(
+    async (taskId, subtaskId, title) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const next = updateSubtaskInTask(task, subtaskId, { title });
+      await repository.save(next);
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
   const filtered = useMemo(() => {
     return {
       all: tasks,
@@ -104,5 +173,9 @@ export function useTasks(repository) {
     editTask,
     deleteTask,
     refresh,
+    addSubtask,
+    removeSubtask,
+    toggleSubtask,
+    editSubtask,
   };
 }
