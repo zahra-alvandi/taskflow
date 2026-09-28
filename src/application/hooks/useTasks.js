@@ -30,7 +30,13 @@ export function useTasks(repository) {
 
   const addTask = useCallback(
     async (payload) => {
-      const task = createTask(payload);
+      const task = createTask({
+        title: payload.title,
+        priority: payload.priority ?? "medium",
+        dueDate: payload.dueDate ?? null,
+        dueTime: payload.dueTime ?? null,
+        tags: payload.tags ?? [],
+      });
       await repository.save(task);
       await refresh();
       return task;

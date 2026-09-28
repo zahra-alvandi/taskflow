@@ -6,14 +6,15 @@ export function createTask({
   description = "",
   completed = false,
   important = false,
-  priority = "medium", // "low" | "medium" | "high"
-  dueDate = null, // ISO string
+  priority = "medium",
+  dueDate = null,
+  dueTime = null,
   projectId = null,
   tags = [],
   subtasks = [],
   estimatedMinutes = null,
   actualMinutes = null,
-  recurrence = null, // "daily" | "weekly" | null
+  recurrence = null,
   createdAt = new Date().toISOString(),
   updatedAt = new Date().toISOString(),
   completedAt = null,
@@ -31,6 +32,7 @@ export function createTask({
     important,
     priority,
     dueDate,
+    dueTime, 
     projectId,
     tags,
     subtasks,

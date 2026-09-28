@@ -34,6 +34,14 @@ export default {
     search: "جستجوی کار...",
     back: "برگشت",
     backToDashboard: "برگشت به داشبورد",
+    titlePlaceholder: "چه کاری داری؟ مثلاً: فردا جلسه با تیم مهم",
+    autoDetected: "تشخیص خودکار",
+    inferred: "(حدسی)",
+    priority: {
+      high: "زیاد",
+      medium: "متوسط",
+      low: "کم",
+    },
   },
   stats: {
     total: "کل کارها",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, Trash2, Pencil, Calendar } from "lucide-react";
+import { Star, Trash2, Pencil, Calendar, Clock } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 
 function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
@@ -117,6 +117,13 @@ function TaskCard({ task, toggleTask, toggleImportant, deleteTask, editTask }) {
                 {isOverdue(task.dueDate) && !task.completed
                   ? `${t("task.status.overdue")} · ${formatDueDate(task.dueDate)}`
                   : formatDueDate(task.dueDate)}
+
+                {task.dueTime && (
+                  <>
+                    <Clock size={13} />
+                    {task.dueTime}
+                  </>
+                )}
               </span>
             )}
           </div>

@@ -1,45 +1,55 @@
 import { useEffect, useState } from "react";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, Clock, AlertCircle, Sparkles, X } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import { useNaturalLanguage } from "../../application/hooks/useNaturalLanguage";
 
 function AddTask({ addTask }) {
   const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("medium");
+  const [priorityManuallySet, setPriorityManuallySet] = useState(false);
   const [showPriority, setShowPriority] = useState(false);
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
+  const [tags, setTags] = useState([]);
 
-  const priorityStyles = {
-    high: "text-[var(--danger)] bg-[var(--danger-soft)]",
-    medium: "text-[var(--warning)] bg-[var(--warning-soft)]",
-    low: "text-[var(--success)] bg-[var(--success-soft)]",
-  };
+  const parsed = useNaturalLanguage(title);
 
+  // auto-fill
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".priority-picker")) {
-        setShowPriority(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+    if (parsed.dueDate) setDueDate(parsed.dueDate);
+    if (parsed.dueTime) setDueTime(parsed.dueTime);
+    if (parsed.tags.length > 0) {
+      // merge with manual
+      setTags((prev) => [...new Set([...prev, ...parsed.tags])]);
+    }
+    if (parsed.priority && !priorityManuallySet) {
+      setPriority(parsed.priority);
+    }
+  }, [parsed, priorityManuallySet]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (title.trim() === "") return;
+    const finalTitle = parsed.hasAnyMatch ? parsed.title : title;
+    if (!finalTitle.trim()) return;
 
     addTask({
-      title,
+      title: finalTitle,
       priority,
       dueDate: dueDate || null,
+      dueTime: dueTime || null,
+      tags,
     });
 
+    // reset
     setTitle("");
     setPriority("medium");
+    setPriorityManuallySet(false);
     setDueDate("");
+    setDueTime("");
+    setTags([]);
     setShowPriority(false);
   };
 
@@ -54,107 +64,126 @@ function AddTask({ addTask }) {
           <Plus size={20} className="text-[var(--primary)]" />
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-3">
-          {/* Title */}
-          <input
-            onChange={(e) => setTitle(e.target.value)}
-            value={title}
-            type="text"
-            placeholder={t("task.title")}
-            className="flex-1 min-w-0 px-4 py-3 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition"
-          />
+        {/* Title */}
+        <input
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
+          type="text"
+          placeholder={t("task.titlePlaceholder")}
+          className="w-full px-4 py-3 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition"
+        />
 
-          {/* Priority */}
-          <div className="priority-picker relative lg:w-32 shrink-0">
-            <button
-              type="button"
-              onClick={() => setShowPriority(!showPriority)}
-              className={`w-full px-3 py-3 rounded-xl text-sm font-medium transition ${priorityStyles[priority]}`}
-            >
-              <div className="flex items-center justify-center gap-2">
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    priority === "high"
-                      ? "bg-[var(--danger)]"
-                      : priority === "medium"
-                        ? "bg-[var(--warning)]"
-                        : "bg-[var(--success)]"
-                  }`}
-                />
-                <span>{t(`task.priority.${priority}`)}</span>
-                <span className="text-xs opacity-60">⌄</span>
-              </div>
-            </button>
+        {/* Live detection preview */}
+        {parsed.hasAnyMatch && title.trim() && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Sparkles size={14} className="text-[var(--primary)] shrink-0" />
+            <span className="text-xs text-[var(--text-muted)] shrink-0">
+              {t("task.autoDetected")}:
+            </span>
 
-            {showPriority && (
-              <div className="absolute top-full left-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
-                {["high", "medium", "low"].map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => {
-                      setPriority(item);
-                      setShowPriority(false);
-                    }}
-                    className={`w-full text-start px-3 py-2 rounded-lg text-sm transition ${
-                      priority === item
-                        ? "bg-[var(--primary-soft)] text-[var(--primary)]"
-                        : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
-                    }`}
-                  >
-                    {t(`task.priority.${item}`)}
-                  </button>
-                ))}
-              </div>
+            {parsed.dueDate && (
+              <DetectedChip
+                icon={<Calendar size={13} />}
+                label={new Date(
+                  parsed.dueDate + "T00:00:00",
+                ).toLocaleDateString(undefined, {
+                  month: "short",
+                  day: "numeric",
+                })}
+                onRemove={() => {
+                  setDueDate("");
+                }}
+              />
             )}
+
+            {parsed.dueTime && (
+              <DetectedChip
+                icon={<Clock size={13} />}
+                label={parsed.dueTime}
+                onRemove={() => setDueTime("")}
+              />
+            )}
+
+            {parsed.priority && (
+              <DetectedChip
+                icon={<AlertCircle size={13} />}
+                label={t(`task.priority.${parsed.priority}`)}
+                tone={
+                  parsed.priority === "high"
+                    ? "danger"
+                    : parsed.priority === "low"
+                      ? "success"
+                      : "warning"
+                }
+                inferred={parsed.inferred.priority}
+                onRemove={() => {
+                  setPriority("medium");
+                  setPriorityManuallySet(true);
+                }}
+              />
+            )}
+
+            {parsed.tags.map((tag) => (
+              <DetectedChip
+                key={tag}
+                label={tag}
+                tone="primary"
+                onRemove={() =>
+                  setTags((prev) => prev.filter((x) => x !== tag))
+                }
+              />
+            ))}
           </div>
+        )}
 
-          {/* Date */}
-          <DatePicker
-            wrapperClassName="lg:w-40 shrink-0"
-            selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
-            onChange={(date) => {
-              if (date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, "0");
-                const day = String(date.getDate()).padStart(2, "0");
-                setDueDate(`${year}-${month}-${day}`);
-              } else {
-                setDueDate("");
-              }
-            }}
-            shouldCloseOnSelect={true}
-            dateFormat="MMM d, yyyy"
-            placeholderText={t("task.pickDate")}
-            customInput={
-              <button
-                type="button"
-                className="w-full px-3 py-3 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                <Calendar size={18} />
-                <span className="truncate">
-                  {dueDate
-                    ? new Date(dueDate + "T00:00:00").toLocaleDateString(
-                        undefined,
-                        { month: "short", day: "numeric", year: "numeric" },
-                      )
-                    : t("task.pickDate")}
-                </span>
-              </button>
-            }
-          />
-
-          {/* Add */}
-          <button
-            type="submit"
-            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(99,102,241,0.28)] hover:bg-[var(--primary-hover)] transition"
-          >
-            <Plus size={18} />
-            {t("task.add")}
-          </button>
+        {/* Manual controls */}
+        <div className="flex flex-col lg:flex-row gap-3 mt-4">
+          <button type="submit">{t("task.add")}</button>
         </div>
       </form>
     </div>
+  );
+}
+
+function DetectedChip({
+  icon,
+  label,
+  tone = "neutral",
+  inferred = false,
+  onRemove,
+}) {
+  const { t } = useTranslation();
+
+  const tones = {
+    neutral: "bg-[var(--app-bg)] text-[var(--text-secondary)]",
+    primary: "bg-[var(--primary-soft)] text-[var(--primary)]",
+    danger: "bg-[var(--danger-soft)] text-[var(--danger)]",
+    warning: "bg-[var(--warning-soft)] text-[var(--warning)]",
+    success: "bg-[var(--success-soft)] text-[var(--success)]",
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 ps-2.5 pe-1.5 py-1 rounded-lg text-xs font-medium ${tones[tone]}`}
+    >
+      {icon}
+      <span>{label}</span>
+      {inferred && (
+        <span className="text-[10px] opacity-60 italic">
+          {t("task.inferred")}
+        </span>
+      )}
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          className="w-4 h-4 rounded-full flex items-center justify-center hover:bg-black/10 transition"
+          aria-label="Remove"
+        >
+          <X size={11} />
+        </button>
+      )}
+    </span>
   );
 }
 

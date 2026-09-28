@@ -27,6 +27,15 @@ export default {
     search: "Search tasks...",
     back: "Back",
     backToDashboard: "Back to Dashboard",
+    titlePlaceholder:
+      "What do you want to do? e.g., tomorrow meeting with team urgent",
+    autoDetected: "Auto-detected",
+    inferred: "(inferred)",
+    priority: {
+      high: "High",
+      medium: "Medium",
+      low: "Low",
+    },
   },
   stats: {
     total: "Total Tasks",
