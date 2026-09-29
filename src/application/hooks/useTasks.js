@@ -42,6 +42,7 @@ export function useTasks(repository) {
         dueTime: payload.dueTime ?? null,
         tags: payload.tags ?? [],
         subtasks: payload.subtasks ?? [],
+        estimatedMinutes: payload.estimatedMinutes ?? null,
       });
       await repository.save(task);
       await refresh();

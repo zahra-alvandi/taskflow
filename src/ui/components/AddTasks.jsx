@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import {
   Calendar,
   Plus,
@@ -7,12 +7,15 @@ import {
   Sparkles,
   X,
   ListChecks,
+  Loader2,
 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { useNaturalLanguage } from "../../application/hooks/useNaturalLanguage";
 import { parseSubtasksFromTitle } from "../../core/services/subtaskService";
+import { useAI } from "../../application/hooks/useAI";
+import AISuggestionPanel from "./AISuggestionPanel";
 
 function AddTask({ addTask }) {
   const { t } = useTranslation();
@@ -23,13 +26,24 @@ function AddTask({ addTask }) {
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
   const [tags, setTags] = useState([]);
+  const [estimatedMinutes, setEstimatedMinutes] = useState(null);
+
+  // AI state
+  const [aiSuggestions, setAiSuggestions] = useState(null);
+  const [aiDismissed, setAiDismissed] = useState(false);
 
   const textareaRef = useRef(null);
   const parsed = useNaturalLanguage(title);
+  const ai = useAI();
 
-  const { subtasks: parsedSubtasks } = parseSubtasksFromTitle(title);
+  const { subtasks: parsedSubtasks } = useMemo(
+    () => parseSubtasksFromTitle(title),
+    [title],
+  );
 
-  // auto-resize textarea
+  /* ============================================
+     Auto-resize
+  ============================================ */
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -37,30 +51,82 @@ function AddTask({ addTask }) {
     el.style.height = el.scrollHeight + "px";
   }, [title]);
 
-  // auto-fill priority
+  /* ============================================
+     NLP auto-fill
+  ============================================ */
   useEffect(() => {
-    if (parsed.priority && !priorityManuallySet) {
-      setPriority(parsed.priority);
-    }
+    if (parsed.priority && !priorityManuallySet) setPriority(parsed.priority);
   }, [parsed.priority, priorityManuallySet]);
 
-  // auto-fill date
   useEffect(() => {
     if (parsed.dueDate) setDueDate(parsed.dueDate);
   }, [parsed.dueDate]);
 
-  // auto-fill time
   useEffect(() => {
     if (parsed.dueTime) setDueTime(parsed.dueTime);
   }, [parsed.dueTime]);
 
-  // auto-fill tags
   useEffect(() => {
     if (parsed.tags.length > 0) {
       setTags((prev) => [...new Set([...prev, ...parsed.tags])]);
     }
   }, [parsed.tags.join(",")]); // eslint-disable-line
 
+  /* ============================================
+     Reset AI suggestions when title changes
+  ============================================ */
+  useEffect(() => {
+    setAiSuggestions(null);
+    setAiDismissed(false);
+  }, [title]);
+
+  /* ============================================
+     AI analysis
+  ============================================ */
+  const handleAskAI = async () => {
+    if (!title.trim() || !ai.isAvailable) return;
+
+    const result = await ai.analyzeTask(
+      { title: title.trim(), dueDate },
+      { existingTags: tags },
+    );
+
+    if (result) {
+      setAiSuggestions(result);
+      setAiDismissed(false);
+    }
+  };
+
+  /* ============================================
+     Apply AI suggestions
+  ============================================ */
+  const handleApplySuggestions = (patch) => {
+    if (patch.priority && !priorityManuallySet) {
+      setPriority(patch.priority);
+    }
+    if (patch.tags) {
+      setTags((prev) => [...new Set([...prev, ...patch.tags])]);
+    }
+    if (patch.estimatedMinutes) {
+      setEstimatedMinutes(patch.estimatedMinutes);
+    }
+    if (patch.subtasks && patch.subtasks.length > 0) {
+      const currentText = title;
+      const additional = patch.subtasks.filter(
+        (s) =>
+          !parsedSubtasks.some(
+            (ps) => ps.title.toLowerCase() === s.toLowerCase(),
+          ),
+      );
+      if (additional.length > 0) {
+        setTitle(currentText + "\n" + additional.join("\n"));
+      }
+    }
+  };
+
+  /* ============================================
+     Priority styles
+  ============================================ */
   const priorityStyles = {
     high: "text-[var(--danger)] bg-[var(--danger-soft)]",
     medium: "text-[var(--warning)] bg-[var(--warning-soft)]",
@@ -77,6 +143,9 @@ function AddTask({ addTask }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  /* ============================================
+     Submit
+  ============================================ */
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!title.trim()) return;
@@ -90,14 +159,19 @@ function AddTask({ addTask }) {
       dueTime: dueTime || null,
       tags,
       subtasks,
+      estimatedMinutes,
     });
 
+    // reset
     setTitle("");
     setPriority("medium");
     setPriorityManuallySet(false);
     setDueDate("");
     setDueTime("");
     setTags([]);
+    setEstimatedMinutes(null);
+    setAiSuggestions(null);
+    setAiDismissed(false);
     setShowPriority(false);
   };
 
@@ -112,23 +186,43 @@ function AddTask({ addTask }) {
           <Plus size={20} className="text-[var(--primary)]" />
         </div>
 
-        {/* Title — textarea */}
-        <textarea
-          ref={textareaRef}
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              e.currentTarget.form?.requestSubmit();
-            }
-          }}
-          rows={1}
-          placeholder={t("task.titlePlaceholder")}
-          className="w-full px-4 py-3 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition resize-none overflow-hidden"
-          style={{ minHeight: "44px" }}
-        />
+        {/* Title + AI button */}
+        <div className="relative">
+          <textarea
+            ref={textareaRef}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                e.currentTarget.form?.requestSubmit();
+              }
+            }}
+            rows={1}
+            placeholder={t("task.titlePlaceholder")}
+            className="w-full px-4 py-3 pe-12 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition resize-none overflow-hidden"
+            style={{ minHeight: "44px" }}
+          />
 
+          {/* AI button */}
+          {ai.isAvailable && title.trim() && (
+            <button
+              type="button"
+              onClick={handleAskAI}
+              disabled={ai.loading}
+              className="absolute end-2 top-2 w-8 h-8 rounded-lg bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(99,102,241,0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-60 transition"
+              title={t("ai.suggestions")}
+            >
+              {ai.loading ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Sparkles size={14} />
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* NLP chips */}
         {parsed.hasAnyMatch && title.trim() && (
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <Sparkles size={14} className="text-[var(--primary)] shrink-0" />
@@ -189,40 +283,43 @@ function AddTask({ addTask }) {
           </div>
         )}
 
+        {/* Subtask preview */}
         {parsedSubtasks.length > 0 && (
-          <div className="mt-3 rounded-2xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] p-3">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-2.5">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[var(--primary-soft)] flex items-center justify-center">
-                  <ListChecks size={13} className="text-[var(--primary)]" />
-                </div>
-                <span className="text-xs font-medium text-[var(--text-secondary)]">
-                  {t("SubTasks")}
-                </span>
-              </div>
-
-              <span className="text-[11px] font-semibold text-[var(--primary)] bg-[var(--primary-soft)] px-2 py-0.5 rounded-full tabular-nums">
-                {parsedSubtasks.length}
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <ListChecks size={13} className="text-[var(--primary)]" />
+              <span>
+                {parsedSubtasks.length} {t("task.subtasksFound")}:
               </span>
             </div>
 
-            {/* Subtask list */}
-            <div className="space-y-1">
-              {parsedSubtasks.map((sub, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-[var(--surface)] shadow-[var(--shadow-soft-small)]"
-                >
-                  <span className="w-3.5 h-3.5 shrink-0 rounded border-2 border-[var(--text-muted)]/40" />
-                  <span className="text-sm text-[var(--text-primary)] truncate">
-                    {sub.title}
-                  </span>
-                </div>
-              ))}
-            </div>
+            {parsedSubtasks.map((sub, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-[var(--app-bg)] text-[var(--text-secondary)] shadow-[var(--shadow-inset)]"
+              >
+                <span className="w-2.5 h-2.5 rounded-full border border-[var(--text-muted)]/50" />
+                {sub.title}
+              </span>
+            ))}
           </div>
         )}
+
+        {/* ✨ AI Suggestions Panel */}
+        {ai.isAvailable &&
+          !aiDismissed &&
+          (aiSuggestions || ai.loading || ai.error) && (
+            <AISuggestionPanel
+              suggestions={aiSuggestions}
+              loading={ai.loading}
+              error={ai.error}
+              onApply={handleApplySuggestions}
+              onDismiss={() => {
+                setAiDismissed(true);
+                setAiSuggestions(null);
+              }}
+            />
+          )}
 
         {/* Manual controls */}
         <div className="flex flex-col lg:flex-row gap-3 mt-4">
@@ -321,9 +418,6 @@ function AddTask({ addTask }) {
   );
 }
 
-/**
- * Chip قابل حذف
- */
 function DetectedChip({
   icon,
   label,
