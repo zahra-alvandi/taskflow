@@ -6,7 +6,7 @@ const DEFAULT_SETTINGS = {
   enabled: false,
   provider: "openrouter",
   apiKey: "",
-  model: "qwen/qwen3-next-80b-a3b-instruct:free",
+  model: "openai/gpt-oss-20b:free",
 };
 
 function isValidApiKey(key, provider) {
@@ -14,12 +14,10 @@ function isValidApiKey(key, provider) {
   const trimmed = key.trim();
   if (trimmed.length < 20) return false;
 
-  if (provider === "openrouter") {
-    return trimmed.startsWith("sk-or-v1-");
-  }
-  if (provider === "groq") {
-    return trimmed.startsWith("gsk_");
-  }
+  if (provider === "openrouter") return trimmed.startsWith("sk-or-v1-");
+  if (provider === "groq") return trimmed.startsWith("gsk_");
+  if (provider === "gemini")
+    return trimmed.startsWith("AQ.") || trimmed.startsWith("AIza");
   return true;
 }
 

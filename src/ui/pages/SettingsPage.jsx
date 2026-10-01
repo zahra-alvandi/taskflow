@@ -17,14 +17,17 @@ import { useAISettings } from "../../application/hooks/useAISettings";
 
 const PROVIDERS = [
   {
+    id: "gemini",
+    labelKey: "ai.providerGemini",
+    models: ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite"],
+  },
+  {
     id: "openrouter",
     labelKey: "ai.providerOpenRouter",
     models: [
-      "nvidia/nemotron-3-super-120b-a12b:free",
+      "openai/gpt-oss-20b:free",
       "openai/gpt-oss-20b:free",
       "google/gemma-4-31b-it:free",
-      "qwen/qwen3-next-80b-a3b-instruct:free",
-      "z-ai/glm-4.5-air:free",
     ],
   },
   {
@@ -33,6 +36,12 @@ const PROVIDERS = [
     models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
   },
 ];
+
+const KEY_URLS = {
+  gemini: "https://aistudio.google.com/apikey",
+  openrouter: "https://openrouter.ai/keys",
+  groq: "https://console.groq.com/keys",
+};
 
 function SettingsPage() {
   const { t } = useTranslation();
@@ -61,7 +70,6 @@ function SettingsPage() {
   };
 
   const handleToggleEnable = () => {
-    // اگه می‌خواد فعال کنه ولی key نداره، اجازه نده
     if (!settings.enabled && !settings.apiKey) return;
     updateSettings({ enabled: !settings.enabled });
   };
@@ -283,11 +291,7 @@ function SettingsPage() {
 
           {/* Link to get key */}
           <a
-            href={
-              settings.provider === "openrouter"
-                ? "https://openrouter.ai/keys"
-                : "https://console.groq.com/keys"
-            }
+            href={KEY_URLS[settings.provider] ?? "#"}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 mt-2 text-xs text-[var(--primary)] hover:underline"

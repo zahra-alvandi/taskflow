@@ -3,6 +3,7 @@ import { LocalTaskRepository } from "../infrastructure/repositories/LocalTaskRep
 import { NullAIService } from "../infrastructure/ai/NullAIService";
 import { GroqAIService } from "../infrastructure/ai/GroqAIService";
 import { OpenRouterAIService } from "../infrastructure/ai/OpenRouterAIService";
+import { GeminiAIService } from "../infrastructure/ai/GeminiAIService";
 
 const storage = new LocalStorageAdapter("taskflow");
 
@@ -19,9 +20,14 @@ export function createAIService(settings) {
       model: settings.model,
     });
   }
-
   if (settings.provider === "openrouter") {
     return new OpenRouterAIService({
+      apiKey: settings.apiKey,
+      model: settings.model,
+    });
+  }
+  if (settings.provider === "gemini") {
+    return new GeminiAIService({
       apiKey: settings.apiKey,
       model: settings.model,
     });

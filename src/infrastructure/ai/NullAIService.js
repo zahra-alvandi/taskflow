@@ -30,4 +30,7 @@ export class NullAIService extends AIService {
   async suggestTags() {
     return { tags: [], confidence: 0 };
   }
+  async planDay() {
+    return { summary: "", blocks: [], skipped: [] };
+  }
 }

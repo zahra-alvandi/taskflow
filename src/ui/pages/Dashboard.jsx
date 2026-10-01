@@ -12,6 +12,7 @@ import StatCard from "../components/StatsCard";
 import TaskList from "../components/TaskList";
 import AddTask from "../components/AddTasks";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import DailyPlanner from "../components/DailyPlanner";
 
 function Dashboard({
   tasks,
@@ -106,18 +107,22 @@ function Dashboard({
           </p>
         </div>
 
-        <div className="relative w-full lg:w-80">
-          <Search
-            size={19}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
-          />
-          <input
-            type="text"
-            placeholder={t("task.search")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition"
-          />
+        <div className="flex items-center gap-3">
+          <DailyPlanner tasks={allTasks} />
+
+          <div className="relative w-full lg:w-80">
+            <Search
+              size={19}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+            />
+            <input
+              type="text"
+              placeholder={t("task.search")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition"
+            />
+          </div>
         </div>
       </header>
 

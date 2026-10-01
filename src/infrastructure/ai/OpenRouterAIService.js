@@ -4,13 +4,12 @@ import {
   buildAnalyzePrompt,
   buildEstimatePrompt,
   buildSubtaskPrompt,
+  PLANNER_SYSTEM_PROMPT,
+  buildPlanPrompt,
 } from "./prompts";
 
 export class OpenRouterAIService extends AIService {
-  constructor({
-    apiKey,
-    model = "qwen/qwen3-next-80b-a3b-instruct:free",
-  } = {}) {
+  constructor({ apiKey, model = "openai/gpt-oss-20b:free" } = {}) {
     super();
     this.apiKey = apiKey;
     this.model = model;
@@ -25,13 +24,36 @@ export class OpenRouterAIService extends AIService {
       throw new Error("OpenRouter API key is missing");
     }
 
+    try {
+      return await this._callOnce(messages, options);
+    } catch (err) {
+      if (
+        err.message?.includes("Invalid JSON") ||
+        err.message?.includes("Empty response")
+      ) {
+        console.warn("⚠️ Retrying with stricter JSON reminder...");
+
+        const stricterMessages = [
+          ...messages,
+          {
+            role: "user",
+            content:
+              "CRITICAL: You MUST output ONLY valid JSON. No explanations. Start with { and end with }. Do it now.",
+          },
+        ];
+
+        return await this._callOnce(stricterMessages, options);
+      }
+      throw err;
+    }
+  }
+
+  async _callOnce(messages, options = {}) {
     const response = await fetch(this.baseURL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${this.apiKey}`,
-        "HTTP-Referer": window.location.origin,
-        "X-Title": "TaskFlow",
       },
       body: JSON.stringify({
         model: this.model,
@@ -50,8 +72,14 @@ export class OpenRouterAIService extends AIService {
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
 
-    if (!content) {
-      throw new Error("Empty response from OpenRouter");
+    if (!content) throw new Error("Empty response from OpenRouter");
+
+    let cleanContent = content;
+    if (!cleanContent.trim().startsWith("{")) {
+      const firstBrace = cleanContent.indexOf("{");
+      if (firstBrace > 0) {
+        cleanContent = cleanContent.slice(firstBrace);
+      }
     }
 
     const parsed = this._tryParseJSON(content);
@@ -60,7 +88,7 @@ export class OpenRouterAIService extends AIService {
     const extracted = this._extractJSON(content);
     if (extracted) return extracted;
 
-    console.error("Failed to parse OpenRouter response:", content);
+    console.error("Failed to parse:", content);
     throw new Error("Invalid JSON from OpenRouter");
   }
 
@@ -143,5 +171,14 @@ export class OpenRouterAIService extends AIService {
   async suggestTags(task) {
     const result = await this.analyzeTask(task);
     return { tags: result.tags ?? [], confidence: 0.8 };
+  }
+
+  async planDay(context) {
+    const messages = [
+      { role: "system", content: PLANNER_SYSTEM_PROMPT },
+      { role: "user", content: buildPlanPrompt(context) },
+    ];
+
+    return await this._call(messages, { maxTokens: 1500, temperature: 0.3 });
   }
 }

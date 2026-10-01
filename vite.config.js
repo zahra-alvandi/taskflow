@@ -14,4 +14,19 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api/openrouter": {
+        target: "https://openrouter.ai",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/openrouter/, "/api/v1"),
+      },
+      "/api/gemini": {
+        target: "https://generativelanguage.googleapis.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/gemini/, ""),
+      },
+      
+    },
+  },
 });

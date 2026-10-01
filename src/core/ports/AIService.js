@@ -11,4 +11,7 @@ export class AIService {
   async suggestTags(task) {
     throw new Error("Not implemented");
   }
+  async planDay(context) {
+    throw new Error("Not implemented");
+  }
 }

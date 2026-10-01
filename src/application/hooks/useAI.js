@@ -44,6 +44,11 @@ export function useAI() {
     [service, _run],
   );
 
+  const planDay = useCallback(
+    (context) => _run(service.planDay.bind(service), context),
+    [service, _run],
+  );
+
   return {
     isAvailable: isConfigured,
     isConfigured,
@@ -53,5 +58,6 @@ export function useAI() {
     analyzeTask,
     estimateTask,
     suggestSubtasks,
+    planDay,
   };
 }
