@@ -127,6 +127,8 @@ export default {
   },
   planner: {
     planMyDay: "برنامه‌ی روزم رو بچین",
+    viewPlan: "برنامه‌ی روز",
+    todayPlan: "برنامه‌ی امروز",
     title: "برنامه‌ی امروز",
     thinking: "AI داره برنامه می‌چینه...",
     error: "خطا در ساخت برنامه",
@@ -137,5 +139,8 @@ export default {
     regenerate: "دوباره بساز",
     gotIt: "فهمیدم",
     dueAt: "ددلاین",
+    clear: "حذف برنامه",
+    confirmClear: "برنامه‌ی امروز حذف بشه؟",
+    allDone: "همه‌ی کارای امروز تموم شد!",
   },
 };

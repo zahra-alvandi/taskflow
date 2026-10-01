@@ -118,6 +118,8 @@ export default {
   },
   planner: {
     planMyDay: "Plan my day",
+    viewPlan: "View plan",
+    todayPlan: "Today's Plan",
     title: "Today's Plan",
     thinking: "AI is planning your day...",
     error: "Failed to build plan",
@@ -128,5 +130,8 @@ export default {
     regenerate: "Regenerate",
     gotIt: "Got it",
     dueAt: "due at",
+    clear: "Delete plan",
+    confirmClear: "Delete today's plan?",
+    allDone: "All done for today!",
   },
 };

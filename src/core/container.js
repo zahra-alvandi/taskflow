@@ -4,10 +4,12 @@ import { NullAIService } from "../infrastructure/ai/NullAIService";
 import { GroqAIService } from "../infrastructure/ai/GroqAIService";
 import { OpenRouterAIService } from "../infrastructure/ai/OpenRouterAIService";
 import { GeminiAIService } from "../infrastructure/ai/GeminiAIService";
+import { LocalPlanRepository } from "../infrastructure/repositories/LocalPlanRepository";
 
 const storage = new LocalStorageAdapter("taskflow");
 
 export const taskRepository = new LocalTaskRepository(storage);
+export const planRepository = new LocalPlanRepository(storage);
 
 export function createAIService(settings) {
   if (!settings?.enabled || !settings?.apiKey) {

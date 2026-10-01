@@ -13,7 +13,7 @@ export class OpenRouterAIService extends AIService {
     super();
     this.apiKey = apiKey;
     this.model = model;
-    this.baseURL = "https://openrouter.ai/api/v1/chat/completions";
+    this.baseURL = "/api/openrouter/chat/completions";
   }
 
   /**

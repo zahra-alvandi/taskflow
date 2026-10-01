@@ -6,7 +6,7 @@ const DEFAULT_SETTINGS = {
   enabled: false,
   provider: "openrouter",
   apiKey: "",
-  model: "openai/gpt-oss-20b:free",
+  model: "openrouter/free",
 };
 
 function isValidApiKey(key, provider) {

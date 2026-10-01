@@ -6,12 +6,14 @@ import SettingsPage from "./ui/pages/SettingsPage";
 import PageTransition from "./ui/components/PageTransition";
 import { useTasks } from "./application/hooks/useTasks";
 import { useLanguage } from "./application/hooks/useLanguage";
-import { taskRepository } from "./core/container";
+import { taskRepository, planRepository } from "./core/container";
+import { useDailyPlan } from "./application/hooks/useDailyplan";
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [filter, setFilter] = useState("all");
+  const dailyPlan = useDailyPlan(planRepository);
 
   const {
     tasks,
@@ -58,6 +60,14 @@ function App() {
             removeSubtask={removeSubtask}
             toggleSubtask={toggleSubtask}
             editSubtask={editSubtask}
+            plan={dailyPlan.plan}
+            planLoading={dailyPlan.loading}
+            planProgress={dailyPlan.progress}
+            onSavePlan={dailyPlan.savePlan}
+            onClearPlan={dailyPlan.clearPlan}
+            onTogglePlanBlock={dailyPlan.toggleBlock}
+            onEditPlanBlock={dailyPlan.editBlock}
+            onDeletePlanBlock={dailyPlan.deleteBlock}
           />
         )}
       </PageTransition>

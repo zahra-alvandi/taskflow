@@ -13,6 +13,7 @@ import TaskList from "../components/TaskList";
 import AddTask from "../components/AddTasks";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import DailyPlanner from "../components/DailyPlanner";
+import DailyPlanCard from "../components/DailyPlanCard";
 
 function Dashboard({
   tasks,
@@ -28,6 +29,14 @@ function Dashboard({
   removeSubtask,
   toggleSubtask,
   editSubtask,
+  plan,
+  planLoading,
+  planProgress,
+  onSavePlan,
+  onClearPlan,
+  onTogglePlanBlock,
+  onEditPlanBlock,
+  onDeletePlanBlock,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -108,7 +117,17 @@ function Dashboard({
         </div>
 
         <div className="flex items-center gap-3">
-          <DailyPlanner tasks={allTasks} />
+          <DailyPlanner
+            tasks={allTasks}
+            plan={plan}
+            loading={planLoading}
+            progress={planProgress}
+            onSavePlan={onSavePlan}
+            onClearPlan={onClearPlan}
+            onToggleBlock={onTogglePlanBlock}
+            onEditBlock={onEditPlanBlock}
+            onDeleteBlock={onDeletePlanBlock}
+          />
 
           <div className="relative w-full lg:w-80">
             <Search
@@ -127,26 +146,37 @@ function Dashboard({
       </header>
 
       {isDashboardHome && (
-        <div
-          className={`transition-all duration-500 ease-out ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}
-        >
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-            {statcards.map((s) => (
-              <StatCard
-                key={s.id}
-                id={s.id}
-                title={s.title}
-                value={s.value}
-                description={s.description}
-                icon={s.icon}
-                isActive={filter === s.targetFilter}
-                onClick={() => setFilter(s.targetFilter)}
-              />
-            ))}
-          </div>
+        <>
+          <DailyPlanCard
+            plan={plan}
+            progress={planProgress}
+            onOpen={() => {}}
+            onToggleBlock={onTogglePlanBlock}
+          />
 
-          <AddTask addTask={addTask} />
-        </div>
+          <div
+            className={`transition-all duration-500 ease-out ${
+              mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+            }`}
+          >
+            <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+              {statcards.map((s) => (
+                <StatCard
+                  key={s.id}
+                  id={s.id}
+                  title={s.title}
+                  value={s.value}
+                  description={s.description}
+                  icon={s.icon}
+                  isActive={filter === s.targetFilter}
+                  onClick={() => setFilter(s.targetFilter)}
+                />
+              ))}
+            </div>
+
+            <AddTask addTask={addTask} />
+          </div>
+        </>
       )}
 
       {!isDashboardHome && (

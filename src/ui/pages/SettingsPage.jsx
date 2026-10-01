@@ -17,18 +17,14 @@ import { useAISettings } from "../../application/hooks/useAISettings";
 
 const PROVIDERS = [
   {
-    id: "gemini",
-    labelKey: "ai.providerGemini",
-    models: ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash-lite"],
-  },
-  {
     id: "openrouter",
     labelKey: "ai.providerOpenRouter",
-    models: [
-      "openai/gpt-oss-20b:free",
-      "openai/gpt-oss-20b:free",
-      "google/gemma-4-31b-it:free",
-    ],
+    models: ["openrouter/free"],
+  },
+  {
+    id: "gemini",
+    labelKey: "ai.providerGemini",
+    models: ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3.5-flash"],
   },
   {
     id: "groq",
