@@ -115,6 +115,7 @@ export default {
     providerGemini: "Gemini (Google)",
     providerOpenRouter: "OpenRouter",
     providerGroq: "Groq",
+    notConfigured: "AI is not configured yet. Go to Settings and add your key.",
   },
   planner: {
     planMyDay: "Plan my day",
@@ -133,5 +134,14 @@ export default {
     clear: "Delete plan",
     confirmClear: "Delete today's plan?",
     allDone: "All done for today!",
+    empty: "No plan yet. Tap the button above to let AI plan your day.",
+  },
+  pwa: {
+    installTitle: "Install TaskFlow",
+    installDesc: "For quick access and offline use",
+    install: "Install",
+    updateTitle: "New version available",
+    updateDesc: "Update to get the latest changes",
+    update: "Update",
   },
 };

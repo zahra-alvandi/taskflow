@@ -8,6 +8,10 @@ import { useTasks } from "./application/hooks/useTasks";
 import { useLanguage } from "./application/hooks/useLanguage";
 import { taskRepository, planRepository } from "./core/container";
 import { useDailyPlan } from "./application/hooks/useDailyplan";
+import OfflineBanner from "./ui/components/OfflineBanner";
+import InstallPrompt from "./ui/components/InstallPrompts";
+import UpdatePrompt from "./ui/components/UpdatePrompt";
+import AIPage from "./ui/pages/AIPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -35,6 +39,7 @@ function App() {
 
   return (
     <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
+      <OfflineBanner />
       <Sidebar
         setFilter={setFilter}
         filter={filter}
@@ -45,12 +50,33 @@ function App() {
       <PageTransition transitionKey={page === "settings" ? "settings" : filter}>
         {page === "settings" ? (
           <SettingsPage lang={lang} onChangeLang={changeLang} />
+        ) : page === "ai" ? (
+          <AIPage
+            tasks={tasks}
+            plan={dailyPlan.plan}
+            planLoading={dailyPlan.loading}
+            planProgress={dailyPlan.progress}
+            onSavePlan={dailyPlan.savePlan}
+            onClearPlan={dailyPlan.clearPlan}
+            onTogglePlanBlock={dailyPlan.toggleBlock}
+            onEditPlanBlock={dailyPlan.editBlock}
+            onDeletePlanBlock={dailyPlan.deleteBlock}
+            onBack={() => {
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
+          />
         ) : (
           <Dashboard
             tasks={currentTasks}
             allTasks={tasks}
             filter={filter}
             setFilter={setFilter}
+            setPage={setPage}
+            onOpenAI={() => {
+              setPage("ai");
+              setActiveNav("ai");
+            }}
             toggleTask={toggleTask}
             toggleImportant={toggleImportant}
             deleteTask={deleteTask}
@@ -68,6 +94,13 @@ function App() {
             onTogglePlanBlock={dailyPlan.toggleBlock}
             onEditPlanBlock={dailyPlan.editBlock}
             onDeletePlanBlock={dailyPlan.deleteBlock}
+            plan={dailyPlan.plan}
+            planProgress={dailyPlan.progress}
+            onSavePlan={dailyPlan.savePlan}
+            onClearPlan={dailyPlan.clearPlan}
+            onTogglePlanBlock={dailyPlan.toggleBlock}
+            onEditPlanBlock={dailyPlan.editBlock}
+            onDeletePlanBlock={dailyPlan.deleteBlock}
           />
         )}
       </PageTransition>
@@ -79,6 +112,9 @@ function App() {
         setActiveNav={setActiveNav}
         setPage={setPage}
       />
+
+      <InstallPrompt />
+      <UpdatePrompt />
     </div>
   );
 }

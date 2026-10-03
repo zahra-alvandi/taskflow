@@ -5,6 +5,7 @@ import {
   CircleCheckBig,
   Clock,
   Settings,
+  Sparkles,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 
@@ -94,6 +95,20 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           }`}
         >
           <Settings size={22} />
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveNav("ai");
+            setPage("ai");
+          }}
+          className={`flex items-center justify-center w-12 h-12 rounded-2xl transition ${
+            activeNav === "ai"
+              ? "text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+              : "text-[var(--text-muted)]"
+          }`}
+        >
+          <Sparkles size={22} />
         </button>
       </div>
     </nav>

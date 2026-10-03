@@ -7,12 +7,12 @@ import {
   Search,
   ArrowLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import StatCard from "../components/StatsCard";
 import TaskList from "../components/TaskList";
 import AddTask from "../components/AddTasks";
 import { useTranslation } from "../../application/hooks/useTranslation";
-import DailyPlanner from "../components/DailyPlanner";
 import DailyPlanCard from "../components/DailyPlanCard";
 
 function Dashboard({
@@ -20,6 +20,7 @@ function Dashboard({
   allTasks,
   filter,
   setFilter,
+  setPage,
   toggleTask,
   toggleImportant,
   deleteTask,
@@ -29,6 +30,7 @@ function Dashboard({
   removeSubtask,
   toggleSubtask,
   editSubtask,
+  onOpenAI,
   plan,
   planLoading,
   planProgress,
@@ -117,17 +119,13 @@ function Dashboard({
         </div>
 
         <div className="flex items-center gap-3">
-          <DailyPlanner
-            tasks={allTasks}
-            plan={plan}
-            loading={planLoading}
-            progress={planProgress}
-            onSavePlan={onSavePlan}
-            onClearPlan={onClearPlan}
-            onToggleBlock={onTogglePlanBlock}
-            onEditBlock={onEditPlanBlock}
-            onDeleteBlock={onDeletePlanBlock}
-          />
+          <button
+            onClick={onOpenAI}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white text-sm font-medium shadow-[0_6px_14px_rgba(99,102,241,0.35)] hover:shadow-[0_8px_20px_rgba(99,102,241,0.45)] hover:-translate-y-0.5 active:scale-95 transition-all"
+          >
+            <Sparkles size={16} />
+            {t("ai.title")}
+          </button>
 
           <div className="relative w-full lg:w-80">
             <Search
