@@ -15,6 +15,7 @@ export default {
     add: "کار جدید",
     title: "چه کاری داری؟",
     pickDate: "انتخاب تاریخ",
+    timeAmbiguous: "صبح یا عصر؟",
     priority: {
       high: "زیاد",
       medium: "متوسط",

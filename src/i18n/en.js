@@ -12,6 +12,7 @@ export default {
     add: "Add Task",
     title: "What do you want to do?",
     pickDate: "Pick a date",
+    timeAmbiguous: "AM or PM?",
     priority: { high: "High", medium: "Medium", low: "Low" },
     status: {
       completed: "Completed",

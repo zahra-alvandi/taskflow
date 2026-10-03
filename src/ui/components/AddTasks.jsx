@@ -13,7 +13,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { useNaturalLanguage } from "../../application/hooks/useNaturalLanguage";
-import { parseSubtasksFromTitle } from "../../core/services/subtaskService";
+
 import { useAI } from "../../application/hooks/useAI";
 import AISuggestionPanel from "./AISuggestionPanel";
 
@@ -36,10 +36,7 @@ function AddTask({ addTask }) {
   const parsed = useNaturalLanguage(title);
   const ai = useAI();
 
-  const { subtasks: parsedSubtasks } = useMemo(
-    () => parseSubtasksFromTitle(title),
-    [title],
-  );
+  const parsedSubtasks = parsed.subtasks ?? [];
 
   /* ============================================
      Auto-resize
@@ -150,16 +147,13 @@ function AddTask({ addTask }) {
     event.preventDefault();
     if (!title.trim()) return;
 
-    const { mainTitle, subtasks } = parseSubtasksFromTitle(title);
-
     addTask({
-      title: mainTitle,
+      title: parsed.title || title,
       priority,
       dueDate: dueDate || null,
       dueTime: dueTime || null,
       tags,
-      subtasks,
-      estimatedMinutes,
+      subtasks: parsed.subtasks ?? [],
     });
 
     // reset
@@ -169,9 +163,6 @@ function AddTask({ addTask }) {
     setDueDate("");
     setDueTime("");
     setTags([]);
-    setEstimatedMinutes(null);
-    setAiSuggestions(null);
-    setAiDismissed(false);
     setShowPriority(false);
   };
 

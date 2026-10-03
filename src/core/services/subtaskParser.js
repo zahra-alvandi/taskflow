@@ -4,8 +4,6 @@ import {
   HIGH_PRIORITY_CONTEXTS,
   LOW_PRIORITY_CONTEXTS,
 } from "./priorityHints";
-import { inferTags } from "./tagHints";
-import { parseSubtasksFromTitle } from "./subtaskService";
 
 function extractPriority(text) {
   const lower = text.toLowerCase();
@@ -28,96 +26,12 @@ function extractPriority(text) {
 function extractTitle(text, ranges) {
   const sorted = [...ranges].sort((a, b) => b.start - a.start);
   let result = text;
-
   for (const { start, end } of sorted) {
     result = result.slice(0, start) + result.slice(end);
   }
-
   return result.replace(/\s+/g, " ").trim();
 }
 
-export function parseNaturalLanguage(input) {
-  if (!input || typeof input !== "string") {
-    return {
-      title: "",
-      dueDate: null,
-      dueTime: null,
-      dueTimeAmbiguous: false,
-      priority: null,
-      tags: [],
-      hasAnyMatch: false,
-      inferred: { priority: false },
-      subtasks: [],
-    };
-  }
-
-  const { mainTitle, subtasks } = parseSubtasksFromTitle(input);
-
-  const original = mainTitle.trim();
-
-  if (!original) {
-    return {
-      title: "",
-      dueDate: null,
-      dueTime: null,
-      dueTimeAmbiguous: false,
-      priority: null,
-      tags: [],
-      hasAnyMatch: false,
-      inferred: { priority: false },
-      subtasks,
-    };
-  }
-
-  const ranges = [];
-
-  const {
-    priority,
-    matchedText: priorityText,
-    inferred: priorityInferred,
-  } = extractPriority(original);
-  if (priorityText) {
-    const idx = original.toLowerCase().indexOf(priorityText.toLowerCase());
-    if (idx !== -1) ranges.push({ start: idx, end: idx + priorityText.length });
-  }
-
-  const { date, matchedText: dateText } = extractDate(original);
-  if (dateText) {
-    const idx = original.toLowerCase().indexOf(dateText.toLowerCase());
-    ranges.push({ start: idx, end: idx + dateText.length });
-  }
-
-  const {
-    time,
-    matchedText: timeText,
-    ambiguous: timeAmbiguous,
-  } = extractTime(original);
-  if (timeText) {
-    const idx = original.toLowerCase().indexOf(timeText.toLowerCase());
-    ranges.push({ start: idx, end: idx + timeText.length });
-  }
-
-  const tags = inferTags(original);
-  const title = extractTitle(original, ranges);
-
-  return {
-    title: title || original,
-    dueDate: date,
-    dueTime: time,
-    dueTimeAmbiguous: timeAmbiguous ?? false,
-    priority,
-    tags,
-    hasAnyMatch: ranges.length > 0 || tags.length > 0,
-    inferred: { priority: priorityInferred },
-    subtasks,
-  };
-}
-
-/**
- *
- * @param {string} text
- * @returns {Object}
- */
 export function parseSubtaskText(text) {
   if (!text || typeof text !== "string") {
     return {
@@ -142,26 +56,28 @@ export function parseSubtaskText(text) {
 
   const ranges = [];
 
+  // Priority
   const { priority, matchedText: priorityText } = extractPriority(original);
-
   if (priorityText) {
     const idx = original.toLowerCase().indexOf(priorityText.toLowerCase());
-    if (idx !== -1) {
-      ranges.push({ start: idx, end: idx + priorityText.length });
-    }
+    if (idx !== -1) ranges.push({ start: idx, end: idx + priorityText.length });
   }
 
+  // Date
   const { date, matchedText: dateText } = extractDate(original);
   if (dateText) {
     const idx = original.toLowerCase().indexOf(dateText.toLowerCase());
     ranges.push({ start: idx, end: idx + dateText.length });
   }
+
+  // Time
   const { time, matchedText: timeText } = extractTime(original);
   if (timeText) {
     const idx = original.toLowerCase().indexOf(timeText.toLowerCase());
     ranges.push({ start: idx, end: idx + timeText.length });
   }
 
+  // Tags (#tag)
   const explicitTags = [];
   const tagRegex = /#([\p{L}\p{N}_-]+)/gu;
   let match;

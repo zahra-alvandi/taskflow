@@ -114,13 +114,36 @@ export function extractDate(text) {
 export function extractTime(text) {
   const normalized = normalizeDigits(text).toLowerCase();
 
+  const withPeriod = normalized.match(
+    /(?:ساعت\s*)?(\d{1,2})(?:[:.](\d{1,2}))?\s*(صبح|بامداد|ظهر|عصر|شب|am|pm)/,
+  );
+  if (withPeriod) {
+    let h = Number(withPeriod[1]);
+    const m = Number(withPeriod[2] || 0);
+    const period = withPeriod[3];
+
+    if (["عصر", "شب", "pm"].includes(period) && h < 12) h += 12;
+    if (["صبح", "بامداد", "am"].includes(period) && h === 12) h = 0;
+
+    return {
+      time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+      matchedText: withPeriod[0],
+      period,
+      ambiguous: false,
+    };
+  }
+
   const faTime = normalized.match(/ساعت\s*(\d{1,2})(?:[:.](\d{1,2}))?/);
   if (faTime) {
     const h = Number(faTime[1]);
     const m = Number(faTime[2] || 0);
+    const isAmbiguous = h >= 1 && h <= 11;
+
     return {
       time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
       matchedText: faTime[0],
+      period: null,
+      ambiguous: isAmbiguous,
     };
   }
 
@@ -128,9 +151,12 @@ export function extractTime(text) {
   if (colon) {
     const h = Number(colon[1]);
     const m = Number(colon[2]);
+    const isAmbiguous = h >= 1 && h <= 11;
     return {
       time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
       matchedText: colon[0],
+      period: null,
+      ambiguous: isAmbiguous,
     };
   }
 
@@ -144,8 +170,10 @@ export function extractTime(text) {
     return {
       time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
       matchedText: ampm[0],
+      period,
+      ambiguous: false,
     };
   }
 
-  return { time: null, matchedText: null };
+  return { time: null, matchedText: null, period: null, ambiguous: false };
 }

@@ -39,7 +39,25 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
             : "border-[var(--text-muted)] group-hover:border-[var(--primary)]"
         }`}
       >
-        {subtask.completed && <Check size={10} strokeWidth={3} />}
+        {subtask.priority && (
+          <span
+            className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+              subtask.priority === "high"
+                ? "bg-[var(--danger-soft)] text-[var(--danger)]"
+                : subtask.priority === "low"
+                  ? "bg-[var(--success-soft)] text-[var(--success)]"
+                  : "bg-[var(--warning-soft)] text-[var(--warning)]"
+            }`}
+          >
+            {t(`task.priority.${subtask.priority}`)}
+          </span>
+        )}
+
+        {subtask.dueTime && (
+          <span className="text-[10px] text-[var(--text-muted)] tabular-nums">
+            {subtask.dueTime}
+          </span>
+        )}
       </button>
 
       {/* Title */}

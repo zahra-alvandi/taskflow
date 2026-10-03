@@ -4,6 +4,10 @@ export function createSubtask({
   id = uuid(),
   title,
   completed = false,
+  priority = null, 
+  dueDate = null, 
+  dueTime = null, 
+  tags = [], 
   createdAt = new Date().toISOString(),
 }) {
   if (!title || typeof title !== "string" || !title.trim()) {
@@ -13,6 +17,10 @@ export function createSubtask({
     id,
     title: title.trim(),
     completed,
+    priority,
+    dueDate,
+    dueTime,
+    tags,
     createdAt,
   });
 }
