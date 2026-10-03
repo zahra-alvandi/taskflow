@@ -34,7 +34,8 @@ function Sidebar({ setFilter, filter, page, setPage }) {
         {/* Logo */}
         <div className="flex items-center gap-3 px-2 mb-10">
           <div className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_6px_14px_rgba(99,102,241,0.28)]">
-            <LayoutDashboard size={21} />
+            {/* <LayoutDashboard size={21} /> */}
+            <img src="/favicon/logo-taskflow.png" alt="" />
           </div>
           <h1 className="text-xl font-bold tracking-tight ">{t("app.name")}</h1>
         </div>

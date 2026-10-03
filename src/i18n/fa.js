@@ -1,6 +1,6 @@
 export default {
   app: {
-    name: "تسک‌فلو",
+    name: "Whiskerly",
     tagline: "کارها رو ساده کن",
   },
   nav: {
@@ -15,7 +15,10 @@ export default {
     add: "کار جدید",
     title: "چه کاری داری؟",
     pickDate: "انتخاب تاریخ",
-    timeAmbiguous: "صبح یا عصر؟",
+    am: "صبح",
+    pm: "عصر/شب",
+    timeAmbiguous: "صبح یا شب؟",
+    timeSet: "تنظیم شد",
     priority: {
       high: "زیاد",
       medium: "متوسط",

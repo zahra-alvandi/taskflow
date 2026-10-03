@@ -8,6 +8,7 @@ import {
   X,
   ListChecks,
   Loader2,
+  Check
 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -37,6 +38,7 @@ function AddTask({ addTask }) {
   const ai = useAI();
 
   const parsedSubtasks = parsed.subtasks ?? [];
+  const [timeResolved, setTimeResolved] = useState(false);
 
   /* ============================================
      Auto-resize
@@ -162,6 +164,7 @@ function AddTask({ addTask }) {
     setPriorityManuallySet(false);
     setDueDate("");
     setDueTime("");
+    setTimeResolved(false);
     setTags([]);
     setShowPriority(false);
   };
@@ -271,6 +274,82 @@ function AddTask({ addTask }) {
                 }
               />
             ))}
+          </div>
+        )}
+
+        {parsed.dueTime && (
+          <div className="flex items-center gap-1.5">
+            <DetectedChip
+              icon={<Clock size={13} />}
+              label={parsed.dueTime}
+              tone={parsed.dueTimeAmbiguous ? "warning" : "neutral"}
+              onRemove={() => setDueTime("")}
+            />
+
+            {parsed.dueTime && (
+              <div className="flex items-center gap-1.5">
+                <DetectedChip
+                  icon={<Clock size={13} />}
+                  label={dueTime || parsed.dueTime}
+                  tone={
+                    parsed.dueTimeAmbiguous && !timeResolved
+                      ? "warning"
+                      : "neutral"
+                  }
+                  onRemove={() => {
+                    setDueTime("");
+                    setTimeResolved(false);
+                  }}
+                />
+
+                {parsed.dueTimeAmbiguous && !timeResolved && (
+                  <div className="flex items-center gap-1 animate-fade-slide-sm">
+                    <span className="text-[10px] text-[var(--warning)] font-medium">
+                      {t("task.timeAmbiguous")}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const h = parsed.dueTime.split(":")[0];
+                        const m = parsed.dueTime.split(":")[1];
+                        const newH = String(Number(h) % 12 || 12).padStart(
+                          2,
+                          "0",
+                        );
+                        setDueTime(`${newH}:${m}`);
+                        setTimeResolved(true);
+                      }}
+                      className="text-[10px] px-2 py-0.5 rounded-lg bg-[var(--warning-soft)] text-[var(--warning)] hover:bg-[var(--warning)]/30 font-medium transition active:scale-95"
+                    >
+                      {t("task.am")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const h = parsed.dueTime.split(":")[0];
+                        const m = parsed.dueTime.split(":")[1];
+                        const newH = String((Number(h) % 12) + 12).padStart(
+                          2,
+                          "0",
+                        );
+                        setDueTime(`${newH}:${m}`);
+                        setTimeResolved(true);
+                      }}
+                      className="text-[10px] px-2 py-0.5 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] font-medium transition active:scale-95"
+                    >
+                      {t("task.pm")}
+                    </button>
+                  </div>
+                )}
+
+                {parsed.dueTimeAmbiguous && timeResolved && (
+                  <span className="text-[10px] text-[var(--success)] font-medium flex items-center gap-1 animate-fade-slide-sm">
+                    <Check size={10} strokeWidth={3} />
+                    {t("task.timeSet")}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         )}
 
