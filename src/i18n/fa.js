@@ -125,7 +125,30 @@ export default {
     providerOpenRouter: "OpenRouter",
     providerGroq: "Groq",
     notConfigured: "AI هنوز تنظیم نشده. برو تو تنظیمات و کلیدت رو وارد کن.",
+    tabPlan: "برنامه‌ریزی",
+    tabChat: "گفتگو",
   },
+
+  chat: {
+    title: "گفتگو با AI",
+    subtitle: "هر چی می‌خوای بپرس",
+    welcome: "سلام! چطور می‌تونم کمکت کنم؟",
+    welcomeHint: "می‌تونی ازم بپرسی چیکار کنی یا تسک جدید بسازی",
+    placeholder: "پیامت رو بنویس... (Enter برای ارسال)",
+    thinking: "داره فکر می‌کنه...",
+    error: "خطا در ارتباط با AI",
+    notConfigured: "AI تنظیم نشده. برو تو تنظیمات.",
+    suggest1: "امروز چیکار کنم؟",
+    suggest2: "یه تسک جدید بساز: فردا دکتر",
+    suggest3: "کدوم تسکام عقب‌افتاده‌ن؟",
+    action: {
+      create_task: "تسک ساخته شد",
+      update_task: "تسک آپدیت شد",
+      delete_task: "تسک حذف شد",
+      complete_task: "تسک انجام شد",
+    },
+  },
+
   planner: {
     planMyDay: "برنامه‌ی روزم رو بچین",
     viewPlan: "برنامه‌ی روز",

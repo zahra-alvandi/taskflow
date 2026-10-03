@@ -1,7 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import {
   Sparkles,
-  Send,
   Loader2,
   Wand2,
   AlertCircle,
@@ -17,6 +16,7 @@ import {
   buildPlannerContext,
   validatePlan,
 } from "../../core/services/plannerService";
+import ChatPanel from "../components/ChatPanel";
 
 function AIPage({
   tasks,
@@ -29,12 +29,17 @@ function AIPage({
   onEditPlanBlock,
   onDeletePlanBlock,
   onBack,
+  onSaveTask,
+  onEditTask,
+  onDeleteTask,
+  onToggleTask,
 }) {
   const { t } = useTranslation();
   const ai = useAI();
 
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState(null);
+  const [tab, setTab] = useState("plan");
 
   const handleGeneratePlan = async () => {
     if (!ai.isAvailable) return;
@@ -87,7 +92,7 @@ function AIPage({
             onClick={onBack}
             className="mb-6 inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={16} className="rtl:rotate-180" />
             {t("task.back")}
           </button>
 
@@ -131,129 +136,167 @@ function AIPage({
           </div>
         </div>
 
-        {/* Generate button */}
-        <button
-          onClick={handleGeneratePlan}
-          disabled={generating}
-          className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(99,102,241,0.35)] hover:shadow-[0_10px_24px_rgba(99,102,241,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
-        >
-          {generating ? (
-            <>
-              <Loader2 size={20} className="animate-spin" />
-              {t("planner.thinking")}
-            </>
-          ) : (
-            <>
-              <Wand2 size={20} />
-              {plan ? t("planner.regenerate") : t("planner.planMyDay")}
-            </>
-          )}
-        </button>
+        {/* Tab switcher */}
+        <div className="flex gap-2 mb-6 p-1 rounded-2xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)]">
+          <button
+            onClick={() => setTab("plan")}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition ${
+              tab === "plan"
+                ? "bg-[var(--surface)] text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+                : "text-[var(--text-secondary)]"
+            }`}
+          >
+            {t("ai.tabPlan")}
+          </button>
+          <button
+            onClick={() => setTab("chat")}
+            className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition ${
+              tab === "chat"
+                ? "bg-[var(--surface)] text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+                : "text-[var(--text-secondary)]"
+            }`}
+          >
+            {t("ai.tabChat")}
+          </button>
+        </div>
 
-        {/* Error */}
-        {error && (
-          <div className="mb-6 flex items-start gap-3 p-4 rounded-2xl bg-[var(--danger-soft)]">
-            <AlertCircle
-              size={18}
-              className="text-[var(--danger)] shrink-0 mt-0.5"
-            />
-            <div>
-              <p className="text-sm font-medium text-[var(--danger)]">
-                {t("planner.error")}
-              </p>
-              <p className="text-xs text-[var(--danger)]/80 mt-1">{error}</p>
-            </div>
-          </div>
-        )}
+        {tab === "plan" ? (
+          <>
+            {/* Generate button */}
+            <button
+              onClick={handleGeneratePlan}
+              disabled={generating}
+              className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(99,102,241,0.35)] hover:shadow-[0_10px_24px_rgba(99,102,241,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+            >
+              {generating ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" />
+                  {t("planner.thinking")}
+                </>
+              ) : (
+                <>
+                  <Wand2 size={20} />
+                  {plan ? t("planner.regenerate") : t("planner.planMyDay")}
+                </>
+              )}
+            </button>
 
-        {/* Plan */}
-        {plan && !generating && (
-          <div className="space-y-4">
-            {/* Summary */}
-            {plan.summary && (
-              <div className="rounded-3xl bg-[var(--primary-soft)]/40 border border-[var(--primary)]/20 p-5">
-                <p className="text-sm leading-relaxed">{plan.summary}</p>
+            {/* Error */}
+            {error && (
+              <div className="mb-6 flex items-start gap-3 p-4 rounded-2xl bg-[var(--danger-soft)]">
+                <AlertCircle
+                  size={18}
+                  className="text-[var(--danger)] shrink-0 mt-0.5"
+                />
+                <div>
+                  <p className="text-sm font-medium text-[var(--danger)]">
+                    {t("planner.error")}
+                  </p>
+                  <p className="text-xs text-[var(--danger)]/80 mt-1">
+                    {error}
+                  </p>
+                </div>
               </div>
             )}
 
-            {/* Progress */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-2 rounded-full bg-[var(--app-bg)] shadow-[var(--shadow-inset)] overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-300 ${
-                    planProgress.percent === 100
-                      ? "bg-[var(--success)]"
-                      : "bg-[var(--primary)]"
-                  }`}
-                  style={{ width: `${planProgress.percent}%` }}
-                />
-              </div>
-              <span className="text-xs font-medium tabular-nums text-[var(--text-muted)]">
-                {planProgress.completed}/{planProgress.total}
-              </span>
-            </div>
+            {/* Plan */}
+            {plan && !generating && (
+              <div className="space-y-4">
+                {plan.summary && (
+                  <div className="rounded-3xl bg-[var(--primary-soft)]/40 border border-[var(--primary)]/20 p-5">
+                    <p className="text-sm leading-relaxed">{plan.summary}</p>
+                  </div>
+                )}
 
-            {/* Blocks */}
-            <div className="space-y-2">
-              {plan.blocks.map((block) => (
-                <PlanBlock
-                  key={block.id}
-                  block={block}
-                  t={t}
-                  onToggle={() => onTogglePlanBlock(block.id)}
-                  onEdit={(patch) => onEditPlanBlock(block.id, patch)}
-                  onDelete={() => onDeletePlanBlock(block.id)}
-                />
-              ))}
-            </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-2 rounded-full bg-[var(--app-bg)] shadow-[var(--shadow-inset)] overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-300 ${
+                        planProgress.percent === 100
+                          ? "bg-[var(--success)]"
+                          : "bg-[var(--primary)]"
+                      }`}
+                      style={{ width: `${planProgress.percent}%` }}
+                    />
+                  </div>
+                  <span className="text-xs font-medium tabular-nums text-[var(--text-muted)]">
+                    {planProgress.completed}/{planProgress.total}
+                  </span>
+                </div>
 
-            {/* Skipped */}
-            {plan.skipped.length > 0 && (
-              <details className="group">
-                <summary className="cursor-pointer flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] list-none p-2">
-                  <ChevronDown
-                    size={14}
-                    className="group-open:rotate-180 transition-transform"
-                  />
-                  {plan.skipped.length} {t("planner.skipped")}
-                </summary>
-                <div className="mt-2 space-y-1.5 ps-4">
-                  {plan.skipped.map((s, i) => (
-                    <div key={i} className="text-xs text-[var(--text-muted)]">
-                      <span className="line-through">{s.title}</span>
-                      {s.reason && (
-                        <span className="ms-2 italic opacity-70">
-                          — {s.reason}
-                        </span>
-                      )}
-                    </div>
+                <div className="space-y-2">
+                  {plan.blocks.map((block) => (
+                    <PlanBlock
+                      key={block.id}
+                      block={block}
+                      t={t}
+                      onToggle={() => onTogglePlanBlock(block.id)}
+                      onEdit={(patch) => onEditPlanBlock(block.id, patch)}
+                      onDelete={() => onDeletePlanBlock(block.id)}
+                    />
                   ))}
                 </div>
-              </details>
+
+                {plan.skipped.length > 0 && (
+                  <details className="group">
+                    <summary className="cursor-pointer flex items-center gap-2 text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] list-none p-2">
+                      <ChevronDown
+                        size={14}
+                        className="group-open:rotate-180 transition-transform"
+                      />
+                      {plan.skipped.length} {t("planner.skipped")}
+                    </summary>
+                    <div className="mt-2 space-y-1.5 ps-4">
+                      {plan.skipped.map((s, i) => (
+                        <div
+                          key={i}
+                          className="text-xs text-[var(--text-muted)]"
+                        >
+                          <span className="line-through">{s.title}</span>
+                          {s.reason && (
+                            <span className="ms-2 italic opacity-70">
+                              — {s.reason}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+
+                <button
+                  onClick={async () => {
+                    if (confirm(t("planner.confirmClear"))) {
+                      await onClearPlan();
+                    }
+                  }}
+                  className="w-full mt-4 py-3 rounded-2xl text-sm font-medium text-[var(--danger)] bg-[var(--danger-soft)] hover:bg-[var(--danger)]/15 transition flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {t("planner.clear")}
+                </button>
+              </div>
             )}
 
-            {/* Clear */}
-            <button
-              onClick={async () => {
-                if (confirm(t("planner.confirmClear"))) {
-                  await onClearPlan();
-                }
-              }}
-              className="w-full mt-4 py-3 rounded-2xl text-sm font-medium text-[var(--danger)] bg-[var(--danger-soft)] hover:bg-[var(--danger)]/15 transition flex items-center justify-center gap-2"
-            >
-              <Trash2 size={16} />
-              {t("planner.clear")}
-            </button>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!plan && !generating && !error && (
-          <div className="rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)] text-center">
-            <p className="text-sm text-[var(--text-secondary)]">
-              {t("planner.empty")}
-            </p>
-          </div>
+            {/* Empty state */}
+            {!plan && !generating && !error && (
+              <div className="rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)] text-center">
+                <p className="text-sm text-[var(--text-secondary)]">
+                  {t("planner.empty")}
+                </p>
+              </div>
+            )}
+          </>
+        ) : (
+          <ChatPanel
+            tasks={tasks}
+            onAction={{
+              createTask: (payload) => onSaveTask?.(payload),
+              updateTask: (taskId, patch) => onEditTask?.(taskId, patch),
+              deleteTask: (taskId) => onDeleteTask?.(taskId),
+              completeTask: (taskId) => onToggleTask?.(taskId),
+            }}
+          />
         )}
       </div>
     </main>

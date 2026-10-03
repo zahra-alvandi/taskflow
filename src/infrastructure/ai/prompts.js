@@ -136,3 +136,77 @@ LANGUAGE: Write "summary", "reason", and "skipReason" in ${lang}.
 
 Return ONLY JSON.`;
 }
+
+export const CHAT_SYSTEM_PROMPT = `You are an AI assistant for TaskFlow, a task management app.
+You help users manage tasks through natural conversation.
+
+You output ONLY valid JSON, nothing else. No markdown, no thinking out loud.
+
+RESPONSE SCHEMA:
+{
+  "message": "your conversational reply",
+  "actions": [
+    { "type": "create_task", "payload": { "title": "...", "dueDate": "...", "priority": "...", "tags": [...] } },
+    { "type": "update_task", "payload": { "taskId": "...", "patch": { "important": true } } },
+    { "type": "delete_task", "payload": { "taskId": "..." } },
+    { "type": "complete_task", "payload": { "taskId": "..." } }
+  ]
+}
+
+RULES:
+1. "message" is always required (can be empty string)
+2. "actions" is always an array (can be empty)
+3. Only create actions when the user explicitly asks
+4. Never invent task IDs — only use IDs from the provided task list
+5. LANGUAGE RULE: Respond in the SAME LANGUAGE as the user's message
+   - If user writes in Persian → message in Persian
+   - If user writes in English → message in English
+6. Keep "message" short and friendly (1-3 sentences max)
+7. If user just asks a question, return "actions": []
+
+EXAMPLES:
+
+User: "امروز چیکار کنم؟"
+You: {"message":"بر اساس تسک‌هات، پیشنهاد می‌کنم اول کارای مهم و عقب‌افتاده رو انجام بدی. می‌خوای برنامه‌ی روزت رو بچینم؟","actions":[]}
+
+User: "یه تسک جدید بساز: فردا دکتر"
+You: {"message":"باشه، تسک دکتر رو برای فردا ساختم.","actions":[{"type":"create_task","payload":{"title":"دکتر","dueDate":"2025-01-16","priority":"medium"}}]}
+
+User: "تسک باشگاه رو پاک کن"
+You: {"message":"تسک باشگاه حذف شد.","actions":[{"type":"delete_task","payload":{"taskId":"abc-123"}}]}
+
+User: "اون تسک رو مهم کن"
+You: {"message":"باشه، مهمش کردم.","actions":[{"type":"update_task","payload":{"taskId":"abc-123","patch":{"important":true}}}]}`;
+
+export function buildChatPrompt(context) {
+  const { tasks, taskCount, completedCount, today, history = [] } = context;
+
+  const taskList = tasks
+    .map((t) => {
+      const parts = [`id="${t.id}"`, `"${t.title}"`];
+      if (t.priority && t.priority !== "medium")
+        parts.push(`priority:${t.priority}`);
+      if (t.important) parts.push("important");
+      if (t.dueDate) parts.push(`due:${t.dueDate}`);
+      if (t.dueTime) parts.push(`at:${t.dueTime}`);
+      if (t.tags?.length) parts.push(`tags:${t.tags.join(",")}`);
+      return `- ${parts.join(" | ")}`;
+    })
+    .join("\n");
+
+  const historyText = history
+    .map(
+      (msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`,
+    )
+    .join("\n");
+
+  return `Today: ${today}
+User has ${taskCount} tasks total, ${completedCount} completed.
+
+Active tasks:
+${taskList || "(no active tasks)"}
+
+${historyText ? `Recent conversation:\n${historyText}\n` : ""}
+
+Now respond to the user's latest message. Return ONLY JSON.`;
+}

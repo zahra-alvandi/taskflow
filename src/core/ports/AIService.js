@@ -14,4 +14,7 @@ export class AIService {
   async planDay(context) {
     throw new Error("Not implemented");
   }
+  async chat(message, context) {
+    throw new Error("Not implemented");
+  }
 }

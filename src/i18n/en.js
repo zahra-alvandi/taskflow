@@ -116,7 +116,30 @@ export default {
     providerOpenRouter: "OpenRouter",
     providerGroq: "Groq",
     notConfigured: "AI is not configured yet. Go to Settings and add your key.",
+    tabPlan: "Plan",
+    tabChat: "Chat",
   },
+
+  chat: {
+    title: "Chat with AI",
+    subtitle: "Ask me anything",
+    welcome: "Hi! How can I help you?",
+    welcomeHint: "You can ask what to do or create new tasks",
+    placeholder: "Type your message... (Enter to send)",
+    thinking: "Thinking...",
+    error: "Failed to reach AI",
+    notConfigured: "AI not configured. Go to settings.",
+    suggest1: "What should I do today?",
+    suggest2: "Create a task: doctor tomorrow",
+    suggest3: "Which tasks are overdue?",
+    action: {
+      create_task: "Task created",
+      update_task: "Task updated",
+      delete_task: "Task deleted",
+      complete_task: "Task completed",
+    },
+  },
+
   planner: {
     planMyDay: "Plan my day",
     viewPlan: "View plan",

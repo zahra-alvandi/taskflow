@@ -61,6 +61,10 @@ function App() {
             onTogglePlanBlock={dailyPlan.toggleBlock}
             onEditPlanBlock={dailyPlan.editBlock}
             onDeletePlanBlock={dailyPlan.deleteBlock}
+            onSaveTask={addTask}
+            onEditTask={editTask}
+            onDeleteTask={deleteTask}
+            onToggleTask={toggleTask}
             onBack={() => {
               setPage("dashboard");
               setActiveNav("dashboard");

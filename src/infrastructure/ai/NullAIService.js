@@ -33,4 +33,7 @@ export class NullAIService extends AIService {
   async planDay() {
     return { summary: "", blocks: [], skipped: [] };
   }
+  async chat() {
+    return { message: "", actions: [] };
+  }
 }

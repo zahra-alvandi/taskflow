@@ -49,6 +49,11 @@ export function useAI() {
     [service, _run],
   );
 
+  const chat = useCallback(
+    (message, context) => _run(service.chat.bind(service), message, context),
+    [service, _run],
+  );
+
   return {
     isAvailable: isConfigured,
     isConfigured,
@@ -59,5 +64,6 @@ export function useAI() {
     estimateTask,
     suggestSubtasks,
     planDay,
+    chat,
   };
 }

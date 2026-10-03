@@ -6,6 +6,8 @@ import {
   buildSubtaskPrompt,
   PLANNER_SYSTEM_PROMPT,
   buildPlanPrompt,
+  CHAT_SYSTEM_PROMPT,
+  buildChatPrompt,
 } from "./prompts";
 
 export class OpenRouterAIService extends AIService {
@@ -13,7 +15,8 @@ export class OpenRouterAIService extends AIService {
     super();
     this.apiKey = apiKey;
     this.model = model;
-    this.baseURL = "/api/openrouter/chat/completions";
+    this.baseURL =
+      "https://openrouter-proxy.zalvandi39.workers.dev/api/v1/chat/completions";
   }
 
   /**
@@ -48,7 +51,11 @@ export class OpenRouterAIService extends AIService {
     }
   }
 
-  async _callOnce(messages, options = {}) {
+  async _callOnce(messages, options = {}, model = this.model) {
+    if (!this.apiKey) {
+      throw new Error("OpenRouter API key is missing");
+    }
+
     const response = await fetch(this.baseURL, {
       method: "POST",
       headers: {
@@ -56,11 +63,10 @@ export class OpenRouterAIService extends AIService {
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify({
-        model: this.model,
+        model,
         messages,
         temperature: options.temperature ?? 0.1,
         max_tokens: options.maxTokens ?? 800,
-        response_format: { type: "json_object" },
       }),
     });
 
@@ -72,14 +78,8 @@ export class OpenRouterAIService extends AIService {
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
 
-    if (!content) throw new Error("Empty response from OpenRouter");
-
-    let cleanContent = content;
-    if (!cleanContent.trim().startsWith("{")) {
-      const firstBrace = cleanContent.indexOf("{");
-      if (firstBrace > 0) {
-        cleanContent = cleanContent.slice(firstBrace);
-      }
+    if (!content) {
+      throw new Error("Empty response from OpenRouter");
     }
 
     const parsed = this._tryParseJSON(content);
@@ -88,7 +88,14 @@ export class OpenRouterAIService extends AIService {
     const extracted = this._extractJSON(content);
     if (extracted) return extracted;
 
-    console.error("Failed to parse:", content);
+    console.warn("⚠️ No JSON found. Content preview:", content.slice(0, 200));
+
+    if (content.length > 500) {
+      throw new Error(
+        "Response too long — model didn't produce JSON. Try a different model.",
+      );
+    }
+
     throw new Error("Invalid JSON from OpenRouter");
   }
 
@@ -180,5 +187,15 @@ export class OpenRouterAIService extends AIService {
     ];
 
     return await this._call(messages, { maxTokens: 1500, temperature: 0.3 });
+  }
+
+  async chat(message, context) {
+    const messages = [
+      { role: "system", content: CHAT_SYSTEM_PROMPT },
+      { role: "user", content: buildChatPrompt(context) },
+      { role: "user", content: message },
+    ];
+
+    return await this._call(messages, { maxTokens: 800, temperature: 0.4 });
   }
 }
