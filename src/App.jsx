@@ -6,18 +6,26 @@ import SettingsPage from "./ui/pages/SettingsPage";
 import PageTransition from "./ui/components/PageTransition";
 import { useTasks } from "./application/hooks/useTasks";
 import { useLanguage } from "./application/hooks/useLanguage";
-import { taskRepository, planRepository } from "./core/container";
-import { useDailyPlan } from "./application/hooks/useDailyplan";
+import {
+  taskRepository,
+  planRepository,
+  noteRepository,
+} from "./core/container";
+import { useDailyPlan } from "./application/hooks/useDailyPlan";
 import OfflineBanner from "./ui/components/OfflineBanner";
-import InstallPrompt from "./ui/components/InstallPrompts";
+import InstallPrompt from "./ui/components/InstallPrompt";
 import UpdatePrompt from "./ui/components/UpdatePrompt";
 import AIPage from "./ui/pages/AIPage";
+import { useNotes } from "./application/hooks/useNotes";
+import NotesPage from "./ui/components/NotesPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [filter, setFilter] = useState("all");
   const dailyPlan = useDailyPlan(planRepository);
+  const { notes, addNote, editNote, deleteNote, togglePin } =
+    useNotes(noteRepository);
 
   const {
     tasks,
@@ -35,19 +43,25 @@ function App() {
 
   const { lang, changeLang } = useLanguage();
 
-  const currentTasks = filtered[filter] ?? tasks;
+  const currentTasks = filtered[filter] ?? [];
 
   return (
     <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
       <OfflineBanner />
+
       <Sidebar
         setFilter={setFilter}
         filter={filter}
         page={page}
         setPage={setPage}
+        setActiveNav={setActiveNav}
       />
 
-      <PageTransition transitionKey={page === "settings" ? "settings" : filter}>
+      <PageTransition
+        transitionKey={
+          page === "settings" ? "settings" : page === "ai" ? "ai" : filter
+        }
+      >
         {page === "settings" ? (
           <SettingsPage lang={lang} onChangeLang={changeLang} />
         ) : page === "ai" ? (
@@ -65,6 +79,18 @@ function App() {
             onEditTask={editTask}
             onDeleteTask={deleteTask}
             onToggleTask={toggleTask}
+            onBack={() => {
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
+          />
+        ) : page === "notes" ? (
+          <NotesPage
+            notes={notes}
+            addNote={addNote}
+            editNote={editNote}
+            deleteNote={deleteNote}
+            togglePin={togglePin}
             onBack={() => {
               setPage("dashboard");
               setActiveNav("dashboard");
@@ -92,13 +118,6 @@ function App() {
             editSubtask={editSubtask}
             plan={dailyPlan.plan}
             planLoading={dailyPlan.loading}
-            planProgress={dailyPlan.progress}
-            onSavePlan={dailyPlan.savePlan}
-            onClearPlan={dailyPlan.clearPlan}
-            onTogglePlanBlock={dailyPlan.toggleBlock}
-            onEditPlanBlock={dailyPlan.editBlock}
-            onDeletePlanBlock={dailyPlan.deleteBlock}
-            plan={dailyPlan.plan}
             planProgress={dailyPlan.progress}
             onSavePlan={dailyPlan.savePlan}
             onClearPlan={dailyPlan.clearPlan}

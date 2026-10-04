@@ -8,12 +8,14 @@ import {
   Sun,
   Settings,
   Sparkles,
+  StickyNote,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import PawIcon from "./PawIcon";
 
-function Sidebar({ setFilter, filter, page, setPage }) {
+function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
   const { t } = useTranslation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
@@ -26,6 +28,7 @@ function Sidebar({ setFilter, filter, page, setPage }) {
       icon: <CircleCheckBig size={19} />,
     },
     { id: "pending", label: t("nav.pending"), icon: <Clock size={19} /> },
+    { id: "notes", label: t("nav.notes"), icon: <StickyNote size={19} /> },
   ];
 
   return (
@@ -88,6 +91,21 @@ function Sidebar({ setFilter, filter, page, setPage }) {
           >
             <Sparkles size={19} />
             {t("ai.title")}
+          </button>
+
+          <button
+            onClick={() => {
+              setPage("notes");
+              setActiveNav("notes");
+            }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
+              page === "notes"
+                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
+                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <PawIcon size={19} />
+            {t("note.title")}
           </button>
 
           {/* Settings */}

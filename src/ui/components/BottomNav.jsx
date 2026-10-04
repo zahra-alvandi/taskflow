@@ -8,6 +8,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import PawIcon from "./PawIcon";
 
 function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
   const { t } = useTranslation();
@@ -37,12 +38,6 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
       icon: <CircleCheckBig size={21} />,
       filter: "completed",
     },
-    {
-      id: "pending",
-      label: t("nav.pending"),
-      icon: <Clock size={21} />,
-      filter: "pending",
-    },
   ];
 
   return (
@@ -58,14 +53,14 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
                 setFilter(item.filter);
                 setPage("dashboard");
               }}
-              className={`relative flex flex-col items-center justify-center w-16 h-16 transition-all duration-300 ease-out ${
+              className={`relative flex flex-col items-center justify-center w-14 h-14 transition-all duration-300 ease-out ${
                 isActive
                   ? "text-[var(--primary)] -translate-y-3"
                   : "text-[var(--text-muted)]"
               }`}
             >
               <div
-                className={`relative z-10 flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 ${
+                className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 ${
                   isActive
                     ? "bg-[var(--surface)] shadow-[6px_6px_12px_var(--shadow-dark),-6px_-6px_12px_var(--shadow-light)]"
                     : "hover:text-[var(--text-primary)]"
@@ -73,7 +68,6 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
               >
                 {item.icon}
               </div>
-
               {isActive && (
                 <span className="absolute -bottom-1 text-[10px] font-semibold whitespace-nowrap">
                   {item.label}
@@ -83,32 +77,75 @@ function BottomNav({ setFilter, filter, activeNav, setActiveNav, setPage }) {
           );
         })}
 
+        {/* Notes — 🐾 */}
+        <button
+          onClick={() => {
+            setActiveNav("notes");
+            setPage("notes");
+          }}
+          className={`relative flex flex-col items-center justify-center w-14 h-14 transition-all duration-300 ease-out ${
+            activeNav === "notes"
+              ? "text-[var(--warning)] -translate-y-3"
+              : "text-[var(--text-muted)]"
+          }`}
+        >
+          <div
+            className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 ${
+              activeNav === "notes"
+                ? "bg-[var(--surface)] shadow-[6px_6px_12px_var(--shadow-dark),-6px_-6px_12px_var(--shadow-light)]"
+                : "hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <PawIcon size={21} />
+          </div>
+          {activeNav === "notes" && (
+            <span className="absolute -bottom-1 text-[10px] font-semibold whitespace-nowrap">
+              {t("note.title")}
+            </span>
+          )}
+        </button>
+
+        {/* AI — ✨ */}
+        <button
+          onClick={() => {
+            setActiveNav("ai");
+            setPage("ai");
+          }}
+          className={`relative flex flex-col items-center justify-center w-14 h-14 transition-all duration-300 ease-out ${
+            activeNav === "ai"
+              ? "text-[var(--primary)] -translate-y-3"
+              : "text-[var(--text-muted)]"
+          }`}
+        >
+          <div
+            className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-2xl transition-all duration-300 ${
+              activeNav === "ai"
+                ? "bg-[var(--surface)] shadow-[6px_6px_12px_var(--shadow-dark),-6px_-6px_12px_var(--shadow-light)]"
+                : "hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <Sparkles size={21} />
+          </div>
+          {activeNav === "ai" && (
+            <span className="absolute -bottom-1 text-[10px] font-semibold whitespace-nowrap">
+              {t("ai.title")}
+            </span>
+          )}
+        </button>
+
+        {/* Settings */}
         <button
           onClick={() => {
             setActiveNav("settings");
             setPage("settings");
           }}
-          className={`flex items-center justify-center w-12 h-12 rounded-2xl transition ${
+          className={`relative flex flex-col items-center justify-center w-12 h-12 rounded-2xl transition ${
             activeNav === "settings"
               ? "text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
               : "text-[var(--text-muted)]"
           }`}
         >
           <Settings size={22} />
-        </button>
-
-        <button
-          onClick={() => {
-            setActiveNav("ai");
-            setPage("ai");
-          }}
-          className={`flex items-center justify-center w-12 h-12 rounded-2xl transition ${
-            activeNav === "ai"
-              ? "text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
-              : "text-[var(--text-muted)]"
-          }`}
-        >
-          <Sparkles size={22} />
         </button>
       </div>
     </nav>

@@ -10,6 +10,7 @@ export default {
     completed: "انجام‌شده",
     pending: "در انتظار",
     settings: "تنظیمات",
+    notes: "یادداشت‌ها",
   },
   task: {
     add: "کار جدید",
@@ -18,6 +19,9 @@ export default {
     am: "صبح",
     pm: "عصر/شب",
     timeAmbiguous: "صبح یا شب؟",
+    typeTask: "کار",
+    typeNote: "یادداشت",
+    notePlaceholder: "چی می‌خوای یادداشت کنی؟",
     timeSet: "تنظیم شد",
     priority: {
       high: "زیاد",
@@ -34,6 +38,7 @@ export default {
       important: "کار مهمی نداری.",
       completed: "هنوز کاری تموم نکردی.",
       pending: "همه‌ی کارات انجام شده! 🎉",
+      notes: "هنوز یادداشتی نداری.",
     },
     search: "جستجوی کار...",
     back: "برگشت",
@@ -180,5 +185,18 @@ export default {
     updateTitle: "نسخه‌ی جدید آماده‌ست",
     updateDesc: "برای دریافت آخرین تغییرات، آپدیت کن",
     update: "آپدیت کن",
+  },
+  
+  note: {
+    title: "یادداشت‌ها",
+    subtitle: "هرچی تو ذهنته، اینجا بنویس",
+    addPlaceholder: "یه یادداشت بنویس...",
+    contentPlaceholder: "چی می‌خوای یادداشت کنی؟",
+    empty: "هنوز یادداشتی نداری. اولین یادداشتت رو بنویس!",
+    pinned: "سنجاق‌شده",
+    others: "بقیه",
+    pin: "سنجاق کن",
+    unpin: "بردار",
+    changeColor: "تغییر رنگ",
   },
 };

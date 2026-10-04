@@ -7,6 +7,7 @@ export default {
     completed: "Completed",
     pending: "Pending",
     settings: "Settings",
+    notes: "Notes",
   },
   task: {
     add: "Add Task",
@@ -16,7 +17,10 @@ export default {
     pm: "PM",
     timeAmbiguous: "AM or PM?",
     timeSet: "Set",
+    notePlaceholder: "What do you want to note?",
     priority: { high: "High", medium: "Medium", low: "Low" },
+    typeTask: "Task",
+    typeNote: "Note",
     status: {
       completed: "Completed",
       inProgress: "In progress",
@@ -27,6 +31,7 @@ export default {
       important: "No important tasks.",
       completed: "Nothing completed yet.",
       pending: "All caught up! 🎉",
+      notes: "No notes yet.",
     },
     search: "Search tasks...",
     back: "Back",
@@ -170,5 +175,18 @@ export default {
     updateTitle: "New version available",
     updateDesc: "Update to get the latest changes",
     update: "Update",
+  },
+
+  note: {
+    title: "Notes",
+    subtitle: "Write down whatever is on your mind",
+    addPlaceholder: "Write a note...",
+    contentPlaceholder: "What do you want to note?",
+    empty: "No notes yet. Write your first one!",
+    pinned: "Pinned",
+    others: "Others",
+    pin: "Pin",
+    unpin: "Unpin",
+    changeColor: "Change color",
   },
 };
