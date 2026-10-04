@@ -48,7 +48,7 @@ export const HIGH_PRIORITY_CONTEXTS = [
 ];
 
 export const LOW_PRIORITY_CONTEXTS = [
-  "یادداشت",
+ 
   "ایده",
   "شاید",
   "شایدا",

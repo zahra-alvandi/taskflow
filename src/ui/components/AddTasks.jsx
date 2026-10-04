@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Calendar,
   Plus,
@@ -9,14 +9,11 @@ import {
   ListChecks,
   Loader2,
   Check,
-  CheckSquare,
-  StickyNote,
 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { useNaturalLanguage } from "../../application/hooks/useNaturalLanguage";
-
 import { useAI } from "../../application/hooks/useAI";
 import AISuggestionPanel from "./AISuggestionPanel";
 
@@ -30,6 +27,7 @@ function AddTask({ addTask }) {
   const [dueTime, setDueTime] = useState("");
   const [tags, setTags] = useState([]);
   const [estimatedMinutes, setEstimatedMinutes] = useState(null);
+  const [timeResolved, setTimeResolved] = useState(false);
 
   // AI state
   const [aiSuggestions, setAiSuggestions] = useState(null);
@@ -40,8 +38,6 @@ function AddTask({ addTask }) {
   const ai = useAI();
 
   const parsedSubtasks = parsed.subtasks ?? [];
-  const [timeResolved, setTimeResolved] = useState(false);
-  const [type, setType] = useState("task");
 
   /* ============================================
      Auto-resize
@@ -154,7 +150,6 @@ function AddTask({ addTask }) {
 
     addTask({
       title: parsed.title || title,
-      type,
       priority,
       dueDate: dueDate || null,
       dueTime: dueTime || null,
@@ -164,7 +159,6 @@ function AddTask({ addTask }) {
 
     // reset
     setTitle("");
-    setType("task");
     setPriority("medium");
     setPriorityManuallySet(false);
     setDueDate("");
@@ -185,34 +179,6 @@ function AddTask({ addTask }) {
           <Plus size={20} className="text-[var(--primary)]" />
         </div>
 
-        {/* Type toggle */}
-        <div className="flex gap-2 mb-3">
-          <button
-            type="button"
-            onClick={() => setType("task")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              type === "task"
-                ? "bg-[var(--primary)] text-white shadow-[0_4px_10px_rgba(99,102,241,0.3)]"
-                : "bg-[var(--app-bg)] text-[var(--text-secondary)] shadow-[var(--shadow-inset)]"
-            }`}
-          >
-            <CheckSquare size={13} />
-            {t("task.typeTask")}
-          </button>
-          <button
-            type="button"
-            onClick={() => setType("note")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
-              type === "note"
-                ? "bg-[var(--primary)] text-white shadow-[0_4px_10px_rgba(99,102,241,0.3)]"
-                : "bg-[var(--app-bg)] text-[var(--text-secondary)] shadow-[var(--shadow-inset)]"
-            }`}
-          >
-            <StickyNote size={13} />
-            {t("task.typeNote")}
-          </button>
-        </div>
-
         {/* Title + AI button */}
         <div className="relative">
           <textarea
@@ -226,16 +192,13 @@ function AddTask({ addTask }) {
               }
             }}
             rows={1}
-            placeholder={
-              type === "note"
-                ? t("task.notePlaceholder")
-                : t("task.titlePlaceholder")
-            }
+            placeholder={t("task.titlePlaceholder")}
             className="w-full px-4 py-3 pe-12 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition resize-none overflow-hidden"
             style={{ minHeight: "44px" }}
           />
 
-          {type === "task" && ai.isAvailable && title.trim() && (
+          {/* AI button */}
+          {ai.isAvailable && title.trim() && (
             <button
               type="button"
               onClick={handleAskAI}
@@ -252,7 +215,8 @@ function AddTask({ addTask }) {
           )}
         </div>
 
-        {type === "task" && parsed.hasAnyMatch && title.trim() && (
+        {/* NLP chips */}
+        {parsed.hasAnyMatch && title.trim() && (
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <Sparkles size={14} className="text-[var(--primary)] shrink-0" />
             <span className="text-xs text-[var(--text-muted)] shrink-0">
@@ -304,7 +268,8 @@ function AddTask({ addTask }) {
           </div>
         )}
 
-        {type === "task" && parsed.dueTime && (
+        {/* Time resolution */}
+        {parsed.dueTime && (
           <div className="mt-3 flex items-center gap-1.5">
             <DetectedChip
               icon={<Clock size={13} />}
@@ -361,7 +326,8 @@ function AddTask({ addTask }) {
           </div>
         )}
 
-        {type === "task" && parsedSubtasks.length > 0 && (
+        {/* Subtask preview */}
+        {parsedSubtasks.length > 0 && (
           <div className="mt-3 flex items-center gap-2 flex-wrap">
             <div className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
               <ListChecks size={13} className="text-[var(--primary)]" />
@@ -382,8 +348,8 @@ function AddTask({ addTask }) {
           </div>
         )}
 
-        {type === "task" &&
-          ai.isAvailable &&
+        {/* AI Suggestions Panel */}
+        {ai.isAvailable &&
           !aiDismissed &&
           (aiSuggestions || ai.loading || ai.error) && (
             <AISuggestionPanel
@@ -400,97 +366,91 @@ function AddTask({ addTask }) {
 
         {/* Manual controls */}
         <div className="flex flex-col lg:flex-row gap-3 mt-4">
-          {type === "task" && (
-            <>
-              {/* Priority */}
-              <div className="priority-picker relative lg:w-32 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setShowPriority(!showPriority)}
-                  className={`w-full px-3 py-3 rounded-xl text-sm font-medium transition ${priorityStyles[priority]}`}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        priority === "high"
-                          ? "bg-[var(--danger)]"
-                          : priority === "medium"
-                            ? "bg-[var(--warning)]"
-                            : "bg-[var(--success)]"
-                      }`}
-                    />
-                    <span>{t(`task.priority.${priority}`)}</span>
-                    <span className="text-xs opacity-60">⌄</span>
-                  </div>
-                </button>
-
-                {showPriority && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
-                    {["high", "medium", "low"].map((item) => (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => {
-                          setPriority(item);
-                          setPriorityManuallySet(true);
-                          setShowPriority(false);
-                        }}
-                        className={`w-full text-start px-3 py-2 rounded-lg text-sm transition ${
-                          priority === item
-                            ? "bg-[var(--primary-soft)] text-[var(--primary)]"
-                            : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
-                        }`}
-                      >
-                        {t(`task.priority.${item}`)}
-                      </button>
-                    ))}
-                  </div>
-                )}
+          {/* Priority */}
+          <div className="priority-picker relative lg:w-32 shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowPriority(!showPriority)}
+              className={`w-full px-3 py-3 rounded-xl text-sm font-medium transition ${priorityStyles[priority]}`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    priority === "high"
+                      ? "bg-[var(--danger)]"
+                      : priority === "medium"
+                        ? "bg-[var(--warning)]"
+                        : "bg-[var(--success)]"
+                  }`}
+                />
+                <span>{t(`task.priority.${priority}`)}</span>
+                <span className="text-xs opacity-60">⌄</span>
               </div>
+            </button>
 
-              {/* Date */}
-              <DatePicker
-                wrapperClassName="lg:w-40 shrink-0"
-                selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
-                onChange={(date) => {
-                  if (date) {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const day = String(date.getDate()).padStart(2, "0");
-                    setDueDate(`${year}-${month}-${day}`);
-                  } else {
-                    setDueDate("");
-                  }
-                }}
-                shouldCloseOnSelect={true}
-                dateFormat="MMM d, yyyy"
-                placeholderText={t("task.pickDate")}
-                customInput={
+            {showPriority && (
+              <div className="absolute top-full left-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
+                {["high", "medium", "low"].map((item) => (
                   <button
+                    key={item}
                     type="button"
-                    className="w-full px-3 py-3 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 whitespace-nowrap"
+                    onClick={() => {
+                      setPriority(item);
+                      setPriorityManuallySet(true);
+                      setShowPriority(false);
+                    }}
+                    className={`w-full text-start px-3 py-2 rounded-lg text-sm transition ${
+                      priority === item
+                        ? "bg-[var(--primary-soft)] text-[var(--primary)]"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
+                    }`}
                   >
-                    <Calendar size={18} />
-                    <span className="truncate">
-                      {dueDate
-                        ? new Date(dueDate + "T00:00:00").toLocaleDateString(
-                            undefined,
-                            { month: "short", day: "numeric", year: "numeric" },
-                          )
-                        : t("task.pickDate")}
-                    </span>
+                    {t(`task.priority.${item}`)}
                   </button>
-                }
-              />
-            </>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
 
-          {/* Add button   */}
+          {/* Date */}
+          <DatePicker
+            wrapperClassName="lg:w-40 shrink-0"
+            selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
+            onChange={(date) => {
+              if (date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0");
+                const day = String(date.getDate()).padStart(2, "0");
+                setDueDate(`${year}-${month}-${day}`);
+              } else {
+                setDueDate("");
+              }
+            }}
+            shouldCloseOnSelect={true}
+            dateFormat="MMM d, yyyy"
+            placeholderText={t("task.pickDate")}
+            customInput={
+              <button
+                type="button"
+                className="w-full px-3 py-3 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 whitespace-nowrap"
+              >
+                <Calendar size={18} />
+                <span className="truncate">
+                  {dueDate
+                    ? new Date(dueDate + "T00:00:00").toLocaleDateString(
+                        undefined,
+                        { month: "short", day: "numeric", year: "numeric" },
+                      )
+                    : t("task.pickDate")}
+                </span>
+              </button>
+            }
+          />
+
+          {/* Add */}
           <button
             type="submit"
-            className={`${
-              type === "task" ? "lg:w-40" : "w-full"
-            } shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(99,102,241,0.28)] hover:bg-[var(--primary-hover)] transition`}
+            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(99,102,241,0.28)] hover:bg-[var(--primary-hover)] transition"
           >
             <Plus size={18} />
             {t("task.add")}
