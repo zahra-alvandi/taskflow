@@ -3,6 +3,7 @@ import { useTranslation } from "../../application/hooks/useTranslation";
 import AddNote from "../components/AddNote";
 import NoteCard from "../components/NoteCard";
 import PawIcon from "../components/PawIcon";
+import { PawFloat, WhiskerLine, CatEars } from "../components/CatDecorations";
 
 function NotesPage({
   notes,
@@ -18,7 +19,7 @@ function NotesPage({
   const others = notes.filter((n) => !n.pinned);
 
   return (
-    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
+    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8 paw-bg-warm">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -51,8 +52,12 @@ function NotesPage({
         {/* Empty state */}
         {notes.length === 0 && (
           <div className="rounded-3xl bg-[var(--surface)] p-12 shadow-[var(--shadow-soft)] text-center">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-[var(--warning-soft)] flex items-center justify-center mb-4">
-              <PawIcon size={28} className="text-[var(--warning)]" />
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-[var(--primary-soft)] flex items-center justify-center mb-4 relative">
+              <CatEars
+                size={22}
+                className="absolute -top-2.5 start-2.5 -translate-x-1/2 text-[var(--primary)]"
+              />
+              <PawIcon size={26} className="text-[var(--primary)]" />
             </div>
             <p className="text-sm text-[var(--text-secondary)]">
               {t("note.empty")}

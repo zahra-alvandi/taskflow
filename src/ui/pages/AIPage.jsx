@@ -17,6 +17,7 @@ import {
   validatePlan,
 } from "../../core/services/plannerService";
 import ChatPanel from "../components/ChatPanel";
+import { PawFloat, WhiskerLine, CatEars } from "../components/CatDecorations";
 
 function AIPage({
   tasks,
@@ -84,9 +85,12 @@ function AIPage({
     }
   };
 
+  /* ============================================
+     Not configured
+  ============================================ */
   if (!ai.isAvailable) {
     return (
-      <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
+      <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8 paw-bg-ai">
         <div className="max-w-2xl mx-auto">
           <button
             onClick={onBack}
@@ -96,25 +100,49 @@ function AIPage({
             {t("task.back")}
           </button>
 
-          <div className="rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)] text-center">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-[var(--primary-soft)] flex items-center justify-center mb-4">
-              <Sparkles size={28} className="text-[var(--primary)]" />
+          <div className="relative rounded-3xl bg-[var(--surface)] p-10 shadow-[var(--shadow-soft)] text-center overflow-hidden">
+            <div className="relative">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(124,92,255,0.35)] mb-4 relative">
+                <CatEars
+                  size={22}
+                  className="absolute -top-2.5 start-1/2 -translate-x-1/2 text-[var(--accent)]"
+                />
+                <Sparkles size={26} className="text-white" />
+              </div>
+              <h2 className="text-xl font-bold mb-2">{t("ai.title")}</h2>
+              <p className="text-sm text-[var(--text-secondary)]">
+                {t("ai.notConfigured")}
+              </p>
             </div>
-            <h2 className="text-xl font-bold mb-2">{t("ai.title")}</h2>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">
-              {t("ai.notConfigured")}
-            </p>
           </div>
         </div>
       </main>
     );
   }
 
+  /* ============================================
+     Main
+  ============================================ */
   return (
-    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
+    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8 paw-bg-ai">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 relative">
+          <PawFloat
+            size={28}
+            rotate={-20}
+            color="var(--accent)"
+            opacity={0.12}
+            className="absolute -top-4 end-4 hidden sm:block"
+          />
+          <PawFloat
+            size={16}
+            rotate={25}
+            color="var(--primary)"
+            opacity={0.1}
+            className="absolute top-8 end-16 hidden lg:block"
+          />
+
           <button
             onClick={onBack}
             className="mb-4 inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition"
@@ -124,11 +152,21 @@ function AIPage({
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(99,102,241,0.35)]">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(124,92,255,0.35)] relative">
+              <CatEars
+                size={18}
+                className="absolute -top-2.5 start-1.5 -translate-x-1/2 text-[var(--accent)]"
+              />
               <Sparkles size={22} className="text-white" />
             </div>
-            <div>
-              <h1 className="text-2xl font-bold">{t("ai.title")}</h1>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-bold">{t("ai.title")}</h1>
+                <WhiskerLine
+                  width={32}
+                  className="text-[var(--accent)] hidden sm:block"
+                />
+              </div>
               <p className="text-sm text-[var(--text-secondary)]">
                 {t("ai.subtitle")}
               </p>
@@ -142,7 +180,7 @@ function AIPage({
             onClick={() => setTab("plan")}
             className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition ${
               tab === "plan"
-                ? "bg-[var(--surface)] text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+                ? "bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-soft-small)]"
                 : "text-[var(--text-secondary)]"
             }`}
           >
@@ -152,7 +190,7 @@ function AIPage({
             onClick={() => setTab("chat")}
             className={`flex-1 py-2.5 rounded-xl text-sm font-medium transition ${
               tab === "chat"
-                ? "bg-[var(--surface)] text-[var(--primary)] shadow-[var(--shadow-soft-small)]"
+                ? "bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-soft-small)]"
                 : "text-[var(--text-secondary)]"
             }`}
           >
@@ -166,7 +204,7 @@ function AIPage({
             <button
               onClick={handleGeneratePlan}
               disabled={generating}
-              className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(99,102,241,0.35)] hover:shadow-[0_10px_24px_rgba(99,102,241,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+              className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(124,92,255,0.35)] hover:shadow-[0_10px_24px_rgba(124,92,255,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
             >
               {generating ? (
                 <>
@@ -203,7 +241,7 @@ function AIPage({
             {plan && !generating && (
               <div className="space-y-4">
                 {plan.summary && (
-                  <div className="rounded-3xl bg-[var(--primary-soft)]/40 border border-[var(--primary)]/20 p-5">
+                  <div className="rounded-3xl bg-[var(--accent-soft)]/40 border border-[var(--accent)]/20 p-5">
                     <p className="text-sm leading-relaxed">{plan.summary}</p>
                   </div>
                 )}
@@ -214,7 +252,7 @@ function AIPage({
                       className={`h-full rounded-full transition-all duration-300 ${
                         planProgress.percent === 100
                           ? "bg-[var(--success)]"
-                          : "bg-[var(--primary)]"
+                          : "bg-[var(--accent)]"
                       }`}
                       style={{ width: `${planProgress.percent}%` }}
                     />
@@ -280,7 +318,14 @@ function AIPage({
 
             {/* Empty state */}
             {!plan && !generating && !error && (
-              <div className="rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)] text-center">
+              <div className="rounded-3xl bg-[var(--surface)] p-10 shadow-[var(--shadow-soft)] text-center">
+                <div className="w-16 h-16 mx-auto rounded-3xl bg-[var(--accent-soft)] flex items-center justify-center mb-4 relative">
+                  <CatEars
+                    size={22}
+                    className="absolute -top-3 start-2.5 -translate-x-1/2 text-[var(--accent)]"
+                  />
+                  <Sparkles size={26} className="text-[var(--accent)]" />
+                </div>
                 <p className="text-sm text-[var(--text-secondary)]">
                   {t("planner.empty")}
                 </p>
@@ -347,7 +392,7 @@ function PlanBlock({ block, t, onToggle, onEdit, onDelete }) {
               onEdit(draft);
               setEditing(false);
             }}
-            className="flex-1 py-2 rounded-xl bg-[var(--primary)] text-white text-sm font-medium"
+            className="flex-1 py-2 rounded-xl bg-[var(--accent)] text-white text-sm font-medium"
           >
             {t("actions.save")}
           </button>
@@ -372,8 +417,8 @@ function PlanBlock({ block, t, onToggle, onEdit, onDelete }) {
         onClick={onToggle}
         className={`w-6 h-6 shrink-0 self-center rounded-lg border-2 flex items-center justify-center transition ${
           block.completed
-            ? "bg-[var(--primary)] border-[var(--primary)] text-white"
-            : "border-[var(--text-muted)] hover:border-[var(--primary)]"
+            ? "bg-[var(--accent)] border-[var(--accent)] text-white"
+            : "border-[var(--text-muted)] hover:border-[var(--accent)]"
         }`}
       >
         {block.completed && <Check size={12} strokeWidth={3} />}
@@ -416,7 +461,7 @@ function PlanBlock({ block, t, onToggle, onEdit, onDelete }) {
       <div className="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => setEditing(true)}
-          className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--primary-soft)] transition"
+          className="w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-soft)] transition"
         >
           <Edit2 size={13} />
         </button>

@@ -105,7 +105,7 @@ function AISuggestionPanel({
       {/* Header */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[var(--primary)] flex items-center justify-center shadow-[0_4px_10px_rgba(99,102,241,0.35)]">
+          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.35)]">
             <Sparkles size={14} className="text-white" />
           </div>
           <span className="text-sm font-semibold text-[var(--text-primary)]">

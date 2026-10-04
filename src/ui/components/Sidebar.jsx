@@ -8,7 +8,6 @@ import {
   Sun,
   Settings,
   Sparkles,
-  StickyNote,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
@@ -28,7 +27,6 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
       icon: <CircleCheckBig size={19} />,
     },
     { id: "pending", label: t("nav.pending"), icon: <Clock size={19} /> },
-    { id: "notes", label: t("nav.notes"), icon: <StickyNote size={19} /> },
   ];
 
   return (
@@ -36,15 +34,19 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
       <div className="h-full rounded-3xl bg-[var(--sidebar-bg)] p-5 flex flex-col shadow-[var(--shadow-soft-small)]">
         {/* Logo */}
         <div className="flex items-center gap-3 px-2 mb-10">
-          <div className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_6px_14px_rgba(99,102,241,0.28)]">
-            {/* <LayoutDashboard size={21} /> */}
-            <img src="/favicon/logo-icon.png" alt="" />
+          <div className="w-10 h-10 rounded-xl overflow-hidden bg-[var(--primary)] shadow-[0_6px_14px_rgba(232,135,74,0.3)]">
+            <img
+              src="/favicon/logo-icon.png"
+              alt="TaskFlow"
+              className="w-full h-full object-cover"
+            />
           </div>
-          <h1 className="text-xl font-bold tracking-tight ">{t("app.name")}</h1>
+          <h1 className="text-xl font-bold tracking-tight">{t("app.name")}</h1>
         </div>
 
         {/* Navigation */}
         <nav className="space-y-2">
+          {/* Dashboard */}
           <button
             onClick={() => {
               setFilter("all");
@@ -60,6 +62,7 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
             {t("nav.dashboard")}
           </button>
 
+          {/* Filter items */}
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -78,6 +81,7 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
             </button>
           ))}
 
+          {/* AI */}
           <button
             onClick={() => {
               setPage("ai");
@@ -85,7 +89,7 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
             }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
               page === "ai"
-                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
+                ? "bg-[var(--surface)] text-[var(--accent)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
                 : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
             }`}
           >
@@ -93,6 +97,7 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
             {t("ai.title")}
           </button>
 
+          {/* Notes */}
           <button
             onClick={() => {
               setPage("notes");
@@ -110,7 +115,10 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
 
           {/* Settings */}
           <button
-            onClick={() => setPage("settings")}
+            onClick={() => {
+              setPage("settings");
+              setActiveNav("settings");
+            }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
               page === "settings"
                 ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
@@ -122,7 +130,7 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
           </button>
         </nav>
 
-        {/* Bottom area */}
+        {/* Bottom area — Dark mode */}
         <div className="mt-auto pt-6 border-t border-black/5 dark:border-white/5">
           <button
             onClick={() => setDarkMode(!darkMode)}

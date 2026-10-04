@@ -203,7 +203,7 @@ function AddTask({ addTask }) {
               type="button"
               onClick={handleAskAI}
               disabled={ai.loading}
-              className="absolute end-2 top-2 w-8 h-8 rounded-lg bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(99,102,241,0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-60 transition"
+              className="absolute end-2 top-2 w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.35)] hover:bg-[var(--accent-hover)] disabled:opacity-60 transition"
               title={t("ai.suggestions")}
             >
               {ai.loading ? (
@@ -365,7 +365,7 @@ function AddTask({ addTask }) {
           )}
 
         {/* Manual controls */}
-        <div className="flex flex-col lg:flex-row gap-3 mt-4">
+        <div className="flex flex-row items-center justify-evenly md:justify-center lg:flex-row gap-3 mt-4">
           {/* Priority */}
           <div className="priority-picker relative lg:w-32 shrink-0">
             <button
@@ -450,7 +450,7 @@ function AddTask({ addTask }) {
           {/* Add */}
           <button
             type="submit"
-            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(99,102,241,0.28)] hover:bg-[var(--primary-hover)] transition"
+            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.28)] hover:bg-[var(--primary-hover)] transition"
           >
             <Plus size={18} />
             {t("task.add")}

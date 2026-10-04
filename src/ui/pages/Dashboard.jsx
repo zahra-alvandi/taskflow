@@ -102,12 +102,24 @@ function Dashboard({
   const isDashboardHome = filter === "all";
 
   return (
-    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8 mb-14">
+    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8 mb-14 cat-bg-warm">
       <header className="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
-          <p className="text-sm text-[var(--text-secondary)] mb-2">
+          <div className="hidden md:flex items-center gap-2 mb-2">
+            <img
+              src="/favicon/logo-icon.png"
+              alt=""
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <p className="text-xs text-[var(--text-muted)]">
+              {t("greeting.welcomeBack")} 🐾
+            </p>
+          </div>
+
+          <p className="text-sm text-[var(--text-secondary)] mb-2 md:hidden">
             {t("greeting.welcomeBack")} <span className="ml-1">👋</span>
           </p>
+
           <h2 className="text-3xl font-bold tracking-tight">
             {isDashboardHome ? t("greeting.morning") : pageTitle}
           </h2>
@@ -121,7 +133,7 @@ function Dashboard({
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenAI}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white text-sm font-medium shadow-[0_6px_14px_rgba(99,102,241,0.35)] hover:shadow-[0_8px_20px_rgba(99,102,241,0.45)] hover:-translate-y-0.5 active:scale-95 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white text-sm font-medium shadow-[0_6px_14px_rgba(232,135,74,0.35)] hover:shadow-[0_8px_20px_rgba(232,135,74,0.45)] hover:-translate-y-0.5 active:scale-95 transition-all"
           >
             <Sparkles size={16} />
             {t("ai.title")}
@@ -214,7 +226,12 @@ function Dashboard({
 
       <div key={filter} className="animate-fade-slide">
         {searchedTasks.length === 0 ? (
-          <p className="text-[var(--text-secondary)]">{pageText}</p>
+          <div className="rounded-3xl bg-[var(--surface)] p-10 shadow-[var(--shadow-soft)] text-center paw-pattern-soft">
+            <div className="w-14 h-14 mx-auto rounded-3xl bg-[var(--primary-soft)] flex items-center justify-center mb-3">
+              <ListTodo size={24} className="text-[var(--primary)]" />
+            </div>
+            <p className="text-sm text-[var(--text-secondary)]">{pageText}</p>
+          </div>
         ) : (
           <TaskList
             tasks={searchedTasks}

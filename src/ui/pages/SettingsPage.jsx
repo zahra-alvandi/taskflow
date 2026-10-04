@@ -144,7 +144,7 @@ function SettingsPage() {
               onClick={() => changeLang("fa")}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
                 lang === "fa"
-                  ? "bg-[var(--primary)] text-white shadow-[0_6px_14px_rgba(99,102,241,0.28)]"
+                  ? "bg-[var(--primary)] text-white shadow-[0_6px_14px_rgba(232,135,74,0.28)]"
                   : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
               }`}
             >
@@ -154,7 +154,7 @@ function SettingsPage() {
               onClick={() => changeLang("en")}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
                 lang === "en"
-                  ? "bg-[var(--primary)] text-white shadow-[0_6px_14px_rgba(99,102,241,0.28)]"
+                  ? "bg-[var(--primary)] text-white shadow-[0_6px_14px_rgba(232,135,74,0.28)]"
                   : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
               }`}
             >

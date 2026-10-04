@@ -65,23 +65,23 @@
 ================================ */
 
 @theme {
+  /* Fonts */
   --font-sans: "Estedad", system-ui, sans-serif;
   --font-mono: "Estedad", ui-monospace, monospace;
   --font-display: "Cormorant Garamond", serif;
 
-  --color-primary: #8c5e3c;
-  --color-primary-hover: #744b2d;
-
-  --color-background: #f8f5f1;
+  /* Colors */
+  --color-primary: #e8874a;
+  --color-primary-hover: #d4713a;
+  --color-accent: #7c5cff;
+  --color-background: #fef8f0;
   --color-surface: #ffffff;
-
-  --color-text-primary: #2f2a26;
-  --color-text-secondary: #6b625a;
-
-  --color-border: #ddd3c7;
-
-  --color-success: #4f7d5c;
-  --color-error: #b85450;
+  --color-text-primary: #3d2a1f;
+  --color-text-secondary: #6b5443;
+  --color-border: #f0d9bf;
+  --color-success: #5c9d6f;
+  --color-warning: #d99e3a;
+  --color-danger: #d65f5f;
 }
 
 /* ================================
@@ -126,77 +126,102 @@ html {
   animation-delay: 0.5s;
 }
 
+/* ================================
+   TaskFlow — Design System (Cat + AI Theme)
+================================ */
+
 :root {
-  --app-bg: #eef2ff;
+  /* Backgrounds */
+  --app-bg: #fef8f0;
   --surface: #ffffff;
-  --sidebar-bg: #e4e9f7;
+  --sidebar-bg: #fceee0;
 
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  /* Text */
+  --text-primary: #3d2a1f;
+  --text-secondary: #6b5443;
+  --text-muted: #9a8478;
 
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --primary-soft: #e0e7ff;
+  /* Primary — Orange (from cat) */
+  --primary: #e8874a;
+  --primary-hover: #d4713a;
+  --primary-soft: #fdeadb;
 
-  --success: #22a06b;
-  --warning: #e5a11a;
-  --danger: #e05252;
+  /* AI Accent — Purple (from glasses glow) */
+  --accent: #7c5cff;
+  --accent-hover: #6a48e6;
+  --accent-soft: #ece7ff;
 
-  --success-soft: #dcfce7;
-  --warning-soft: #fef3c7;
-  --danger-soft: #fee2e2;
-  --info-soft: #dbeafe;
+  /* Semantic */
+  --success: #5c9d6f;
+  --warning: #d99e3a;
+  --danger: #d65f5f;
 
-  --shadow-dark: rgba(148, 163, 184, 0.38);
+  --success-soft: #e3f0e7;
+  --warning-soft: #fbefd5;
+  --danger-soft: #fae0e0;
+  --info-soft: #e0ebf5;
+
+  /* Shadows (warm-tinted) */
+  --shadow-dark: rgba(180, 140, 100, 0.28);
   --shadow-light: rgba(255, 255, 255, 0.95);
-  --shadow-soft-hover:
-    12px 12px 22px rgba(148, 163, 184, 0.42),
-    -12px -12px 22px rgba(255, 255, 255, 0.95);
 
   --shadow-soft:
     8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
 
   --shadow-soft-small:
-    5px 5px 12px rgba(148, 163, 184, 0.28),
+    5px 5px 12px rgba(180, 140, 100, 0.22),
     -5px -5px 12px rgba(255, 255, 255, 0.9);
 
   --shadow-inset:
-    inset 4px 4px 9px rgba(148, 163, 184, 0.25),
-    inset -4px -4px 9px rgba(255, 255, 255, 0.8);
+    inset 4px 4px 9px rgba(180, 140, 100, 0.2),
+    inset -4px -4px 9px rgba(255, 255, 255, 0.85);
+
+  --shadow-soft-hover:
+    12px 12px 22px rgba(180, 140, 100, 0.32),
+    -12px -12px 22px rgba(255, 255, 255, 0.95);
 }
 
 /* ================================
-   Dark Mode
+   Dark Mode (warm dark)
 ================================ */
 
 .dark {
-  --bg: #111827;
-  --surface: #1f2937;
-  --sidebar-bg: #172033;
+  --app-bg: #1f1814;
+  --surface: #2a2019;
+  --sidebar-bg: #241a14;
 
-  --app-bg: #111827;
-  --surface: #1f2937;
-  --sidebar-bg: #172033;
+  --text-primary: #f5ede4;
+  --text-secondary: #c9b8a8;
+  --text-muted: #8a7868;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --primary: #f0a06a;
+  --primary-hover: #e8874a;
+  --primary-soft: rgba(240, 160, 106, 0.15);
 
-  --primary: #818cf8;
-  --primary-soft: rgba(129, 140, 248, 0.15);
+  --accent: #9c7cff;
+  --accent-hover: #7c5cff;
+  --accent-soft: rgba(156, 124, 255, 0.15);
 
-  --shadow-dark: rgba(0, 0, 0, 0.45);
+  --success: #7cbd8e;
+  --warning: #e8b85a;
+  --danger: #e87a7a;
+
+  --success-soft: rgba(124, 189, 142, 0.15);
+  --warning-soft: rgba(232, 184, 90, 0.15);
+  --danger-soft: rgba(232, 122, 122, 0.15);
+  --info-soft: rgba(124, 156, 232, 0.15);
+
+  --shadow-dark: rgba(0, 0, 0, 0.5);
   --shadow-light: rgba(255, 255, 255, 0.04);
 
   --shadow-soft:
     10px 10px 20px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
 
   --shadow-soft-small:
-    5px 5px 12px rgba(0, 0, 0, 0.35), -3px -3px 8px rgba(255, 255, 255, 0.03);
+    5px 5px 12px rgba(0, 0, 0, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.03);
 
   --shadow-inset:
-    inset 4px 4px 10px rgba(0, 0, 0, 0.35),
+    inset 4px 4px 10px rgba(0, 0, 0, 0.4),
     inset -3px -3px 8px rgba(255, 255, 255, 0.03);
 }
 /* ================================
@@ -409,4 +434,33 @@ body {
 
 [dir="rtl"] .rtl\:rotate-180 {
   transform: rotate(180deg);
+}
+
+/* ================================
+   Cat Pattern Backgrounds
+================================ */
+
+/* پس‌زمینه با گربه‌های ریز — نارنجی */
+.cat-bg-warm {
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23e8874a' stroke-width='1.2' stroke-opacity='0.15' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 30 L23 22 L28 28'/%3E%3Cpath d='M34 30 L31 22 L26 28'/%3E%3Ccircle cx='27' cy='33' r='6'/%3E%3Ccircle cx='24.5' cy='32' r='0.6' fill='%23e8874a' fill-opacity='0.15'/%3E%3Ccircle cx='29.5' cy='32' r='0.6' fill='%23e8874a' fill-opacity='0.15'/%3E%3C/g%3E%3Cg fill='none' stroke='%23e8874a' stroke-width='1.2' stroke-opacity='0.12' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M80 90 L83 82 L88 88'/%3E%3Cpath d='M94 90 L91 82 L86 88'/%3E%3Ccircle cx='87' cy='93' r='6'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+.paw-bg-ai {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237c5cff' fill-opacity='0.08'%3E%3Cellipse cx='25' cy='30' rx='4' ry='6'/%3E%3Cellipse cx='37' cy='24' rx='4' ry='6'/%3E%3Cellipse cx='49' cy='26' rx='4' ry='6'/%3E%3Cellipse cx='59' cy='32' rx='4' ry='6'/%3E%3Cpath d='M42 36c-8 0-14 6-14 12 0 4 3 6 7 6 2 0 5-1 7-1s5 1 7 1c4 0 7-2 7-6 0-6-6-12-14-12z'/%3E%3C/g%3E%3Cg fill='%237c5cff' fill-opacity='0.05'%3E%3Cellipse cx='80' cy='80' rx='3' ry='4.5'/%3E%3Cellipse cx='89' cy='76' rx='3' ry='4.5'/%3E%3Cellipse cx='98' cy='78' rx='3' ry='4.5'/%3E%3Cpath d='M89 84c-6 0-10 4-10 8 0 3 2 4 5 4 1.5 0 3.5-0.7 5-0.7s3.5 0.7 5 0.7c3 0 5-1 5-4 0-4-4-8-10-8z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100px 100px;
+}
+
+.paw-bg-warm {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e8874a' fill-opacity='0.07'%3E%3Cellipse cx='25' cy='30' rx='4' ry='6'/%3E%3Cellipse cx='37' cy='24' rx='4' ry='6'/%3E%3Cellipse cx='49' cy='26' rx='4' ry='6'/%3E%3Cellipse cx='59' cy='32' rx='4' ry='6'/%3E%3Cpath d='M42 36c-8 0-14 6-14 12 0 4 3 6 7 6 2 0 5-1 7-1s5 1 7 1c4 0 7-2 7-6 0-6-6-12-14-12z'/%3E%3C/g%3E%3Cg fill='%23e8874a' fill-opacity='0.04'%3E%3Cellipse cx='80' cy='80' rx='3' ry='4.5'/%3E%3Cellipse cx='89' cy='76' rx='3' ry='4.5'/%3E%3Cellipse cx='98' cy='78' rx='3' ry='4.5'/%3E%3Cpath d='M89 84c-6 0-10 4-10 8 0 3 2 4 5 4 1.5 0 3.5-0.7 5-0.7s3.5 0.7 5 0.7c3 0 5-1 5-4 0-4-4-8-10-8z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 100px 100px;
+}
+
+/*  dark mode */
+.dark .paw-bg-ai {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239c7cff' fill-opacity='0.06'%3E%3Cellipse cx='25' cy='30' rx='4' ry='6'/%3E%3Cellipse cx='37' cy='24' rx='4' ry='6'/%3E%3Cellipse cx='49' cy='26' rx='4' ry='6'/%3E%3Cellipse cx='59' cy='32' rx='4' ry='6'/%3E%3Cpath d='M42 36c-8 0-14 6-14 12 0 4 3 6 7 6 2 0 5-1 7-1s5 1 7 1c4 0 7-2 7-6 0-6-6-12-14-12z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.dark .paw-bg-warm {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0a06a' fill-opacity='0.05'%3E%3Cellipse cx='25' cy='30' rx='4' ry='6'/%3E%3Cellipse cx='37' cy='24' rx='4' ry='6'/%3E%3Cellipse cx='49' cy='26' rx='4' ry='6'/%3E%3Cellipse cx='59' cy='32' rx='4' ry='6'/%3E%3Cpath d='M42 36c-8 0-14 6-14 12 0 4 3 6 7 6 2 0 5-1 7-1s5 1 7 1c4 0 7-2 7-6 0-6-6-12-14-12z'/%3E%3C/g%3E%3C/svg%3E");
 }

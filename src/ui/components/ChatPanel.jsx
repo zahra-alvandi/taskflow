@@ -126,9 +126,9 @@ function ChatPanel({ tasks, onAction }) {
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
-          <div className="text-center py-8">
-            <div className="w-14 h-14 mx-auto rounded-3xl bg-[var(--primary-soft)] flex items-center justify-center mb-3">
-              <Sparkles size={24} className="text-[var(--primary)]" />
+          <div className="text-center py-8 paw-pattern-ai rounded-2xl">
+            <div className="w-14 h-14 mx-auto rounded-3xl bg-[var(--accent-soft)] flex items-center justify-center mb-3">
+              <Sparkles size={24} className="text-[var(--accent)]" />
             </div>
             <p className="text-sm font-medium mb-1">{t("chat.welcome")}</p>
             <p className="text-xs text-[var(--text-muted)]">
@@ -191,7 +191,7 @@ function ChatPanel({ tasks, onAction }) {
           <button
             onClick={handleSend}
             disabled={!input.trim() || sending}
-            className="w-10 h-10 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(99,102,241,0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0"
+            className="w-10 h-10 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(232,135,74,0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0"
           >
             {sending ? (
               <Loader2 size={16} className="animate-spin" />

@@ -18,7 +18,7 @@ function DailyPlanCard({ plan, progress, onOpen, onToggleBlock }) {
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-[var(--primary)] flex items-center justify-center shadow-[0_6px_14px_rgba(99,102,241,0.35)]">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-[var(--primary)] flex items-center justify-center shadow-[0_6px_14px_rgba(232,135,74,0.35)]">
             <Sparkles size={18} className="text-white" />
           </div>
           <div className="min-w-0">
