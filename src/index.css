@@ -6,7 +6,7 @@
 
 @font-face {
   font-family: "Estedad";
-  src: url("./assets/fonts/Estedad/Estedad-Regular.woff2") format("woff2");
+  src: url("/fonts/Estedad/Estedad-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -14,7 +14,7 @@
 
 @font-face {
   font-family: "Estedad";
-  src: url("./assets/fonts/Estedad/Estedad-Medium.woff2") format("woff2");
+  src: url("/fonts/Estedad/Estedad-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -22,7 +22,7 @@
 
 @font-face {
   font-family: "Estedad";
-  src: url("./assets/fonts/Estedad/Estedad-SemiBold.woff2") format("woff2");
+  src: url("/fonts/Estedad/Estedad-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -30,7 +30,7 @@
 
 @font-face {
   font-family: "Estedad";
-  src: url("./assets/fonts/Estedad/Estedad-Bold.woff2") format("woff2");
+  src: url("/fonts/Estedad/Estedad-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -38,28 +38,24 @@
 
 @font-face {
   font-family: "Cormorant Garamond";
-  src: url("./assets/fonts/Cormorant/CormorantGaramond-Regular.woff2")
-    format("woff2");
+  src: url("/fonts/Cormorant/CormorantGaramond-Regular.woff2") format("woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Cormorant Garamond";
-  src: url("./assets/fonts/Cormorant/CormorantGaramond-SemiBold.woff2")
-    format("woff2");
+  src: url("/fonts/Cormorant/CormorantGaramond-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Cormorant Garamond";
-  src: url("./assets/fonts/Cormorant/CormorantGaramond-Bold.woff2")
-    format("woff2");
+  src: url("/fonts/Cormorant/CormorantGaramond-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
-
 /* ================================
    Tailwind Theme
 ================================ */
