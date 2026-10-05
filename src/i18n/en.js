@@ -1,5 +1,5 @@
 export default {
-  app: { name: "TaskFlow", tagline: "Get things done" },
+  app: { name: "Whiskerly", tagline: "Get things done" },
   nav: {
     dashboard: "Dashboard",
     all: "All Tasks",
@@ -64,7 +64,7 @@ export default {
   },
   settings: {
     title: "Settings",
-    subtitle: "Customize your TaskFlow experience.",
+    subtitle: "Customize your Whiskerly experience.",
     appearance: "Appearance",
     darkMode: "Dark Mode",
     enabled: "Enabled",
@@ -169,7 +169,7 @@ export default {
     empty: "No plan yet. Tap the button above to let AI plan your day.",
   },
   pwa: {
-    installTitle: "Install TaskFlow",
+    installTitle: "Install Whiskerly",
     installDesc: "For quick access and offline use",
     install: "Install",
     updateTitle: "New version available",

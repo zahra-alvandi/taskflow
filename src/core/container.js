@@ -8,7 +8,7 @@ import { LocalPlanRepository } from "../infrastructure/repositories/LocalPlanRep
 import { LocalNoteRepository } from "../infrastructure/repositories/LocalNoteRepository";
 import { LocalUserRepository } from "../infrastructure/repositories/LocalUserRepository";
 
-const storage = new LocalStorageAdapter("taskflow");
+const storage = new LocalStorageAdapter("whiskerly");
 
 export const taskRepository = new LocalTaskRepository(storage);
 export const planRepository = new LocalPlanRepository(storage);

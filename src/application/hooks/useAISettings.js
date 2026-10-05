@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 
-const STORAGE_KEY = "taskflow:ai-settings";
+const STORAGE_KEY = "whiskerly:ai-settings";
 
 const DEFAULT_SETTINGS = {
   enabled: false,

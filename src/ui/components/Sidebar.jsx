@@ -46,7 +46,7 @@ function Sidebar({
           <div className="w-10 h-10 rounded-xl overflow-hidden bg-[var(--primary)] shadow-[0_6px_14px_rgba(232,135,74,0.3)]">
             <img
               src="/favicon/logo-icon.png"
-              alt="TaskFlow"
+              alt="Whiskerly"
               className="w-full h-full object-cover"
             />
           </div>

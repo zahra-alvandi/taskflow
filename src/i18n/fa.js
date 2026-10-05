@@ -179,7 +179,7 @@ export default {
       "هنوز برنامه‌ای نداری. دکمه‌ی بالا رو بزن تا AI برنامه‌ی روزت رو بچینه.",
   },
   pwa: {
-    installTitle: "TaskFlow رو نصب کن",
+    installTitle: "Whiskerly رو نصب کن",
     installDesc: "برای دسترسی سریع‌تر و کار آفلاین",
     install: "نصب",
     updateTitle: "نسخه‌ی جدید آماده‌ست",

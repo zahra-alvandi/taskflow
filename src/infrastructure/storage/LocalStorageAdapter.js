@@ -1,5 +1,5 @@
 export class LocalStorageAdapter {
-  constructor(namespace = "taskflow") {
+  constructor(namespace = "whiskerly") {
     this.namespace = namespace;
   }
 

@@ -5,7 +5,7 @@ import { useTranslation } from "../../application/hooks/useTranslation";
 function NotificationPrompt({ onEnable }) {
   const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem("taskflow:notif-dismissed") === "true",
+    () => localStorage.getItem("whiskerly:notif-dismissed") === "true",
   );
   const [supported, setSupported] = useState(true);
   const [permission, setPermission] = useState("default");
@@ -26,7 +26,7 @@ function NotificationPrompt({ onEnable }) {
   };
 
   const handleDismiss = () => {
-    localStorage.setItem("taskflow:notif-dismissed", "true");
+    localStorage.setItem("whiskerly:notif-dismissed", "true");
     setDismissed(true);
   };
 

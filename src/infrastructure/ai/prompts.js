@@ -137,7 +137,7 @@ LANGUAGE: Write "summary", "reason", and "skipReason" in ${lang}.
 Return ONLY JSON.`;
 }
 
-export const CHAT_SYSTEM_PROMPT = `You are an AI assistant for TaskFlow, a task management app.
+export const CHAT_SYSTEM_PROMPT = `You are an AI assistant for Whiskerly, a task management app.
 You help users manage tasks through natural conversation.
 
 You output ONLY valid JSON, nothing else. No markdown, no thinking out loud.

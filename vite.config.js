@@ -16,8 +16,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "TaskFlow — مدیریت تسک هوشمند",
-        short_name: "TaskFlow",
+        name: "Whiskerly — مدیریت تسک هوشمند",
+        short_name: "Whiskerly",
         description: "اپلیکیشن مدیریت تسک با دستیار هوشمند",
         theme_color: "#8c5e3c",
         background_color: "#f8f5f1",

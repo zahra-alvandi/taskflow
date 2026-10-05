@@ -6,7 +6,7 @@ function InstallPrompt() {
   const { t } = useTranslation();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem("taskflow:install-dismissed") === "true",
+    () => localStorage.getItem("whiskerly:install-dismissed") === "true",
   );
 
   useEffect(() => {
@@ -33,7 +33,7 @@ function InstallPrompt() {
   };
 
   const handleDismiss = () => {
-    localStorage.setItem("taskflow:install-dismissed", "true");
+    localStorage.setItem("whiskerly:install-dismissed", "true");
     setDismissed(true);
   };
 
