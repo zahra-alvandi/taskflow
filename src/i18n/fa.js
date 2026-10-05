@@ -199,4 +199,23 @@ export default {
     unpin: "بردار",
     changeColor: "تغییر رنگ",
   },
+
+  auth: {
+    welcome: "به اپ گربه‌ای تسک‌ها خوش اومدی 🐱",
+    emailLabel: "ایمیل",
+    emailPlaceholder: "you@example.com",
+    continue: "ادامه",
+    loggingIn: "داره وارد می‌شه...",
+    invalidEmail: "ایمیل معتبر نیست",
+    privacyNote: "ایمیلت فقط تو مرورگر خودت ذخیره می‌شه",
+    logout: "خروج",
+  },
+
+  notif: {
+    enableTitle: "یادآوری تسک‌ها",
+    enableDesc: "می‌خوای قبل از ددلاین بهت خبر بدم؟",
+    enable: "فعال کن",
+    enabled: "فعال شد",
+    blocked: "برای فعال‌سازی، از تنظیمات مرورگر اجازه بده",
+  },
 };

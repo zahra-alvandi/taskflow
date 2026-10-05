@@ -8,13 +8,22 @@ import {
   Sun,
   Settings,
   Sparkles,
+  LogOut
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
 
-function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
+function Sidebar({
+  setFilter,
+  filter,
+  page,
+  setPage,
+  setActiveNav,
+  onLogout,
+  user,
+}) {
   const { t } = useTranslation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
@@ -129,6 +138,29 @@ function Sidebar({ setFilter, filter, page, setPage, setActiveNav }) {
             {t("nav.settings")}
           </button>
         </nav>
+
+        {/* User + Logout */}
+        {user && (
+          <div className="flex items-center gap-2 pt-2">
+            <div className="w-9 h-9 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center shrink-0">
+              <span className="text-sm font-bold text-[var(--primary)]">
+                {user.email[0].toUpperCase()}
+              </span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-[var(--text-primary)] truncate">
+                {user.email}
+              </p>
+            </div>
+            <button
+              onClick={onLogout}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition shrink-0"
+              title={t("auth.logout")}
+            >
+              <LogOut size={15} />
+            </button>
+          </div>
+        )}
 
         {/* Bottom area — Dark mode */}
         <div className="mt-auto pt-6 border-t border-black/5 dark:border-white/5">

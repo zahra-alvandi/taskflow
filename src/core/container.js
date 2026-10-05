@@ -6,12 +6,14 @@ import { OpenRouterAIService } from "../infrastructure/ai/OpenRouterAIService";
 import { GeminiAIService } from "../infrastructure/ai/GeminiAIService";
 import { LocalPlanRepository } from "../infrastructure/repositories/LocalPlanRepository";
 import { LocalNoteRepository } from "../infrastructure/repositories/LocalNoteRepository";
+import { LocalUserRepository } from "../infrastructure/repositories/LocalUserRepository";
 
 const storage = new LocalStorageAdapter("taskflow");
 
 export const taskRepository = new LocalTaskRepository(storage);
 export const planRepository = new LocalPlanRepository(storage);
 export const noteRepository = new LocalNoteRepository(storage);
+export const userRepository = new LocalUserRepository(storage);
 
 export function createAIService(settings) {
   if (!settings?.enabled || !settings?.apiKey) {

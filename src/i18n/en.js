@@ -189,4 +189,23 @@ export default {
     unpin: "Unpin",
     changeColor: "Change color",
   },
+
+  auth: {
+    welcome: "Welcome to your cat-powered task app 🐱",
+    emailLabel: "Email",
+    emailPlaceholder: "you@example.com",
+    continue: "Continue",
+    loggingIn: "Logging in...",
+    invalidEmail: "Invalid email",
+    privacyNote: "Your email is stored only in your browser",
+    logout: "Log out",
+  },
+
+  notif: {
+    enableTitle: "Task reminders",
+    enableDesc: "Want me to remind you before deadlines?",
+    enable: "Enable",
+    enabled: "Enabled",
+    blocked: "Allow notifications in your browser settings",
+  },
 };

@@ -245,6 +245,7 @@ body {
   color: var(--text-primary);
   font-family: monospace;
   box-sizing: border-box;
+  font-family: "Estedad", system-ui, sans-serif;
 }
 
 *,
