@@ -34,6 +34,7 @@ export function useDailyPlan(repository) {
     async (rawPlan) => {
       const plan = createDailyPlan({
         date,
+        message: rawPlan.message ?? "",
         summary: rawPlan.summary,
         blocks: rawPlan.blocks.map((b) => ({
           taskId: b.taskId,

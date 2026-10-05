@@ -73,6 +73,7 @@ function AIPage({
       });
 
       await onSavePlan({
+        message: validated.message,
         summary: validated.summary,
         blocks: blocksWithTitles,
         skipped: validated.skipped,
@@ -240,8 +241,23 @@ function AIPage({
             {/* Plan */}
             {plan && !generating && (
               <div className="space-y-4">
+                {/* Whiskerly message */}
+                {plan.message && (
+                  <div className="rounded-3xl bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent-soft)]/40 border border-[var(--accent)]/20 p-5">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 shrink-0 rounded-xl bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.3)]">
+                        <Sparkles size={14} className="text-white" />
+                      </div>
+                      <p className="text-sm leading-relaxed text-[var(--text-primary)] flex-1">
+                        {plan.message}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Summary */}
                 {plan.summary && (
-                  <div className="rounded-3xl bg-[var(--accent-soft)]/40 border border-[var(--accent)]/20 p-5">
+                  <div className="rounded-3xl bg-[var(--primary-soft)]/40 border border-[var(--primary)]/20 p-5">
                     <p className="text-sm leading-relaxed">{plan.summary}</p>
                   </div>
                 )}

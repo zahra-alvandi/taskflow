@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 export function createDailyPlan({
   id = uuid(),
   date,
+  message = "",
   summary = "",
   blocks = [],
   skipped = [],
@@ -12,6 +13,7 @@ export function createDailyPlan({
   return Object.freeze({
     id,
     date, // ISO date: "2025-01-15"
+    message,
     summary,
     blocks: blocks.map((b) =>
       Object.freeze({

@@ -129,6 +129,7 @@ export function validatePlan(plan, tasks) {
     : [];
 
   return {
+    message: plan.message ?? "",
     summary: plan.summary ?? "",
     blocks,
     skipped: Array.isArray(plan.skipped)
