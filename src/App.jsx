@@ -10,6 +10,8 @@ import {
   taskRepository,
   planRepository,
   noteRepository,
+  userRepository,
+  storage,
 } from "./core/container";
 import { useDailyPlan } from "./application/hooks/useDailyPlan";
 import OfflineBanner from "./ui/components/OfflineBanner";
@@ -17,17 +19,19 @@ import InstallPrompt from "./ui/components/InstallPrompt";
 import UpdatePrompt from "./ui/components/UpdatePrompt";
 import AIPage from "./ui/pages/AIPage";
 import { useNotes } from "./application/hooks/useNotes";
-import NotesPage from "./ui/components/NotesPage";
+import NotesPage from "./ui/pages/NotesPage";
 import LoginPage from "./ui/pages/LoginPage";
 import { useAuth } from "./application/hooks/useAuth";
-import { userRepository } from "./core/container";
 import NotificationPrompt from "./ui/components/NotificationPrompt";
 import { useNotifications } from "./application/hooks/useNotifications";
+import BoardPage from "./ui/pages/BoardPage";
+import { useBoard } from "./application/hooks/UseBoard";
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [filter, setFilter] = useState("all");
+
   const dailyPlan = useDailyPlan(planRepository);
   const { notes, addNote, editNote, deleteNote, togglePin } =
     useNotes(noteRepository);
@@ -47,11 +51,11 @@ function App() {
   } = useTasks(taskRepository);
 
   const { lang, changeLang } = useLanguage();
-
   const currentTasks = filtered[filter] ?? [];
 
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
+  const boardHook = useBoard(storage, tasks);
 
   if (auth.loading) {
     return (
@@ -66,7 +70,7 @@ function App() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row">
+    <div className="w-full h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row overflow-hidden">
       <OfflineBanner />
 
       <Sidebar
@@ -77,12 +81,19 @@ function App() {
         setActiveNav={setActiveNav}
         onLogout={auth.logout}
         user={auth.user}
-       
       />
 
       <PageTransition
         transitionKey={
-          page === "settings" ? "settings" : page === "ai" ? "ai" : filter
+          page === "settings"
+            ? "settings"
+            : page === "ai"
+              ? "ai"
+              : page === "notes"
+                ? "notes"
+                : page === "board"
+                  ? "board"
+                  : filter
         }
       >
         {page === "settings" ? (
@@ -117,6 +128,20 @@ function App() {
             onBack={() => {
               setPage("dashboard");
               setActiveNav("dashboard");
+            }}
+          />
+        ) : page === "board" ? (
+          <BoardPage
+            tasks={tasks}
+            board={boardHook.board}
+            moveTask={boardHook.moveTask}
+            onBack={() => {
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
+            onCardClick={(task) => {
+              // بعداً: باز کردن modal
+              console.log("Card clicked:", task);
             }}
           />
         ) : (

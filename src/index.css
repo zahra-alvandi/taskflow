@@ -461,3 +461,27 @@ body {
 .dark .paw-bg-warm {
   background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0a06a' fill-opacity='0.05'%3E%3Cellipse cx='25' cy='30' rx='4' ry='6'/%3E%3Cellipse cx='37' cy='24' rx='4' ry='6'/%3E%3Cellipse cx='49' cy='26' rx='4' ry='6'/%3E%3Cellipse cx='59' cy='32' rx='4' ry='6'/%3E%3Cpath d='M42 36c-8 0-14 6-14 12 0 4 3 6 7 6 2 0 5-1 7-1s5 1 7 1c4 0 7-2 7-6 0-6-6-12-14-12z'/%3E%3C/g%3E%3C/svg%3E");
 }
+
+/* Board scrollbar */
+.board-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.board-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.board-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.board-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.board-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}

@@ -1,5 +1,6 @@
 import {
   LayoutDashboard,
+  LayoutGrid,
   ListTodo,
   Star,
   CircleCheckBig,
@@ -8,7 +9,7 @@ import {
   Sun,
   Settings,
   Sparkles,
-  LogOut
+  LogOut,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
@@ -69,6 +70,22 @@ function Sidebar({
           >
             <LayoutDashboard size={19} />
             {t("nav.dashboard")}
+          </button>
+
+          {/* Board */}
+          <button
+            onClick={() => {
+              setPage("board");
+              setActiveNav("board");
+            }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
+              page === "board"
+                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
+                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <LayoutGrid size={19} />
+            {t("board.title")}
           </button>
 
           {/* Filter items */}

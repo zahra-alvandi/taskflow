@@ -102,7 +102,7 @@ function Dashboard({
   const isDashboardHome = filter === "all";
 
   return (
-    <main className="flex-1 min-w-0 w-full px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8 mb-14 cat-bg-warm">
+    <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-24 sm:px-6 md:p-8 md:pb-8">
       <header className="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         <div>
           <div className="hidden md:flex items-center gap-2 mb-2">

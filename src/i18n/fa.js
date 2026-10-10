@@ -218,4 +218,14 @@ export default {
     enabled: "فعال شد",
     blocked: "برای فعال‌سازی، از تنظیمات مرورگر اجازه بده",
   },
+
+  board: {
+    title: "بورد",
+    subtitle: "کارها رو با کشیدن و رها کردن سازمان بده",
+    backlog: "بک‌لاگ",
+    inProgress: "در حال انجام",
+    done: "انجام‌شده",
+    activeTasks: "تسک فعال",
+    important: "مهم",
+  },
 };

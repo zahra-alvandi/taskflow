@@ -208,4 +208,14 @@ export default {
     enabled: "Enabled",
     blocked: "Allow notifications in your browser settings",
   },
+
+  board: {
+    title: "Board",
+    subtitle: "Organize tasks with drag & drop",
+    backlog: "Backlog",
+    inProgress: "In Progress",
+    done: "Done",
+    activeTasks: "active",
+    important: "Important",
+  },
 };
