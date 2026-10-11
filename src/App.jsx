@@ -24,8 +24,7 @@ import LoginPage from "./ui/pages/LoginPage";
 import { useAuth } from "./application/hooks/useAuth";
 import NotificationPrompt from "./ui/components/NotificationPrompt";
 import { useNotifications } from "./application/hooks/useNotifications";
-import BoardPage from "./ui/pages/BoardPage";
-import { useBoard } from "./application/hooks/UseBoard";
+import FocusPage from "./ui/components/FocusPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -55,7 +54,6 @@ function App() {
 
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
-  const boardHook = useBoard(storage, tasks);
 
   if (auth.loading) {
     return (
@@ -130,19 +128,15 @@ function App() {
               setActiveNav("dashboard");
             }}
           />
-        ) : page === "board" ? (
-          <BoardPage
+        ) : page === "focus" ? (
+          <FocusPage
             tasks={tasks}
-            board={boardHook.board}
-            moveTask={boardHook.moveTask}
             onBack={() => {
               setPage("dashboard");
               setActiveNav("dashboard");
             }}
-            onCardClick={(task) => {
-              // بعداً: باز کردن modal
-              console.log("Card clicked:", task);
-            }}
+            onToggleTask={toggleTask}
+            onEditTask={editTask}
           />
         ) : (
           <Dashboard
@@ -182,6 +176,7 @@ function App() {
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         setPage={setPage}
+        onLogout={auth.logout}
       />
 
       <InstallPrompt />

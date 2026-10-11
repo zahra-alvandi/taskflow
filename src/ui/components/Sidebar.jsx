@@ -1,6 +1,5 @@
 import {
   LayoutDashboard,
-  LayoutGrid,
   ListTodo,
   Star,
   CircleCheckBig,
@@ -10,6 +9,7 @@ import {
   Settings,
   Sparkles,
   LogOut,
+  Target,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
@@ -28,7 +28,7 @@ function Sidebar({
   const { t } = useTranslation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
-  const navItems = [
+  const filterItems = [
     { id: "all", label: t("nav.all"), icon: <ListTodo size={19} /> },
     { id: "important", label: t("nav.important"), icon: <Star size={19} /> },
     {
@@ -38,6 +38,35 @@ function Sidebar({
     },
     { id: "pending", label: t("nav.pending"), icon: <Clock size={19} /> },
   ];
+
+  const handleFilter = (id) => {
+    setFilter(id);
+    setPage("dashboard");
+  };
+
+  const handlePage = (targetPage, navId) => {
+    setPage(targetPage);
+    setActiveNav(navId ?? targetPage);
+  };
+
+  const isActive = (checkPage, checkFilter) => {
+    if (checkPage !== "dashboard") return page === checkPage;
+    return page === "dashboard" && filter === checkFilter;
+  };
+
+  const itemClass = (active) =>
+    `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
+      active
+        ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
+        : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
+    }`;
+
+  const aiItemClass = (active) =>
+    `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
+      active
+        ? "bg-[var(--surface)] text-[var(--accent)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
+        : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
+    }`;
 
   return (
     <aside className="hidden md:block w-64 shrink-0 p-4">
@@ -55,69 +84,44 @@ function Sidebar({
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-2">
+        <nav className="space-y-2 flex-1 overflow-y-auto">
           {/* Dashboard */}
           <button
-            onClick={() => {
-              setFilter("all");
-              setPage("dashboard");
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-              filter === "all" && page === "dashboard"
-                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-            }`}
+            onClick={() => handleFilter("all")}
+            className={itemClass(isActive("dashboard", "all"))}
           >
             <LayoutDashboard size={19} />
             {t("nav.dashboard")}
           </button>
 
-          {/* Board */}
+          {/* Focus */}
           <button
-            onClick={() => {
-              setPage("board");
-              setActiveNav("board");
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-              page === "board"
-                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-            }`}
+            onClick={() => handlePage("focus")}
+            className={itemClass(isActive("focus"))}
           >
-            <LayoutGrid size={19} />
-            {t("board.title")}
+            <Target size={19} />
+            {t("focus.title")}
           </button>
 
-          {/* Filter items */}
-          {navItems.map((item) => (
+          {/* Filters */}
+          {filterItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => {
-                setFilter(item.id);
-                setPage("dashboard");
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-                filter === item.id && page === "dashboard"
-                  ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                  : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-              }`}
+              onClick={() => handleFilter(item.id)}
+              className={itemClass(isActive("dashboard", item.id))}
             >
               {item.icon}
               {item.label}
             </button>
           ))}
 
+          {/* Divider */}
+          <div className="h-px bg-[var(--border)]/40 my-2" />
+
           {/* AI */}
           <button
-            onClick={() => {
-              setPage("ai");
-              setActiveNav("ai");
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-              page === "ai"
-                ? "bg-[var(--surface)] text-[var(--accent)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-            }`}
+            onClick={() => handlePage("ai")}
+            className={aiItemClass(isActive("ai"))}
           >
             <Sparkles size={19} />
             {t("ai.title")}
@@ -125,15 +129,8 @@ function Sidebar({
 
           {/* Notes */}
           <button
-            onClick={() => {
-              setPage("notes");
-              setActiveNav("notes");
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-              page === "notes"
-                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-            }`}
+            onClick={() => handlePage("notes")}
+            className={itemClass(isActive("notes"))}
           >
             <PawIcon size={19} />
             {t("note.title")}
@@ -141,15 +138,8 @@ function Sidebar({
 
           {/* Settings */}
           <button
-            onClick={() => {
-              setPage("settings");
-              setActiveNav("settings");
-            }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-              page === "settings"
-                ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-                : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-            }`}
+            onClick={() => handlePage("settings")}
+            className={itemClass(isActive("settings"))}
           >
             <Settings size={19} />
             {t("nav.settings")}
@@ -158,29 +148,31 @@ function Sidebar({
 
         {/* User + Logout */}
         {user && (
-          <div className="flex items-center gap-2 pt-2">
-            <div className="w-9 h-9 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center shrink-0">
-              <span className="text-sm font-bold text-[var(--primary)]">
-                {user.email[0].toUpperCase()}
-              </span>
+          <div className="mt-4 pt-4 border-t border-black/5 dark:border-white/5">
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center shrink-0">
+                <span className="text-sm font-bold text-[var(--primary)]">
+                  {user.email[0].toUpperCase()}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-[var(--text-primary)] truncate">
+                  {user.email}
+                </p>
+              </div>
+              <button
+                onClick={onLogout}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition shrink-0"
+                title={t("auth.logout")}
+              >
+                <LogOut size={15} />
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-[var(--text-primary)] truncate">
-                {user.email}
-              </p>
-            </div>
-            <button
-              onClick={onLogout}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition shrink-0"
-              title={t("auth.logout")}
-            >
-              <LogOut size={15} />
-            </button>
           </div>
         )}
 
-        {/* Bottom area — Dark mode */}
-        <div className="mt-auto pt-6 border-t border-black/5 dark:border-white/5">
+        {/* Dark mode */}
+        <div className="mt-4 pt-4 border-t border-black/5 dark:border-white/5">
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="w-full flex items-center gap-3 px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"

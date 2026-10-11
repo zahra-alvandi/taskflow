@@ -8,6 +8,7 @@ export default {
     pending: "Pending",
     settings: "Settings",
     notes: "Notes",
+    more: "More",
   },
   task: {
     add: "Add Task",
@@ -217,5 +218,21 @@ export default {
     done: "Done",
     activeTasks: "active",
     important: "Important",
+  },
+
+  focus: {
+    title: "Focus",
+    subtitle: "What should I do now?",
+    nowDoing: "Now doing",
+    startFocus: "Start focus",
+    markDone: "Done",
+    pause: "Pause",
+    resume: "Resume",
+    allDone: "All done for today!",
+    allDoneDesc: "Take a break or plan tomorrow",
+    upNext: "Up next",
+    doneToday: "Done today",
+    suggestions: "Suggestions",
+    modeActive: "Focus mode",
   },
 };

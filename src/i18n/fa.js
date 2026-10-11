@@ -11,6 +11,7 @@ export default {
     pending: "در انتظار",
     settings: "تنظیمات",
     notes: "یادداشت‌ها",
+    more: "بیشتر",
   },
   task: {
     add: "کار جدید",
@@ -227,5 +228,21 @@ export default {
     done: "انجام‌شده",
     activeTasks: "تسک فعال",
     important: "مهم",
+  },
+
+  focus: {
+    title: "تمرکز",
+    subtitle: "الان چیکار کنم؟",
+    nowDoing: "در حال انجام",
+    startFocus: "شروع تمرکز",
+    markDone: "تموم شد",
+    pause: "توقف",
+    resume: "ادامه",
+    allDone: "همه‌ی کارای امروز تمومه!",
+    allDoneDesc: "یه استراحت کن یا برای فردا برنامه بریز",
+    upNext: "بعدی‌ها",
+    doneToday: "امروز انجام دادی",
+    suggestions: "پیشنهاد برای بعد",
+    modeActive: "حالت تمرکز",
   },
 };
