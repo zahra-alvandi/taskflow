@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
+import { BarChart3 } from "lucide-react";
 
 function BottomNav({
   setFilter,
@@ -55,13 +56,10 @@ function BottomNav({
 
   const moreItems = [
     {
-      id: "all",
-      label: t("nav.all"),
-      icon: <ListTodo size={20} />,
-      action: () => {
-        setPage("dashboard");
-        setFilter("all");
-      },
+      id: "stats",
+      label: t("stats.pageTitle"),
+      icon: <BarChart3 size={20} />,
+      action: () => setPage("stats"),
     },
     {
       id: "settings",

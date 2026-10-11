@@ -25,6 +25,7 @@ import { useAuth } from "./application/hooks/useAuth";
 import NotificationPrompt from "./ui/components/NotificationPrompt";
 import { useNotifications } from "./application/hooks/useNotifications";
 import FocusPage from "./ui/components/FocusPage";
+import StatsPage from "./ui/pages/StatsPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -89,9 +90,11 @@ function App() {
               ? "ai"
               : page === "notes"
                 ? "notes"
-                : page === "board"
-                  ? "board"
-                  : filter
+                : page === "focus"
+                  ? "focus"
+                  : page === "stats"
+                    ? "stats"
+                    : filter
         }
       >
         {page === "settings" ? (
@@ -138,6 +141,14 @@ function App() {
             onToggleTask={toggleTask}
             onEditTask={editTask}
             onAddTask={addTask}
+          />
+        ) : page === "stats" ? (
+          <StatsPage
+            tasks={tasks}
+            onBack={() => {
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
           />
         ) : (
           <Dashboard

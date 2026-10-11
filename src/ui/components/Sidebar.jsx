@@ -15,6 +15,7 @@ import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
+import { BarChart3 } from "lucide-react";
 
 function Sidebar({
   setFilter,
@@ -115,6 +116,17 @@ function Sidebar({
           >
             <Target size={19} />
             {t("focus.title")}
+          </button>
+
+          <button
+            onClick={() => {
+              setPage("stats");
+              setActiveNav("stats");
+            }}
+            className={itemClass(isActive("stats"))}
+          >
+            <BarChart3 size={19} />
+            {t("stats.pageTitle")}
           </button>
 
           {/* Filters */}
