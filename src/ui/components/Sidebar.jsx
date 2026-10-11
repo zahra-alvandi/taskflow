@@ -29,7 +29,6 @@ function Sidebar({
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
   const filterItems = [
-    { id: "all", label: t("nav.all"), icon: <ListTodo size={19} /> },
     { id: "important", label: t("nav.important"), icon: <Star size={19} /> },
     {
       id: "completed",
@@ -39,19 +38,14 @@ function Sidebar({
     { id: "pending", label: t("nav.pending"), icon: <Clock size={19} /> },
   ];
 
-  const handleFilter = (id) => {
-    setFilter(id);
-    setPage("dashboard");
-  };
-
-  const handlePage = (targetPage, navId) => {
-    setPage(targetPage);
-    setActiveNav(navId ?? targetPage);
-  };
-
   const isActive = (checkPage, checkFilter) => {
-    if (checkPage !== "dashboard") return page === checkPage;
-    return page === "dashboard" && filter === checkFilter;
+    if (checkPage === "tasks") {
+      return page === "tasks" && filter === checkFilter;
+    }
+    if (checkPage === "dashboard") {
+      return page === "dashboard";
+    }
+    return page === checkPage;
   };
 
   const itemClass = (active) =>
@@ -87,16 +81,36 @@ function Sidebar({
         <nav className="space-y-2 flex-1 overflow-y-auto">
           {/* Dashboard */}
           <button
-            onClick={() => handleFilter("all")}
-            className={itemClass(isActive("dashboard", "all"))}
+            onClick={() => {
+              setFilter("all");
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
+            className={itemClass(isActive("dashboard"))}
           >
             <LayoutDashboard size={19} />
             {t("nav.dashboard")}
           </button>
 
+          {/* All Tasks */}
+          <button
+            onClick={() => {
+              setFilter("all");
+              setPage("tasks");
+              setActiveNav("all");
+            }}
+            className={itemClass(isActive("tasks", "all"))}
+          >
+            <ListTodo size={19} />
+            {t("nav.all")}
+          </button>
+
           {/* Focus */}
           <button
-            onClick={() => handlePage("focus")}
+            onClick={() => {
+              setPage("focus");
+              setActiveNav("focus");
+            }}
             className={itemClass(isActive("focus"))}
           >
             <Target size={19} />
@@ -107,8 +121,12 @@ function Sidebar({
           {filterItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => handleFilter(item.id)}
-              className={itemClass(isActive("dashboard", item.id))}
+              onClick={() => {
+                setFilter(item.id);
+                setPage("tasks");
+                setActiveNav(item.id);
+              }}
+              className={itemClass(isActive("tasks", item.id))}
             >
               {item.icon}
               {item.label}
@@ -120,7 +138,10 @@ function Sidebar({
 
           {/* AI */}
           <button
-            onClick={() => handlePage("ai")}
+            onClick={() => {
+              setPage("ai");
+              setActiveNav("ai");
+            }}
             className={aiItemClass(isActive("ai"))}
           >
             <Sparkles size={19} />
@@ -129,7 +150,10 @@ function Sidebar({
 
           {/* Notes */}
           <button
-            onClick={() => handlePage("notes")}
+            onClick={() => {
+              setPage("notes");
+              setActiveNav("notes");
+            }}
             className={itemClass(isActive("notes"))}
           >
             <PawIcon size={19} />
@@ -138,7 +162,10 @@ function Sidebar({
 
           {/* Settings */}
           <button
-            onClick={() => handlePage("settings")}
+            onClick={() => {
+              setPage("settings");
+              setActiveNav("settings");
+            }}
             className={itemClass(isActive("settings"))}
           >
             <Settings size={19} />

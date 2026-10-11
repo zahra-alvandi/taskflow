@@ -19,6 +19,7 @@ export default {
     timeAmbiguous: "AM or PM?",
     timeSet: "Set",
     notePlaceholder: "What do you want to note?",
+    recent: "Recent tasks",
     priority: { high: "High", medium: "Medium", low: "Low" },
     typeTask: "Task",
     typeNote: "Note",
@@ -234,5 +235,11 @@ export default {
     doneToday: "Done today",
     suggestions: "Suggestions",
     modeActive: "Focus mode",
+    quickAdd: "Quick add",
+  },
+
+  actions: {
+    add: "Add",
+    discard: "Discard",
   },
 };

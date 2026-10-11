@@ -24,6 +24,7 @@ export default {
     typeNote: "یادداشت",
     notePlaceholder: "چی می‌خوای یادداشت کنی؟",
     timeSet: "تنظیم شد",
+    recent: "کار های اخیر",
     priority: {
       high: "زیاد",
       medium: "متوسط",
@@ -244,5 +245,11 @@ export default {
     doneToday: "امروز انجام دادی",
     suggestions: "پیشنهاد برای بعد",
     modeActive: "حالت تمرکز",
+    quickAdd: "تسک سریع",
+  },
+
+  actions: {
+    add: "افزودن",
+    discard: "بیخیال",
   },
 };

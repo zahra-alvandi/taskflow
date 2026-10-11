@@ -10,14 +10,18 @@ import {
   Sparkles,
   ChevronRight,
   Zap,
+  Plus,
+  X,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { CatEars, WhiskerLine } from "../components/CatDecorations";
 import FocusMode from "../components/FocusMode";
 
-function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
+function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
   const { t } = useTranslation();
   const [focusTask, setFocusTask] = useState(null);
+  const [quickTitle, setQuickTitle] = useState("");
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   const { todayTasks, doneToday, suggestions } = useMemo(() => {
     const now = new Date();
@@ -53,6 +57,13 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
   const mainTask = todayTasks[0];
   const otherTasks = todayTasks.slice(1);
 
+  const handleQuickAdd = () => {
+    if (!quickTitle.trim()) return;
+    onAddTask?.({ title: quickTitle.trim() });
+    setQuickTitle("");
+    setShowQuickAdd(false);
+  };
+
   return (
     <main className="flex-1 min-w-0 w-full h-full overflow-y-auto paw-bg-warm px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
       <div className="max-w-3xl mx-auto">
@@ -74,7 +85,8 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
               />
               <Target size={22} className="text-white" />
             </div>
-            <div className="flex-1">
+
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold">{t("focus.title")}</h1>
                 <WhiskerLine
@@ -82,17 +94,25 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
                   className="text-[var(--primary)] hidden sm:block"
                 />
               </div>
-              <p className="text-sm text-[var(--text-secondary)]">
+              <p className="text-sm text-[var(--text-secondary)] truncate">
                 {t("focus.subtitle")}
               </p>
             </div>
+
+            {/* Quick Add Button */}
+            <button
+              onClick={() => setShowQuickAdd(true)}
+              className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:-translate-y-0.5 transition"
+            >
+              <Plus size={14} />
+              <span className="hidden sm:inline">{t("focus.quickAdd")}</span>
+            </button>
           </div>
         </div>
 
         {/* Hero Task */}
         {mainTask ? (
           <div className="mb-6 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] p-6 shadow-[0_12px_30px_rgba(232,135,74,0.4)] text-white relative overflow-hidden">
-            {/* Decoration */}
             <div className="absolute -top-8 -end-8 w-32 h-32 rounded-full bg-white/10" />
             <div className="absolute -bottom-12 -start-12 w-40 h-40 rounded-full bg-white/5" />
 
@@ -137,7 +157,6 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
                 )}
               </div>
 
-              {/* Actions */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setFocusTask(mainTask)}
@@ -277,13 +296,80 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask }) {
           }}
         />
       )}
+
+      {/* Quick Add Modal */}
+      {showQuickAdd && (
+        <>
+          <div
+            className="fixed inset-0 z-[150] bg-black/40 backdrop-blur-sm"
+            onClick={() => {
+              setQuickTitle("");
+              setShowQuickAdd(false);
+            }}
+          />
+          <div className="fixed top-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-[160] animate-fade-slide-sm">
+            <div className="rounded-3xl bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center">
+                  <Plus size={16} className="text-[var(--primary)]" />
+                </div>
+                <span className="text-sm font-medium text-[var(--text-primary)]">
+                  {t("focus.quickAdd")}
+                </span>
+                <button
+                  onClick={() => {
+                    setQuickTitle("");
+                    setShowQuickAdd(false);
+                  }}
+                  className="ms-auto w-7 h-7 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--app-bg)] transition"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+
+              <input
+                autoFocus
+                type="text"
+                value={quickTitle}
+                onChange={(e) => setQuickTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleQuickAdd();
+                  if (e.key === "Escape") {
+                    setQuickTitle("");
+                    setShowQuickAdd(false);
+                  }
+                }}
+                placeholder={t("task.titlePlaceholder")}
+                className="w-full px-4 py-3 rounded-2xl bg-[var(--app-bg)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none shadow-[var(--shadow-inset)] transition"
+              />
+
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={handleQuickAdd}
+                  disabled={!quickTitle.trim()}
+                  className="flex-1 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium disabled:opacity-40 hover:bg-[var(--primary-hover)] transition"
+                >
+                  {t("actions.add")}
+                </button>
+                <button
+                  onClick={() => {
+                    setQuickTitle("");
+                    setShowQuickAdd(false);
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-[var(--app-bg)] text-[var(--text-secondary)] text-sm font-medium transition"
+                >
+                  {t("actions.cancel")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </main>
   );
 }
 
-/* ============================================
-   Today Task Card
-============================================ */
+/* Today Task Card */
 function TodayTaskCard({ task, onToggle, onFocus }) {
   const priorityStyles = {
     high: "border-s-[var(--danger)]",

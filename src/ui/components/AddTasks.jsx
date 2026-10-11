@@ -365,9 +365,9 @@ function AddTask({ addTask }) {
           )}
 
         {/* Manual controls */}
-        <div className="flex flex-row items-center justify-evenly md:justify-center lg:flex-row gap-3 mt-4">
+        <div className="flex flex-wrap items-center gap-2 mt-4 sm:gap-3">
           {/* Priority */}
-          <div className="priority-picker relative lg:w-32 shrink-0">
+          <div className="priority-picker relative flex-1 min-w-[100px] sm:flex-none sm:w-32 shrink-0">
             <button
               type="button"
               onClick={() => setShowPriority(!showPriority)}
@@ -383,7 +383,9 @@ function AddTask({ addTask }) {
                         : "bg-[var(--success)]"
                   }`}
                 />
-                <span>{t(`task.priority.${priority}`)}</span>
+                <span className="truncate">
+                  {t(`task.priority.${priority}`)}
+                </span>
                 <span className="text-xs opacity-60">⌄</span>
               </div>
             </button>
@@ -414,7 +416,7 @@ function AddTask({ addTask }) {
 
           {/* Date */}
           <DatePicker
-            wrapperClassName="lg:w-40 shrink-0"
+            wrapperClassName="flex-1 min-w-[120px] sm:flex-none sm:w-40 shrink-0"
             selected={dueDate ? new Date(dueDate + "T00:00:00") : null}
             onChange={(date) => {
               if (date) {
@@ -434,12 +436,12 @@ function AddTask({ addTask }) {
                 type="button"
                 className="w-full px-3 py-3 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-secondary)] flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <Calendar size={18} />
+                <Calendar size={18} className="shrink-0" />
                 <span className="truncate">
                   {dueDate
                     ? new Date(dueDate + "T00:00:00").toLocaleDateString(
                         undefined,
-                        { month: "short", day: "numeric", year: "numeric" },
+                        { month: "short", day: "numeric" },
                       )
                     : t("task.pickDate")}
                 </span>
@@ -450,7 +452,7 @@ function AddTask({ addTask }) {
           {/* Add */}
           <button
             type="submit"
-            className="lg:w-40 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.28)] hover:bg-[var(--primary-hover)] transition"
+            className="w-full sm:w-32 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.28)] hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
           >
             <Plus size={18} />
             {t("task.add")}

@@ -21,8 +21,8 @@ function StatCard({ id, title, value, description, icon, onClick, isActive }) {
       className={`
         text-left w-full
         bg-[var(--surface)]
-        p-5
-        rounded-3xl
+        p-3 sm:p-5
+        rounded-2xl sm:rounded-3xl
         shadow-[var(--shadow-soft)]
         transition-all
         duration-300
@@ -33,16 +33,31 @@ function StatCard({ id, title, value, description, icon, onClick, isActive }) {
         ${isActive ? "ring-2 ring-[var(--primary)] ring-offset-2 ring-offset-[var(--app-bg)]" : ""}
       `}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm text-[var(--text-secondary)]">{title}</p>
-          <h3 className="text-4xl font-bold mt-3 tracking-tight">{value}</h3>
-          <p className="text-xs text-[var(--text-muted)] mt-2">{description}</p>
+      <div className="flex items-start justify-between gap-2 sm:gap-4">
+        <div className="min-w-0">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] truncate">
+            {title}
+          </p>
+          <h3 className="text-2xl sm:text-4xl font-bold mt-1 sm:mt-3 tracking-tight tabular-nums">
+            {value}
+          </h3>
+          <p className="hidden sm:block text-xs text-[var(--text-muted)] mt-2 truncate">
+            {description}
+          </p>
         </div>
         <div
-          className={`w-12 h-12 rounded-2xl flex items-center justify-center ${style.bg} ${style.icon} shadow-[var(--shadow-soft-small)]`}
+          className={`
+            w-8 h-8 sm:w-12 sm:h-12
+            shrink-0
+            rounded-xl sm:rounded-2xl
+            flex items-center justify-center
+            ${style.bg}
+            ${style.icon}
+            shadow-[var(--shadow-soft-small)]
+          `}
         >
-          {icon}
+          <span className="hidden sm:inline">{icon}</span>
+          <span className="sm:hidden scale-75">{icon}</span>
         </div>
       </div>
     </button>

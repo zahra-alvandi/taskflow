@@ -137,6 +137,7 @@ function App() {
             }}
             onToggleTask={toggleTask}
             onEditTask={editTask}
+            onAddTask={addTask}
           />
         ) : (
           <Dashboard
@@ -145,6 +146,7 @@ function App() {
             filter={filter}
             setFilter={setFilter}
             setPage={setPage}
+            viewMode={page === "dashboard" ? "dashboard" : "tasks"}
             onOpenAI={() => {
               setPage("ai");
               setActiveNav("ai");
