@@ -229,11 +229,27 @@ export default {
   },
 
   notif: {
+    // Prompt
     enableTitle: "یادآوری تسک‌ها",
     enableDesc: "می‌خوای قبل از ددلاین بهت خبر بدم؟",
     enable: "فعال کن",
-    enabled: "فعال شد",
-    blocked: "برای فعال‌سازی، از تنظیمات مرورگر اجازه بده",
+    later: "بعداً",
+
+    // Settings
+    settingsTitle: "نوتیفیکیشن",
+    settingsSubtitle: "یادآوری ددلاین‌ها",
+    on: "فعال",
+    enabledLabel: "نوتیف‌ها",
+    onDesc: "یادآوری فعاله",
+    offDesc: "یادآوری خاموشه",
+    unsupported: "مرورگرت از نوتیف پشتیبانی نمی‌کنه",
+    deniedTitle: "نوتیف بلاک شده",
+    deniedDesc: "برای فعال‌سازی، از تنظیمات مرورگر اجازه بده",
+    test: "تست کن",
+    testSent: "ارسال شد!",
+    testBody: "این یه نوتیف تستیه 🐱",
+    iosHint:
+      "روی iPhone، اول اپ رو به Home Screen اضافه کن (Add to Home Screen)، بعد نوتیف فعال می‌شه",
   },
 
   board: {

@@ -222,8 +222,22 @@ export default {
     enableTitle: "Task reminders",
     enableDesc: "Want me to remind you before deadlines?",
     enable: "Enable",
-    enabled: "Enabled",
-    blocked: "Allow notifications in your browser settings",
+    later: "Later",
+
+    settingsTitle: "Notifications",
+    settingsSubtitle: "Deadline reminders",
+    on: "On",
+    enabledLabel: "Notifications",
+    onDesc: "Reminders are on",
+    offDesc: "Reminders are off",
+    unsupported: "Your browser doesn't support notifications",
+    deniedTitle: "Notifications blocked",
+    deniedDesc: "Allow notifications in your browser settings",
+    test: "Send test",
+    testSent: "Sent!",
+    testBody: "This is a test notification 🐱",
+    iosHint:
+      "On iPhone, first add the app to Home Screen, then notifications will work",
   },
 
   board: {

@@ -98,7 +98,7 @@ function App() {
         }
       >
         {page === "settings" ? (
-          <SettingsPage lang={lang} onChangeLang={changeLang} />
+          <SettingsPage lang={lang} onChangeLang={changeLang} notif={notif} />
         ) : page === "ai" ? (
           <AIPage
             tasks={tasks}
@@ -194,7 +194,10 @@ function App() {
 
       <InstallPrompt />
       <UpdatePrompt />
-      <NotificationPrompt onEnable={notif.requestPermission} />
+      <NotificationPrompt
+        onEnable={notif.requestPermission}
+        permission={notif.permission}
+      />
     </div>
   );
 }

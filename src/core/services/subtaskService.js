@@ -1,7 +1,7 @@
 import { createSubtask } from "../domain/Subtask";
 import { parseSubtaskText } from "./subtaskParser";
 
-const SEPARATORS = /[\-–—،,;؛:|/\\\n]+/;
+const SEPARATORS = /[\-–—،,;؛|/\\\n]+/;
 const WORD_SEPARATOR = /\s+(?:و|and)\s+/i;
 
 function cleanPart(text) {

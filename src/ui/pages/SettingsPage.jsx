@@ -14,6 +14,7 @@ import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { useLanguage } from "../../application/hooks/useLanguage";
 import { useAISettings } from "../../application/hooks/useAISettings";
+import NotificationSettings from "../components/NotificationSettings";
 
 const PROVIDERS = [
   {
@@ -94,7 +95,7 @@ function SettingsPage() {
         {t("settings.subtitle")}
       </p>
 
-      {/* ============ Appearance ============ */}
+      {/* Appearance */}
       <section className="mt-8 bg-[var(--surface)] rounded-3xl p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-semibold mb-5 text-[var(--text-primary)]">
           {t("settings.appearance")}
@@ -131,7 +132,7 @@ function SettingsPage() {
         </div>
       </section>
 
-      {/* ============ Language ============ */}
+      {/* Language */}
       <section className="mt-6 bg-[var(--surface)] rounded-3xl p-5 shadow-[var(--shadow-soft)]">
         <h2 className="font-semibold mb-5 text-[var(--text-primary)]">
           {t("settings.language")}
@@ -164,7 +165,10 @@ function SettingsPage() {
         </div>
       </section>
 
-      {/* ============ AI ============ */}
+      {/*  Notifications */}
+      {notif && <NotificationSettings notif={notif} />}
+
+      {/* AI */}
       <section className="mt-6 bg-[var(--surface)] rounded-3xl p-5 shadow-[var(--shadow-soft)]">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex items-center gap-3">
