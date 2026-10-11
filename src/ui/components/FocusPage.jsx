@@ -345,20 +345,20 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
 
               <div className="flex gap-2 mt-3">
                 <button
-                  onClick={handleQuickAdd}
-                  disabled={!quickTitle.trim()}
-                  className="flex-1 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium disabled:opacity-40 hover:bg-[var(--primary-hover)] transition"
-                >
-                  {t("actions.add")}
-                </button>
-                <button
                   onClick={() => {
                     setQuickTitle("");
                     setShowQuickAdd(false);
                   }}
-                  className="flex-1 py-2.5 rounded-xl bg-[var(--app-bg)] text-[var(--text-secondary)] text-sm font-medium transition"
+                  className="flex-1 py-2.5 rounded-xl bg-[var(--app-bg)] text-[var(--text-secondary)] text-sm font-medium hover:text-[var(--text-primary)] transition"
                 >
-                  {t("actions.cancel")}
+                  {t("actions.discard")}
+                </button>
+                <button
+                  onClick={handleQuickAdd}
+                  disabled={!quickTitle.trim()}
+                  className="flex-1 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium disabled:opacity-40 hover:bg-[var(--primary-hover)] transition"
+                >
+                  {t("focus.addTask")}
                 </button>
               </div>
             </div>

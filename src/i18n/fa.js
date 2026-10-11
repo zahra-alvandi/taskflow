@@ -246,6 +246,7 @@ export default {
     suggestions: "پیشنهاد برای بعد",
     modeActive: "حالت تمرکز",
     quickAdd: "تسک سریع",
+    addTask: "افزودن",
   },
 
   actions: {
