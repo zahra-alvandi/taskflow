@@ -161,6 +161,14 @@ function App() {
             onDelete={deleteTask}
             onToggleTask={toggleTask}
           />
+        ) : page === "stats" ? (
+          <StatsPage
+            tasks={tasks}
+            onBack={() => {
+              setPage("dashboard");
+              setActiveNav("dashboard");
+            }}
+          />
         ) : (
           <Dashboard
             tasks={currentTasks}

@@ -87,7 +87,7 @@ function SettingsPage({ notif }) {
   const isConfigured = Boolean(settings.apiKey && settings.enabled);
 
   return (
-    <main className="flex-1 min-h-screen p-5 md:p-8 pb-32">
+    <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
       <h1 className="text-3xl font-bold text-[var(--text-primary)]">
         {t("settings.title")}
       </h1>

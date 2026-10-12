@@ -41,7 +41,7 @@ function StatsPage({ tasks, onBack }) {
   const priorities = useMemo(() => getPriorityBreakdown(tasks), [tasks]);
 
   return (
-    <main className="flex-1 min-w-0 w-full h-full overflow-y-auto paw-bg-warm px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
+    <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-32 sm:px-6 md:p-8 md:pb-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -232,7 +232,7 @@ function StatsPage({ tasks, onBack }) {
               </div>
             </div>
             <p className="text-sm text-white/90 mt-3">
-              {t("stats.bestDayDesc", { count: bestDay.count })}
+              {t("stats.bestDayDesc").replace("{count}", bestDay.count)}
             </p>
           </div>
         )}
