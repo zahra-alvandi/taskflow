@@ -40,7 +40,7 @@ const KEY_URLS = {
   groq: "https://console.groq.com/keys",
 };
 
-function SettingsPage() {
+function SettingsPage({ notif }) {
   const { t } = useTranslation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
   const { lang, changeLang } = useLanguage();

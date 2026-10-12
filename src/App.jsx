@@ -26,6 +26,7 @@ import NotificationPrompt from "./ui/components/NotificationPrompt";
 import { useNotifications } from "./application/hooks/useNotifications";
 import FocusPage from "./ui/components/FocusPage";
 import StatsPage from "./ui/pages/StatsPage";
+import TaskDetailPage from "./ui/pages/TaskDetailPage";
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -55,6 +56,7 @@ function App() {
 
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
+  const [detailTaskId, setDetailTaskId] = useState(null);
 
   if (auth.loading) {
     return (
@@ -67,6 +69,10 @@ function App() {
   if (!auth.isAuthenticated) {
     return <LoginPage onLogin={auth.login} />;
   }
+
+  const detailTask = detailTaskId
+    ? tasks.find((t) => t.id === detailTaskId)
+    : null;
 
   return (
     <div className="w-full h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row overflow-hidden">
@@ -94,7 +100,9 @@ function App() {
                   ? "focus"
                   : page === "stats"
                     ? "stats"
-                    : filter
+                    : page === "task-detail"
+                      ? `task-${detailTaskId}`
+                      : filter
         }
       >
         {page === "settings" ? (
@@ -142,13 +150,16 @@ function App() {
             onEditTask={editTask}
             onAddTask={addTask}
           />
-        ) : page === "stats" ? (
-          <StatsPage
-            tasks={tasks}
+        ) : page === "task-detail" && detailTask ? (
+          <TaskDetailPage
+            task={detailTask}
             onBack={() => {
               setPage("dashboard");
-              setActiveNav("dashboard");
+              setDetailTaskId(null);
             }}
+            onSave={editTask}
+            onDelete={deleteTask}
+            onToggleTask={toggleTask}
           />
         ) : (
           <Dashboard
@@ -179,6 +190,10 @@ function App() {
             onTogglePlanBlock={dailyPlan.toggleBlock}
             onEditPlanBlock={dailyPlan.editBlock}
             onDeletePlanBlock={dailyPlan.deleteBlock}
+            onOpenDetail={(task) => {
+              setDetailTaskId(task.id);
+              setPage("task-detail");
+            }}
           />
         )}
       </PageTransition>

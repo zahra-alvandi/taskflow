@@ -3,6 +3,7 @@ export default {
     name: "Whiskerly",
     tagline: "کارها رو ساده کن",
   },
+
   nav: {
     dashboard: "داشبورد",
     all: "همه‌ی کارها",
@@ -13,6 +14,7 @@ export default {
     notes: "یادداشت‌ها",
     more: "بیشتر",
   },
+
   task: {
     add: "کار جدید",
     title: "چه کاری داری؟",
@@ -20,21 +22,39 @@ export default {
     am: "صبح",
     pm: "عصر/شب",
     timeAmbiguous: "صبح یا شب؟",
+    timeSet: "تنظیم شد",
     typeTask: "کار",
     typeNote: "یادداشت",
     notePlaceholder: "چی می‌خوای یادداشت کنی؟",
-    timeSet: "تنظیم شد",
-    recent: "کار های اخیر",
+    recent: "کارهای اخیر",
+    search: "جستجوی کار...",
+    back: "برگشت",
+    backToDashboard: "برگشت به داشبورد",
+    titlePlaceholder: "چه کاری داری؟ مثلاً: فردا جلسه با تیم مهم",
+    autoDetected: "تشخیص خودکار",
+    inferred: "(حدسی)",
+    subtasksFound: "زیرتسک پیدا شد",
+
     priority: {
       high: "زیاد",
       medium: "متوسط",
       low: "کم",
     },
+
+    chip: {
+      priority: "اولویت",
+      date: "تاریخ",
+      time: "ساعت",
+      tag: "تگ",
+      title: "عنوان",
+    },
+
     status: {
       completed: "انجام شد",
       inProgress: "در جریان",
       overdue: "عقب‌افتاده",
     },
+
     empty: {
       all: "هنوز کاری نداری. اولین کارت رو بساز!",
       important: "کار مهمی نداری.",
@@ -42,22 +62,25 @@ export default {
       pending: "همه‌ی کارات انجام شده! 🎉",
       notes: "هنوز یادداشتی نداری.",
     },
-    search: "جستجوی کار...",
-    back: "برگشت",
-    backToDashboard: "برگشت به داشبورد",
-    titlePlaceholder: "چه کاری داری؟ مثلاً: فردا جلسه با تیم مهم",
-    autoDetected: "تشخیص خودکار",
-    inferred: "(حدسی)",
-    priority: {
-      high: "زیاد",
-      medium: "متوسط",
-      low: "کم",
-      titlePlaceholder: "چه کاری داری؟ ",
-      subtasksFound: "زیرتسک پیدا شد",
-      autoDetected: "تشخیص خودکار",
-      inferred: "(حدسی)",
+
+    detail: {
+      dueDate: "تاریخ",
+      startTime: "شروع",
+      endTime: "پایان",
+      duration: "مدت",
+      markImportant: "علامت‌گذاری به عنوان مهم",
+      description: "توضیحات",
+      descriptionPlaceholder: "توضیحات اضافه کن...",
+      tags: "تگ‌ها",
+      addTag: "تگ جدید...",
+      subtasks: "زیرتسک‌ها",
+      confirmDelete: "این تسک حذف بشه؟",
+      title: "جزئیات تسک",
+      schedule: "زمان‌بندی",
+      markComplete: "علامت‌گذاری به عنوان انجام‌شده",
     },
   },
+
   stats: {
     total: "کل کارها",
     completed: "انجام‌شده",
@@ -83,25 +106,26 @@ export default {
     more: "بیشتر",
     tasks: "تسک",
   },
+
   greeting: {
     morning: "صبح بخیر",
     evening: "شب بخیر",
     welcomeBack: "خوش برگشتی",
     subtitle: "بذار امروز رو مفید بسازیم.",
   },
+
   settings: {
     title: "تنظیمات",
-    subtitle: "تجربه‌ی تسک‌فلو رو شخصی کن.",
+    subtitle: "تجربه‌ی ويسکرلی رو شخصی کن.",
     appearance: "ظاهر",
     darkMode: "حالت تاریک",
+    lightMode: "حالت روشن",
     enabled: "فعال",
     disabled: "غیرفعال",
     language: "زبان",
     calendar: "تقویم",
     jalali: "شمسی",
     gregorian: "میلادی",
-    lightMode: "حالت روشن",
-    darkMode: "حالت تاریک",
   },
 
   subtask: {
@@ -114,6 +138,7 @@ export default {
     edit: "ویرایش",
     save: "ذخیره",
     cancel: "لغو",
+    discard: "بی‌خیال",
     delete: "حذف",
     undo: "برگردون",
     deleteConfirm: "این کار حذف بشه؟",
@@ -129,6 +154,7 @@ export default {
     provider: "سرویس",
     providerGroq: "Groq",
     providerOpenRouter: "OpenRouter",
+    providerGemini: "Gemini (گوگل)",
     apiKey: "کلید API",
     apiKeyPlaceholder: "کلیدت رو اینجا بذار",
     model: "مدل",
@@ -142,14 +168,11 @@ export default {
     error: "خطا در ارتباط با AI",
     suggestions: "پیشنهادهای AI",
     applyAll: "اعمال همه",
+    applySelected: "افزودن انتخاب‌شده‌ها",
     estimatedTime: "زمان تخمینی",
     suggestedSubtasks: "زیرتسک‌های پیشنهادی",
     minutes: "دقیقه",
     reasoning: "دلیل",
-    applySelected: "افزودن انتخاب‌شده‌ها",
-    providerGemini: "Gemini (گوگل)",
-    providerOpenRouter: "OpenRouter",
-    providerGroq: "Groq",
     notConfigured: "AI هنوز تنظیم نشده. برو تو تنظیمات و کلیدت رو وارد کن.",
     tabPlan: "برنامه‌ریزی",
     tabChat: "گفتگو",
@@ -195,6 +218,7 @@ export default {
     empty:
       "هنوز برنامه‌ای نداری. دکمه‌ی بالا رو بزن تا AI برنامه‌ی روزت رو بچینه.",
   },
+
   pwa: {
     installTitle: "Whiskerly رو نصب کن",
     installDesc: "برای دسترسی سریع‌تر و کار آفلاین",
@@ -229,13 +253,10 @@ export default {
   },
 
   notif: {
-    // Prompt
     enableTitle: "یادآوری تسک‌ها",
     enableDesc: "می‌خوای قبل از ددلاین بهت خبر بدم؟",
     enable: "فعال کن",
     later: "بعداً",
-
-    // Settings
     settingsTitle: "نوتیفیکیشن",
     settingsSubtitle: "یادآوری ددلاین‌ها",
     on: "فعال",
@@ -250,16 +271,6 @@ export default {
     testBody: "این یه نوتیف تستیه 🐱",
     iosHint:
       "روی iPhone، اول اپ رو به Home Screen اضافه کن (Add to Home Screen)، بعد نوتیف فعال می‌شه",
-  },
-
-  board: {
-    title: "بورد",
-    subtitle: "کارها رو با کشیدن و رها کردن سازمان بده",
-    backlog: "بک‌لاگ",
-    inProgress: "در حال انجام",
-    done: "انجام‌شده",
-    activeTasks: "تسک فعال",
-    important: "مهم",
   },
 
   focus: {
@@ -278,10 +289,5 @@ export default {
     modeActive: "حالت تمرکز",
     quickAdd: "تسک سریع",
     addTask: "افزودن",
-  },
-
-  actions: {
-    add: "افزودن",
-    discard: "بیخیال",
   },
 };

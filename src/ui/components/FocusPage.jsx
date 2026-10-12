@@ -17,7 +17,7 @@ import { useTranslation } from "../../application/hooks/useTranslation";
 import { CatEars, WhiskerLine } from "../components/CatDecorations";
 import FocusMode from "../components/FocusMode";
 
-function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
+function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
   const { t } = useTranslation();
   const [focusTask, setFocusTask] = useState(null);
   const [quickTitle, setQuickTitle] = useState("");
@@ -38,6 +38,11 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
         return due.getTime() <= today.getTime();
       })
       .sort((a, b) => {
+        const aOverdue = a.dueDate && new Date(a.dueDate) < today;
+        const bOverdue = b.dueDate && new Date(b.dueDate) < today;
+        if (aOverdue && !bOverdue) return -1;
+        if (!aOverdue && bOverdue) return 1;
+
         const order = { high: 0, medium: 1, low: 2 };
         return (order[a.priority] ?? 1) - (order[b.priority] ?? 1);
       });
@@ -99,7 +104,6 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
               </p>
             </div>
 
-            {/* Quick Add Button */}
             <button
               onClick={() => setShowQuickAdd(true)}
               className="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:-translate-y-0.5 transition"
@@ -130,7 +134,10 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
                 )}
               </div>
 
-              <h2 className="text-2xl font-bold mb-3 leading-tight">
+              <h2
+                onClick={() => onOpenDetail?.(mainTask)}
+                className="text-2xl font-bold mb-3 leading-tight cursor-pointer hover:opacity-90 transition"
+              >
                 {mainTask.title}
               </h2>
 
@@ -210,6 +217,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
                   task={task}
                   onToggle={() => onToggleTask(task.id)}
                   onFocus={() => setFocusTask(task)}
+                  onOpenDetail={() => onOpenDetail?.(task)}
                 />
               ))}
             </div>
@@ -267,7 +275,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
               {suggestions.map((task) => (
                 <button
                   key={task.id}
-                  onClick={() => setFocusTask(task)}
+                  onClick={() => onOpenDetail?.(task)}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] hover:shadow-[var(--shadow-soft)] text-start transition"
                 >
                   <div className="w-5 h-5 rounded-md border-2 border-[var(--text-muted)]/40 shrink-0" />
@@ -369,8 +377,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onEditTask, onAddTask }) {
   );
 }
 
-/* Today Task Card */
-function TodayTaskCard({ task, onToggle, onFocus }) {
+function TodayTaskCard({ task, onToggle, onFocus, onOpenDetail }) {
   const priorityStyles = {
     high: "border-s-[var(--danger)]",
     medium: "border-s-[var(--warning)]",
@@ -398,7 +405,7 @@ function TodayTaskCard({ task, onToggle, onFocus }) {
         />
       </button>
 
-      <div className="flex-1 min-w-0 cursor-pointer" onClick={onFocus}>
+      <div className="flex-1 min-w-0 cursor-pointer" onClick={onOpenDetail}>
         <p className="text-sm font-medium text-[var(--text-primary)] truncate">
           {task.title}
         </p>

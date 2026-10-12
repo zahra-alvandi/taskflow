@@ -9,6 +9,8 @@ export function createTask({
   priority = "medium",
   dueDate = null,
   dueTime = null,
+  dueEndTime = null,
+  durationMinutes = null,
   projectId = null,
   tags = [],
   subtasks = [],
@@ -33,6 +35,8 @@ export function createTask({
     priority,
     dueDate,
     dueTime,
+    dueEndTime,
+    durationMinutes,
     projectId,
     tags,
     subtasks,
@@ -71,9 +75,9 @@ export function isOverdue(task) {
   return due < today;
 }
 
-/* ================================
+/* 
    Subtask Helpers
-================================ */
+ */
 
 export function addSubtaskToTask(task, subtask) {
   return updateTask(task, {

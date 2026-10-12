@@ -11,6 +11,7 @@ function TaskList({
   onToggleSubtask,
   onEditSubtask,
   onDeleteSubtask,
+  onOpenDetail,
 }) {
   return (
     <div className="w-full space-y-3 mt-5">
@@ -34,6 +35,7 @@ function TaskList({
             onToggleSubtask={onToggleSubtask}
             onEditSubtask={onEditSubtask}
             onDeleteSubtask={onDeleteSubtask}
+            onOpenDetail={onOpenDetail}
           />
         ),
       )}

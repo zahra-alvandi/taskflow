@@ -34,6 +34,7 @@ function Dashboard({
   plan,
   planProgress,
   onTogglePlanBlock,
+  onOpenDetail,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -56,12 +57,10 @@ function Dashboard({
   const isAllTasks = filter === "all" && !isDashboard;
   const isFiltered = !isDashboard && filter !== "all";
 
-  // Title
   let pageTitle = "";
   if (isAllTasks) pageTitle = t("nav.all");
   else if (isFiltered) pageTitle = t(`nav.${filter}`);
 
-  // Empty text
   let pageText = "";
   if (tasks.length === 0) pageText = t(`task.empty.${filter}`);
   if (searchedTasks.length === 0 && search.trim() !== "")
@@ -102,12 +101,10 @@ function Dashboard({
     },
   ];
 
-  // 👇 StatCards فقط تو dashboard mode و اگه تسک داری
   const showStatCards = isDashboard && allTasks.length > 0;
 
   return (
     <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-28 sm:px-6 md:p-8 md:pb-8">
-      {/* Header */}
       <header className="mb-6">
         {isDashboard ? (
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -163,7 +160,6 @@ function Dashboard({
         </div>
       )}
 
-      {/* AddTask */}
       {isDashboard && <AddTask addTask={addTask} />}
 
       {isDashboard && plan && (
@@ -177,12 +173,10 @@ function Dashboard({
         </div>
       )}
 
-      {/* Page title */}
       {isDashboard && (
         <h3 className="text-lg font-bold my-4">{t("task.recent")}</h3>
       )}
 
-      {/* Task list */}
       <div key={`${viewMode}-${filter}`} className="animate-fade-slide">
         {searchedTasks.length === 0 ? (
           <EmptyState
@@ -205,6 +199,7 @@ function Dashboard({
             onToggleSubtask={toggleSubtask}
             onEditSubtask={editSubtask}
             onDeleteSubtask={removeSubtask}
+            onOpenDetail={onOpenDetail}
           />
         )}
       </div>
@@ -212,9 +207,6 @@ function Dashboard({
   );
 }
 
-/* 
-   Sub-components
- */
 function SearchInput({ value, onChange, t }) {
   return (
     <div className="relative w-full lg:w-72">

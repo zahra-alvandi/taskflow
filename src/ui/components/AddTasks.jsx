@@ -39,9 +39,7 @@ function AddTask({ addTask }) {
 
   const parsedSubtasks = parsed.subtasks ?? [];
 
-  /* ============================================
-     Auto-resize
-  ============================================ */
+  /* Auto-resize */
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -49,9 +47,7 @@ function AddTask({ addTask }) {
     el.style.height = el.scrollHeight + "px";
   }, [title]);
 
-  /* ============================================
-     NLP auto-fill
-  ============================================ */
+  /* NLP auto-fill */
   useEffect(() => {
     if (parsed.priority && !priorityManuallySet) setPriority(parsed.priority);
   }, [parsed.priority, priorityManuallySet]);
@@ -70,17 +66,13 @@ function AddTask({ addTask }) {
     }
   }, [parsed.tags.join(",")]); // eslint-disable-line
 
-  /* ============================================
-     Reset AI suggestions when title changes
-  ============================================ */
+  /* Reset AI suggestions */
   useEffect(() => {
     setAiSuggestions(null);
     setAiDismissed(false);
   }, [title]);
 
-  /* ============================================
-     AI analysis
-  ============================================ */
+  /* AI analysis */
   const handleAskAI = async () => {
     if (!title.trim() || !ai.isAvailable) return;
 
@@ -95,9 +87,7 @@ function AddTask({ addTask }) {
     }
   };
 
-  /* ============================================
-     Apply AI suggestions
-  ============================================ */
+  /* Apply AI suggestions */
   const handleApplySuggestions = (patch) => {
     if (patch.priority && !priorityManuallySet) {
       setPriority(patch.priority);
@@ -122,9 +112,7 @@ function AddTask({ addTask }) {
     }
   };
 
-  /* ============================================
-     Priority styles
-  ============================================ */
+  /* Priority styles */
   const priorityStyles = {
     high: "text-[var(--danger)] bg-[var(--danger-soft)]",
     medium: "text-[var(--warning)] bg-[var(--warning-soft)]",
@@ -141,9 +129,7 @@ function AddTask({ addTask }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  /* ============================================
-     Submit
-  ============================================ */
+  /* Submit */
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!title.trim()) return;
@@ -153,6 +139,8 @@ function AddTask({ addTask }) {
       priority,
       dueDate: dueDate || null,
       dueTime: dueTime || null,
+      dueEndTime: parsed.dueEndTime || null,
+      durationMinutes: parsed.durationMinutes || null,
       tags,
       subtasks: parsed.subtasks ?? [],
     });
@@ -197,7 +185,6 @@ function AddTask({ addTask }) {
             style={{ minHeight: "44px" }}
           />
 
-          {/* AI button */}
           {ai.isAvailable && title.trim() && (
             <button
               type="button"
@@ -270,10 +257,14 @@ function AddTask({ addTask }) {
 
         {/* Time resolution */}
         {parsed.dueTime && (
-          <div className="mt-3 flex items-center gap-1.5">
+          <div className="mt-3 flex items-center gap-1.5 flex-wrap">
             <DetectedChip
               icon={<Clock size={13} />}
-              label={dueTime || parsed.dueTime}
+              label={
+                parsed.dueEndTime
+                  ? `${parsed.dueTime} — ${parsed.dueEndTime}`
+                  : dueTime || parsed.dueTime
+              }
               tone={
                 parsed.dueTimeAmbiguous && !timeResolved ? "warning" : "neutral"
               }
@@ -283,7 +274,13 @@ function AddTask({ addTask }) {
               }}
             />
 
-            {parsed.dueTimeAmbiguous && !timeResolved && (
+            {parsed.dueEndTime && parsed.durationMinutes && (
+              <span className="text-[10px] text-[var(--text-muted)] font-medium">
+                ({parsed.durationMinutes} {t("ai.minutes")})
+              </span>
+            )}
+
+            {parsed.dueTimeAmbiguous && !timeResolved && !parsed.dueEndTime && (
               <div className="flex items-center gap-1 animate-fade-slide-sm">
                 <span className="text-[10px] text-[var(--warning)] font-medium">
                   {t("task.timeAmbiguous")}

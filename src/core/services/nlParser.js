@@ -1,9 +1,5 @@
-import { extractDate, extractTime } from "./dateParser";
-import {
-  PRIORITY_KEYWORDS,
-  HIGH_PRIORITY_CONTEXTS,
-  LOW_PRIORITY_CONTEXTS,
-} from "./priorityHints";
+import { extractDate, extractTime, extractTimeRange } from "./dateParser";
+import { PRIORITY_KEYWORDS } from "./priorityHints";
 import { inferTags } from "./tagHints";
 import { parseSubtasksFromTitle } from "./subtaskService";
 
@@ -42,6 +38,8 @@ export function parseNaturalLanguage(input) {
       title: "",
       dueDate: null,
       dueTime: null,
+      dueEndTime: null,
+      durationMinutes: null,
       dueTimeAmbiguous: false,
       priority: null,
       tags: [],
@@ -60,6 +58,8 @@ export function parseNaturalLanguage(input) {
       title: "",
       dueDate: null,
       dueTime: null,
+      dueEndTime: null,
+      durationMinutes: null,
       dueTimeAmbiguous: false,
       priority: null,
       tags: [],
@@ -71,6 +71,7 @@ export function parseNaturalLanguage(input) {
 
   const ranges = [];
 
+  /* Priority */
   const {
     priority,
     matchedText: priorityText,
@@ -81,30 +82,62 @@ export function parseNaturalLanguage(input) {
     if (idx !== -1) ranges.push({ start: idx, end: idx + priorityText.length });
   }
 
+  /* Date */
   const { date, matchedText: dateText } = extractDate(original);
   if (dateText) {
     const idx = original.toLowerCase().indexOf(dateText.toLowerCase());
     ranges.push({ start: idx, end: idx + dateText.length });
   }
 
-  const {
-    time,
-    matchedText: timeText,
-    ambiguous: timeAmbiguous,
-  } = extractTime(original);
-  if (timeText) {
-    const idx = original.toLowerCase().indexOf(timeText.toLowerCase());
-    ranges.push({ start: idx, end: idx + timeText.length });
+  const timeRange = extractTimeRange(original);
+  let time = null;
+  let endTime = null;
+  let durationMinutes = null;
+  let timeAmbiguous = false;
+
+  if (timeRange) {
+    time = timeRange.startTime;
+    endTime = timeRange.endTime;
+    durationMinutes = timeRange.durationMinutes;
+    timeAmbiguous = timeRange.ambiguous ?? false;
+
+    const idx = original
+      .toLowerCase()
+      .indexOf(timeRange.matchedText.toLowerCase());
+    if (idx !== -1) {
+      ranges.push({ start: idx, end: idx + timeRange.matchedText.length });
+    }
+  } else {
+    const timeResult = extractTime(original);
+    time = timeResult.time;
+    timeAmbiguous = timeResult.ambiguous ?? false;
+
+    if (timeResult.matchedText) {
+      const idx = original
+        .toLowerCase()
+        .indexOf(timeResult.matchedText.toLowerCase());
+      if (idx !== -1) {
+        ranges.push({
+          start: idx,
+          end: idx + timeResult.matchedText.length,
+        });
+      }
+    }
   }
 
+  /* Tags */
   const tags = inferTags(original);
+
+  /* Title */
   const title = extractTitle(original, ranges);
 
   return {
     title: title || original,
     dueDate: date,
     dueTime: time,
-    dueTimeAmbiguous: timeAmbiguous ?? false,
+    dueEndTime: endTime,
+    durationMinutes,
+    dueTimeAmbiguous: timeAmbiguous,
     priority,
     tags,
     hasAnyMatch: ranges.length > 0 || tags.length > 0,
@@ -113,11 +146,6 @@ export function parseNaturalLanguage(input) {
   };
 }
 
-/**
- *
- * @param {string} text
- * @returns {Object}
- */
 export function parseSubtaskText(text) {
   if (!text || typeof text !== "string") {
     return {
@@ -143,7 +171,6 @@ export function parseSubtaskText(text) {
   const ranges = [];
 
   const { priority, matchedText: priorityText } = extractPriority(original);
-
   if (priorityText) {
     const idx = original.toLowerCase().indexOf(priorityText.toLowerCase());
     if (idx !== -1) {
@@ -156,12 +183,28 @@ export function parseSubtaskText(text) {
     const idx = original.toLowerCase().indexOf(dateText.toLowerCase());
     ranges.push({ start: idx, end: idx + dateText.length });
   }
-  const { time, matchedText: timeText } = extractTime(original);
-  if (timeText) {
-    const idx = original.toLowerCase().indexOf(timeText.toLowerCase());
-    ranges.push({ start: idx, end: idx + timeText.length });
+
+  const timeRange = extractTimeRange(original);
+  let time = null;
+  let timeText = null;
+
+  if (timeRange) {
+    time = timeRange.startTime;
+    timeText = timeRange.matchedText;
+  } else {
+    const timeResult = extractTime(original);
+    time = timeResult.time;
+    timeText = timeResult.matchedText;
   }
 
+  if (timeText) {
+    const idx = original.toLowerCase().indexOf(timeText.toLowerCase());
+    if (idx !== -1) {
+      ranges.push({ start: idx, end: idx + timeText.length });
+    }
+  }
+
+  /* Tags */
   const explicitTags = [];
   const tagRegex = /#([\p{L}\p{N}_-]+)/gu;
   let match;

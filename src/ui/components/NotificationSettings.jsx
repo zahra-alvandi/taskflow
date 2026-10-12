@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Bell, BellOff, Check, AlertCircle, Info } from "lucide-react";
+import { Bell, Check, AlertCircle, Info } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import { notificationService } from "../../infrastructure/notifications/NotificationService";
 
 function NotificationSettings({ notif }) {
   const { t } = useTranslation();
-  const [testing, setTesting] = useState(false);
   const [testSent, setTestSent] = useState(false);
 
   const isGranted = notif.isGranted;
@@ -15,19 +15,24 @@ function NotificationSettings({ notif }) {
     await notif.requestPermission();
   };
 
-  const handleTest = async () => {
-    setTesting(true);
-    await notif.send("Whiskerly 🐱", {
+  const handleTest = () => {
+    console.log("🧪 Test clicked");
+
+    const result = notificationService.send("Whiskerly 🐱", {
       body: t("notif.testBody"),
-      tag: "test",
+      tag: "test-" + Date.now(),
     });
-    setTesting(false);
-    setTestSent(true);
-    setTimeout(() => setTestSent(false), 3000);
+
+    console.log("🧪 Result:", result);
+
+    if (result) {
+      setTestSent(true);
+      setTimeout(() => setTestSent(false), 3000);
+    }
   };
 
   return (
-    <section className="bg-[var(--surface)] rounded-3xl p-5 shadow-[var(--shadow-soft)]">
+    <section className="bg-[var(--surface)] rounded-3xl p-5 mt-5 shadow-[var(--shadow-soft)]">
       <div className="flex items-start justify-between gap-4 mb-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[var(--primary-soft)] flex items-center justify-center">
@@ -51,7 +56,6 @@ function NotificationSettings({ notif }) {
         )}
       </div>
 
-      {/* Unsupported */}
       {isUnsupported && (
         <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[var(--warning-soft)]">
           <AlertCircle
@@ -64,7 +68,6 @@ function NotificationSettings({ notif }) {
         </div>
       )}
 
-      {/* Denied */}
       {isDenied && (
         <div className="flex items-start gap-2.5 p-3 rounded-xl bg-[var(--danger-soft)]">
           <AlertCircle
@@ -82,21 +85,18 @@ function NotificationSettings({ notif }) {
         </div>
       )}
 
-      {/* Enable button */}
       {!isUnsupported && !isGranted && !isDenied && (
         <button
           onClick={handleEnable}
-          className="w-full py-3 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.3)] hover:shadow-[0_8px_20px_rgba(232,135,74,0.4)] active:scale-[0.98] transition"
+          className="w-full py-3 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.3)] transition"
         >
           <Bell size={18} />
           {t("notif.enable")}
         </button>
       )}
 
-      {/* Enabled state */}
       {isGranted && (
         <>
-          {/* Toggle */}
           <div className="flex items-center justify-between gap-4 py-3 border-t border-[var(--border)]/40">
             <div>
               <p className="font-medium text-sm text-[var(--text-primary)]">
@@ -108,23 +108,22 @@ function NotificationSettings({ notif }) {
             </div>
             <button
               onClick={() => notif.toggleEnabled()}
-              className={`relative w-12 h-7 rounded-full transition-colors duration-300 shrink-0 ${
+              className={`relative w-12 h-7 rounded-full transition shrink-0 ${
                 notif.enabled ? "bg-[var(--primary)]" : "bg-gray-300"
               }`}
             >
               <span
-                className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${
+                className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform ${
                   notif.enabled ? "translate-x-5" : "translate-x-0"
                 }`}
               />
             </button>
           </div>
 
-          {/* Test button */}
           <div className="pt-3 border-t border-[var(--border)]/40">
             <button
               onClick={handleTest}
-              disabled={testing || !notif.enabled}
+              disabled={!notif.enabled}
               className={`w-full py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition ${
                 testSent
                   ? "bg-[var(--success)] text-white"
@@ -142,7 +141,6 @@ function NotificationSettings({ notif }) {
             </button>
           </div>
 
-          {/* iOS hint */}
           <div className="flex items-start gap-2 p-2.5 rounded-xl bg-[var(--app-bg)] mt-3">
             <Info
               size={13}

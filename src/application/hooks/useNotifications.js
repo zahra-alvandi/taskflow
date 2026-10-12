@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { notificationService } from "../../infrastructure/notification/NotificationService";
+import { notificationService } from "../../infrastructure/notifications/NotificationService";
 
 const REMINDER_MINUTES = 15;
 
@@ -9,16 +9,6 @@ export function useNotifications(tasks) {
     () => localStorage.getItem("whiskerly:notif-enabled") === "true",
   );
   const notifiedRef = useRef(new Set());
-
-  // Sync permission state
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (notificationService.permission !== permission) {
-        setPermission(notificationService.permission);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [permission]);
 
   const requestPermission = useCallback(async () => {
     const result = await notificationService.requestPermission();
@@ -43,10 +33,7 @@ export function useNotifications(tasks) {
     return notificationService.send(title, options);
   }, []);
 
-  const notifyTask = useCallback(async (task, type) => {
-    return notificationService.notifyTask(task, type);
-  }, []);
-
+  // Check deadlines
   useEffect(() => {
     if (!enabled || permission !== "granted") return;
 
@@ -55,28 +42,7 @@ export function useNotifications(tasks) {
 
       tasks.forEach((task) => {
         if (task.completed) return;
-
-        if (!task.dueDate || !task.dueTime) {
-          if (task.dueDate) {
-            const due = new Date(task.dueDate);
-            due.setHours(0, 0, 0, 0);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (due.getTime() === today.getTime()) {
-              const key = `${task.id}-today`;
-              if (!notifiedRef.current.has(key)) {
-                const nowHour = now.getHours();
-
-                if (nowHour >= 7 && nowHour <= 10) {
-                  notifiedRef.current.add(key);
-                  notificationService.notifyTask(task, "reminder");
-                }
-              }
-            }
-          }
-          return;
-        }
+        if (!task.dueDate || !task.dueTime) return;
 
         const dueAt = new Date(`${task.dueDate}T${task.dueTime}:00`);
         const diffMin = (dueAt - now) / 1000 / 60;
@@ -89,7 +55,7 @@ export function useNotifications(tasks) {
           }
         }
 
-        if (diffMin <= 0 && diffMin > -5) {
+        if (diffMin <= 0 && diffMin > -30) {
           const key = `${task.id}-due`;
           if (!notifiedRef.current.has(key)) {
             notifiedRef.current.add(key);
@@ -97,7 +63,7 @@ export function useNotifications(tasks) {
           }
         }
 
-        if (diffMin <= -5 && diffMin > -60) {
+        if (diffMin <= -30) {
           const key = `${task.id}-overdue`;
           if (!notifiedRef.current.has(key)) {
             notifiedRef.current.add(key);
@@ -109,19 +75,8 @@ export function useNotifications(tasks) {
 
     checkReminders();
     const interval = setInterval(checkReminders, 30 * 1000);
-
     return () => clearInterval(interval);
   }, [tasks, enabled, permission]);
-
-  useEffect(() => {
-    const taskIds = new Set(tasks.map((t) => t.id));
-    notifiedRef.current.forEach((key) => {
-      const taskId = key.split("-")[0];
-      if (!taskIds.has(taskId)) {
-        notifiedRef.current.delete(key);
-      }
-    });
-  }, [tasks]);
 
   return {
     permission,
@@ -131,6 +86,5 @@ export function useNotifications(tasks) {
     requestPermission,
     toggleEnabled,
     send,
-    notifyTask,
   };
 }

@@ -22,6 +22,7 @@ function TaskCard({
   onToggleSubtask,
   onEditSubtask,
   onDeleteSubtask,
+  onOpenDetail,
 }) {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
@@ -62,6 +63,10 @@ function TaskCard({
 
   const hasSubtasks = subTotal > 0;
 
+  const timeLabel = task.dueEndTime
+    ? `${task.dueTime} — ${task.dueEndTime}`
+    : task.dueTime;
+
   return (
     <div
       className={`w-full min-w-0 bg-[var(--surface)] px-4 py-4 rounded-2xl
@@ -74,7 +79,7 @@ function TaskCard({
       {/* Top row: checkbox + title + actions */}
       <div
         className="flex items-start gap-3 cursor-pointer"
-        onClick={() => toggleTask(task.id)}
+        onClick={() => onOpenDetail?.(task)}
       >
         <button
           onClick={(e) => {
@@ -97,6 +102,7 @@ function TaskCard({
               value={editTitle}
               autoFocus
               onChange={(e) => setEditTitle(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 if (e.key === "Enter") saveEdit();
                 if (e.key === "Escape") {
@@ -109,7 +115,11 @@ function TaskCard({
             />
           ) : (
             <h3
-              className={`font-semibold truncate ${
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenDetail?.(task);
+              }}
+              className={`font-semibold truncate cursor-pointer hover:text-[var(--primary)] transition ${
                 task.completed
                   ? "line-through text-[var(--text-muted)]"
                   : "text-[var(--text-primary)]"
@@ -145,11 +155,13 @@ function TaskCard({
                   {isOverdue(task.dueDate) && !task.completed
                     ? `${t("task.status.overdue")} · ${formatDueDate(task.dueDate)}`
                     : formatDueDate(task.dueDate)}
+
+                  {}
                   {task.dueTime && (
                     <>
                       {" · "}
                       <Clock size={13} />
-                      {task.dueTime}
+                      {timeLabel}
                     </>
                   )}
                 </span>
@@ -160,7 +172,6 @@ function TaskCard({
 
         {/* Actions */}
         <div className="flex items-center gap-1 shrink-0">
-          {/* Expand toggle (only if has subtasks) */}
           {hasSubtasks && (
             <button
               onClick={(e) => {
@@ -213,7 +224,7 @@ function TaskCard({
         </div>
       </div>
 
-      {/* Progress bar (always visible if has subtasks) */}
+      {/* Progress bar */}
       {hasSubtasks && !expanded && (
         <div
           onClick={(e) => {

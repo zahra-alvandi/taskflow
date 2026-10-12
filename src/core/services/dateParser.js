@@ -178,3 +178,46 @@ export function extractTime(text) {
 
   return { time: null, matchedText: null, period: null, ambiguous: false };
 }
+
+/**
+
+ * @returns {{ startTime, endTime, durationMinutes, matchedText } | null}
+ */
+export function extractTimeRange(text) {
+  const normalized = normalizeDigits(text).toLowerCase();
+
+  const patterns = [
+    /از\s*ساعت\s*(\d{1,2})(?::(\d{2}))?\s*تا\s*(?:ساعت\s*)?(\d{1,2})(?::(\d{2}))?/,
+    /از\s*(\d{1,2})(?::(\d{2}))?\s*تا\s*(\d{1,2})(?::(\d{2}))?/,
+    /(\d{1,2})(?::(\d{2}))?\s*تا\s*(\d{1,2})(?::(\d{2}))?/,
+    /\b(\d{1,2})(?::(\d{2}))?\s*[-–—]\s*(\d{1,2})(?::(\d{2}))?\b/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = normalized.match(pattern);
+    if (match) {
+      const startH = Number(match[1]);
+      const startM = Number(match[2] || 0);
+      const endH = Number(match[3]);
+      const endM = Number(match[4] || 0);
+
+      let finalEndH = endH;
+      if (endH < startH) finalEndH = endH + 12;
+
+      const startTime = `${String(startH).padStart(2, "0")}:${String(startM).padStart(2, "0")}`;
+      const endTime = `${String(finalEndH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`;
+
+      const durationMinutes = finalEndH * 60 + endM - (startH * 60 + startM);
+
+      return {
+        startTime,
+        endTime,
+        durationMinutes,
+        matchedText: match[0],
+        ambiguous: startH >= 1 && startH <= 11,
+      };
+    }
+  }
+
+  return null;
+}

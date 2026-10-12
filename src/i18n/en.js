@@ -1,5 +1,6 @@
 export default {
   app: { name: "Whiskerly", tagline: "Get things done" },
+
   nav: {
     dashboard: "Dashboard",
     all: "All Tasks",
@@ -10,6 +11,7 @@ export default {
     notes: "Notes",
     more: "More",
   },
+
   task: {
     add: "Add Task",
     title: "What do you want to do?",
@@ -18,23 +20,10 @@ export default {
     pm: "PM",
     timeAmbiguous: "AM or PM?",
     timeSet: "Set",
-    notePlaceholder: "What do you want to note?",
-    recent: "Recent tasks",
-    priority: { high: "High", medium: "Medium", low: "Low" },
     typeTask: "Task",
     typeNote: "Note",
-    status: {
-      completed: "Completed",
-      inProgress: "In progress",
-      overdue: "Overdue",
-    },
-    empty: {
-      all: "No tasks yet. Create your first one!",
-      important: "No important tasks.",
-      completed: "Nothing completed yet.",
-      pending: "All caught up! 🎉",
-      notes: "No notes yet.",
-    },
+    notePlaceholder: "What do you want to note?",
+    recent: "Recent tasks",
     search: "Search tasks...",
     back: "Back",
     backToDashboard: "Back to Dashboard",
@@ -42,12 +31,54 @@ export default {
       "What do you want to do? e.g., tomorrow meeting with team urgent",
     autoDetected: "Auto-detected",
     inferred: "(inferred)",
+    subtasksFound: "subtasks found",
+
     priority: {
       high: "High",
       medium: "Medium",
       low: "Low",
     },
+
+    chip: {
+      priority: "Priority",
+      date: "Date",
+      time: "Time",
+      tag: "Tag",
+      title: "Title",
+    },
+
+    status: {
+      completed: "Completed",
+      inProgress: "In progress",
+      overdue: "Overdue",
+    },
+
+    empty: {
+      all: "No tasks yet. Create your first one!",
+      important: "No important tasks.",
+      completed: "Nothing completed yet.",
+      pending: "All caught up! 🎉",
+      notes: "No notes yet.",
+    },
+
+    detail: {
+      dueDate: "Date",
+      startTime: "Start",
+      endTime: "End",
+      duration: "Duration",
+      markImportant: "Mark as important",
+      description: "Description",
+      descriptionPlaceholder: "Add a description...",
+      tags: "Tags",
+      addTag: "New tag...",
+      subtasks: "Subtasks",
+      confirmDelete: "Delete this task?",
+      title: "Task Details",
+      schedule: "Schedule",
+      markComplete: "Mark as complete",
+    },
   },
+
   stats: {
     total: "Total Tasks",
     completed: "Completed",
@@ -73,25 +104,26 @@ export default {
     more: "More",
     tasks: "tasks",
   },
+
   greeting: {
     morning: "Good morning",
     evening: "Good evening",
     welcomeBack: "Welcome back",
     subtitle: "Let's make today productive.",
   },
+
   settings: {
     title: "Settings",
     subtitle: "Customize your Whiskerly experience.",
     appearance: "Appearance",
     darkMode: "Dark Mode",
+    lightMode: "Light Mode",
     enabled: "Enabled",
     disabled: "Disabled",
     language: "Language",
     calendar: "Calendar",
     jalali: "Jalali",
     gregorian: "Gregorian",
-    lightMode: "Light Mode",
-    darkMode: "Dark Mode",
   },
 
   subtask: {
@@ -104,6 +136,7 @@ export default {
     edit: "Edit",
     save: "Save",
     cancel: "Cancel",
+    discard: "Discard",
     delete: "Delete",
     undo: "Undo",
     deleteConfirm: "Delete this task?",
@@ -119,6 +152,7 @@ export default {
     provider: "Provider",
     providerGroq: "Groq",
     providerOpenRouter: "OpenRouter",
+    providerGemini: "Gemini (Google)",
     apiKey: "API Key",
     apiKeyPlaceholder: "Paste your key here",
     model: "Model",
@@ -133,14 +167,11 @@ export default {
     error: "Failed to reach AI",
     suggestions: "AI Suggestions",
     applyAll: "Apply all",
+    applySelected: "Apply selected",
     estimatedTime: "Estimated time",
     suggestedSubtasks: "Suggested subtasks",
     minutes: "min",
     reasoning: "Reasoning",
-    applySelected: "Apply selected",
-    providerGemini: "Gemini (Google)",
-    providerOpenRouter: "OpenRouter",
-    providerGroq: "Groq",
     notConfigured: "AI is not configured yet. Go to Settings and add your key.",
     tabPlan: "Plan",
     tabChat: "Chat",
@@ -185,6 +216,7 @@ export default {
     allDone: "All done for today!",
     empty: "No plan yet. Tap the button above to let AI plan your day.",
   },
+
   pwa: {
     installTitle: "Install Whiskerly",
     installDesc: "For quick access and offline use",
@@ -223,7 +255,6 @@ export default {
     enableDesc: "Want me to remind you before deadlines?",
     enable: "Enable",
     later: "Later",
-
     settingsTitle: "Notifications",
     settingsSubtitle: "Deadline reminders",
     on: "On",
@@ -238,16 +269,6 @@ export default {
     testBody: "This is a test notification 🐱",
     iosHint:
       "On iPhone, first add the app to Home Screen, then notifications will work",
-  },
-
-  board: {
-    title: "Board",
-    subtitle: "Organize tasks with drag & drop",
-    backlog: "Backlog",
-    inProgress: "In Progress",
-    done: "Done",
-    activeTasks: "active",
-    important: "Important",
   },
 
   focus: {
@@ -265,10 +286,6 @@ export default {
     suggestions: "Suggestions",
     modeActive: "Focus mode",
     quickAdd: "Quick add",
-  },
-
-  actions: {
-    add: "Add",
-    discard: "Discard",
+    addTask: "Add",
   },
 };
