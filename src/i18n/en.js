@@ -76,6 +76,7 @@ export default {
       title: "Task Details",
       schedule: "Schedule",
       markComplete: "Mark as complete",
+      recurrence: "Repeat",
     },
   },
 
@@ -301,5 +302,16 @@ export default {
     deletedDesc: "You can undo this",
     createdDesc: "Your new task was added",
     completedDesc: "One less thing to do",
+  },
+
+  recurrence: {
+    none: "No repeat",
+    daily: "Every day",
+    weekdays: "Weekdays",
+    weekly: "Every week",
+    biweekly: "Every 2 weeks",
+    monthly: "Every month",
+    yearly: "Every year",
+    remove: "Remove repeat",
   },
 };

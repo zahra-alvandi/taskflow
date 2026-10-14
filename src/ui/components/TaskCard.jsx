@@ -7,6 +7,7 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
+  Repeat,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import SubtaskList from "./SubtaskList";
@@ -187,6 +188,13 @@ function TaskCard({
                   ? t("task.status.completed")
                   : t("task.status.inProgress")}
               </span>
+
+              {task.recurrence && (
+                <span className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-medium">
+                  <Repeat size={13} />
+                  {t(`recurrence.${task.recurrence}`)}
+                </span>
+              )}
 
               {task.dueDate && (
                 <span

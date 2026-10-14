@@ -9,6 +9,7 @@ import {
   updateSubtaskInTask,
 } from "../../core/domain/Task";
 import { createSubtask } from "../../core/domain/Subtask";
+import { buildNextRecurrence } from "../../core/services/recurrenceService";
 
 export function useTasks(repository) {
   const [tasks, setTasks] = useState([]);
@@ -40,6 +41,9 @@ export function useTasks(repository) {
         priority: payload.priority ?? "medium",
         dueDate: payload.dueDate ?? null,
         dueTime: payload.dueTime ?? null,
+        dueEndTime: payload.dueEndTime ?? null,
+        durationMinutes: payload.durationMinutes ?? null,
+        recurrence: payload.recurrence ?? null,
         tags: payload.tags ?? [],
         subtasks: payload.subtasks ?? [],
         estimatedMinutes: payload.estimatedMinutes ?? null,
@@ -55,8 +59,18 @@ export function useTasks(repository) {
     async (id) => {
       const task = tasks.find((t) => t.id === id);
       if (!task) return;
+
       const next = toggleTaskEntity(task);
       await repository.save(next);
+
+      if (next.completed && next.recurrence) {
+        const nextTaskPayload = buildNextRecurrence(next);
+        if (nextTaskPayload) {
+          const nextTask = createTask(nextTaskPayload);
+          await repository.save(nextTask);
+        }
+      }
+
       await refresh();
     },
     [tasks, repository, refresh],

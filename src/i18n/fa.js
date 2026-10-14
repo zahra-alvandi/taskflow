@@ -78,6 +78,7 @@ export default {
       title: "جزئیات تسک",
       schedule: "زمان‌بندی",
       markComplete: "علامت‌گذاری به عنوان انجام‌شده",
+      recurrence: "تکرار",
     },
   },
 
@@ -303,5 +304,16 @@ export default {
     deletedDesc: "می‌تونی برگردونی",
     createdDesc: "تسک جدیدت اضافه شد",
     completedDesc: "کار امروزت کم شد",
+  },
+
+  recurrence: {
+    none: "بدون تکرار",
+    daily: "هر روز",
+    weekdays: "روزهای کاری",
+    weekly: "هر هفته",
+    biweekly: "هر دو هفته",
+    monthly: "هر ماه",
+    yearly: "هر سال",
+    remove: "حذف تکرار",
   },
 };

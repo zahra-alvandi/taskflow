@@ -9,6 +9,7 @@ import {
   ListChecks,
   Loader2,
   Check,
+  Repeat,
 } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -40,6 +41,9 @@ function AddTask({ addTask }) {
   const parsedSubtasks = parsed.subtasks ?? [];
 
   const [isNew, setIsNew] = useState(true);
+
+  const [recurrence, setRecurrence] = useState(null);
+  const [showRecurrence, setShowRecurrence] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsNew(false), 500);
@@ -131,6 +135,9 @@ function AddTask({ addTask }) {
       if (!event.target.closest(".priority-picker")) {
         setShowPriority(false);
       }
+      if (!event.target.closest(".recurrence-picker")) {
+        setShowRecurrence(false);
+      }
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
@@ -148,6 +155,7 @@ function AddTask({ addTask }) {
       dueTime: dueTime || null,
       dueEndTime: parsed.dueEndTime || null,
       durationMinutes: parsed.durationMinutes || null,
+      recurrence,
       tags,
       subtasks: parsed.subtasks ?? [],
     });
@@ -161,6 +169,7 @@ function AddTask({ addTask }) {
     setTimeResolved(false);
     setTags([]);
     setShowPriority(false);
+    setRecurrence(null);
   };
 
   return (
@@ -461,6 +470,60 @@ function AddTask({ addTask }) {
             <Plus size={18} />
             {t("task.add")}
           </button>
+
+          {/* Recurrence Picker */}
+          <div className="recurrence-picker relative shrink-0">
+            <button
+              type="button"
+              onClick={() => setShowRecurrence(!showRecurrence)}
+              className={`px-3 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition ${
+                recurrence
+                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                  : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
+              }`}
+            >
+              <Repeat size={16} />
+              <span className="hidden sm:inline">
+                {recurrence
+                  ? t(`recurrence.${recurrence}`)
+                  : t("recurrence.none")}
+              </span>
+            </button>
+
+            {showRecurrence && (
+              <div className="absolute bottom-full start-0 mb-2 w-44 bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
+                {["daily", "weekdays", "weekly", "biweekly", "monthly"].map(
+                  (item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => {
+                        setRecurrence(item);
+                        setShowRecurrence(false);
+                      }}
+                      className={`w-full text-start px-3 py-2 rounded-lg text-sm transition ${
+                        recurrence === item
+                          ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                          : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
+                      }`}
+                    >
+                      {t(`recurrence.${item}`)}
+                    </button>
+                  ),
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRecurrence(null);
+                    setShowRecurrence(false);
+                  }}
+                  className="w-full text-start px-3 py-2 rounded-lg text-sm text-[var(--danger)] hover:bg-[var(--danger-soft)] transition"
+                >
+                  {t("recurrence.remove")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </form>
     </div>

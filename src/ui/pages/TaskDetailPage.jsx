@@ -16,6 +16,7 @@ import {
   Circle,
   CheckCircle2,
   ChevronDown,
+  Repeat,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { CatEars } from "../components/CatDecorations";
@@ -39,6 +40,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
   const [newSubtask, setNewSubtask] = useState("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [recurrence, setRecurrence] = useState(task.recurrence ?? null);
 
   /* 
      Sync state when task changes
@@ -55,6 +57,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
     setSubtasks(task.subtasks ?? []);
     setIsEditingTitle(false);
     setHasChanges(false);
+    setRecurrence(task.recurrence ?? null);
   }, [task.id]);
 
   /* 
@@ -164,6 +167,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
       durationMinutes: duration,
       tags,
       subtasks,
+      recurrence,
     };
     onSave(task.id, patch);
     onBack();
@@ -430,6 +434,35 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
                   className="w-full px-3 py-2.5 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-primary)] outline-none tabular-nums focus:ring-2 focus:ring-[var(--primary)]/30 transition"
                   dir="ltr"
                 />
+              </div>
+
+              {/* Recurrence */}
+              <div className="bg-[var(--surface)] rounded-3xl p-4 sm:p-5 shadow-[var(--shadow-soft-small)]">
+                <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-3 flex items-center gap-1.5">
+                  <Repeat size={12} />
+                  {t("task.detail.recurrence")}
+                </label>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {["daily", "weekdays", "weekly", "biweekly", "monthly"].map(
+                    (item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        onClick={() =>
+                          setRecurrence(recurrence === item ? null : item)
+                        }
+                        className={`py-2.5 rounded-xl text-xs font-medium transition ${
+                          recurrence === item
+                            ? "bg-[var(--accent)] text-white shadow-[0_4px_10px_rgba(124,92,255,0.3)]"
+                            : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
+                        }`}
+                      >
+                        {t(`recurrence.${item}`)}
+                      </button>
+                    ),
+                  )}
+                </div>
               </div>
             </div>
           </div>
