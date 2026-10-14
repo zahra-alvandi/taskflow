@@ -39,6 +39,13 @@ function AddTask({ addTask }) {
 
   const parsedSubtasks = parsed.subtasks ?? [];
 
+  const [isNew, setIsNew] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsNew(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   /* Auto-resize */
   useEffect(() => {
     const el = textareaRef.current;

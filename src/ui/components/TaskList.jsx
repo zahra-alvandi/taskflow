@@ -6,6 +6,7 @@ function TaskList({
   toggleTask,
   toggleImportant,
   deleteTask,
+  onRestoreTask,
   editTask,
   onAddSubtask,
   onToggleSubtask,
@@ -14,31 +15,23 @@ function TaskList({
   onOpenDetail,
 }) {
   return (
-    <div className="w-full space-y-3 mt-5">
-      {tasks.map((task) =>
-        task.type === "note" ? (
-          <NoteCard
-            key={task.id}
-            note={task}
-            deleteTask={deleteTask}
-            editTask={editTask}
-          />
-        ) : (
-          <TaskCard
-            key={task.id}
-            task={task}
-            toggleTask={toggleTask}
-            toggleImportant={toggleImportant}
-            deleteTask={deleteTask}
-            editTask={editTask}
-            onAddSubtask={onAddSubtask}
-            onToggleSubtask={onToggleSubtask}
-            onEditSubtask={onEditSubtask}
-            onDeleteSubtask={onDeleteSubtask}
-            onOpenDetail={onOpenDetail}
-          />
-        ),
-      )}
+    <div className="w-full space-y-4 mt-5">
+      {tasks.map((task) => (
+        <TaskCard
+          key={task.id}
+          task={task}
+          toggleTask={toggleTask}
+          toggleImportant={toggleImportant}
+          deleteTask={deleteTask}
+          onRestoreTask={onRestoreTask}
+          editTask={editTask}
+          onAddSubtask={onAddSubtask}
+          onToggleSubtask={onToggleSubtask}
+          onEditSubtask={onEditSubtask}
+          onDeleteSubtask={onDeleteSubtask}
+          onOpenDetail={onOpenDetail}
+        />
+      ))}
     </div>
   );
 }

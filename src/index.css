@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* ================================
+/* 
    Fonts
-================================ */
+ */
 
 @font-face {
   font-family: "Estedad";
@@ -56,9 +56,9 @@
   font-weight: 700;
   font-display: swap;
 }
-/* ================================
+/* 
    Tailwind Theme
-================================ */
+ */
 
 @theme {
   /* Fonts */
@@ -80,9 +80,9 @@
   --color-danger: #d65f5f;
 }
 
-/* ================================
+/* 
    Base
-================================ */
+ */
 
 :root {
   --font-display: "Cormorant Garamond", serif;
@@ -92,9 +92,9 @@ html {
   font-family: "Estedad", system-ui, sans-serif;
 }
 
-/* ================================
+/* 
    Animations
-================================ */
+ */
 
 @keyframes fadeUp {
   from {
@@ -122,9 +122,9 @@ html {
   animation-delay: 0.5s;
 }
 
-/* ================================
+/* 
    Whiskerly — Design System (Cat + AI Theme)
-================================ */
+ */
 
 :root {
   /* Backgrounds */
@@ -177,9 +177,9 @@ html {
     -12px -12px 22px rgba(255, 255, 255, 0.95);
 }
 
-/* ================================
+/* 
    Dark Mode (warm dark)
-================================ */
+ */
 
 .dark {
   --app-bg: #1f1814;
@@ -220,9 +220,9 @@ html {
     inset 4px 4px 10px rgba(0, 0, 0, 0.4),
     inset -3px -3px 8px rgba(255, 255, 255, 0.03);
 }
-/* ================================
+/* 
    Base
-================================ */
+ */
 
 html,
 body,
@@ -250,9 +250,9 @@ body {
   box-sizing: border-box;
 }
 
-/* ================================
+/* 
    React DatePicker
-================================ */
+ */
 
 .react-datepicker {
   border: none !important;
@@ -314,9 +314,9 @@ body {
   color: var(--text-muted) !important;
 }
 
-/* ================================
+/* 
    DatePicker Navigation
-================================ */
+ */
 
 .react-datepicker__navigation {
   top: 12px !important;
@@ -330,17 +330,17 @@ body {
   border-color: var(--text-primary) !important;
 }
 
-/* ================================
+/* 
    DatePicker Triangle
-================================ */
+ */
 
 .react-datepicker__triangle {
   display: none !important;
 }
 
-/* ================================
+/* 
    Animations — Smooth & Natural
-================================ */
+ */
 
 :root {
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -417,9 +417,9 @@ body {
   }
 }
 
-/* ================================
+/* 
    RTL / LTR
-================================ */
+ */
 
 [dir="rtl"] {
   font-family: "Vazirmatn", "Tahoma", sans-serif;
@@ -433,9 +433,9 @@ body {
   transform: rotate(180deg);
 }
 
-/* ================================
+/* 
    Cat Pattern Backgrounds
-================================ */
+ */
 
 /* پس‌زمینه با گربه‌های ریز — نارنجی */
 .cat-bg-warm {
@@ -484,4 +484,99 @@ body {
 .board-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
+}
+
+/* 
+   Micro-animations
+ */
+
+@keyframes taskEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes taskExit {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: 300px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-16px) scale(0.96);
+    max-height: 0;
+  }
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(0.6) rotate(-30deg);
+  }
+  60% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Subtask progress bar */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+}
+
+/* 
+   Animation utilities
+ */
+
+.animate-task-enter {
+  animation: taskEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-task-exit {
+  animation: taskExit 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.animate-check-pop {
+  animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-star-pop {
+  animation: starPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.animate-progress-fill {
+  animation: progressFill 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-task-enter,
+  .animate-task-exit,
+  .animate-check-pop,
+  .animate-star-pop,
+  .animate-progress-fill {
+    animation: none !important;
+  }
 }

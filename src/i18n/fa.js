@@ -290,4 +290,18 @@ export default {
     quickAdd: "تسک سریع",
     addTask: "افزودن",
   },
+
+  toast: {
+    deletedTitle: "تسک حذف شد",
+    createdTitle: "تسک ساخته شد",
+    completedTitle: "آفرین! انجام شد",
+    savedTitle: "ذخیره شد",
+    errorTitle: "خطا",
+    successTitle: "موفق",
+    warningTitle: "هشدار",
+    infoTitle: "اطلاع",
+    deletedDesc: "می‌تونی برگردونی",
+    createdDesc: "تسک جدیدت اضافه شد",
+    completedDesc: "کار امروزت کم شد",
+  },
 };

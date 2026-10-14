@@ -27,6 +27,7 @@ import { useNotifications } from "./application/hooks/useNotifications";
 import FocusPage from "./ui/components/FocusPage";
 import StatsPage from "./ui/pages/StatsPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
+import ToastContainer from "./ui/components/ToastContainer";
 
 function App() {
   const [page, setPage] = useState("dashboard");
@@ -45,6 +46,7 @@ function App() {
     toggleImportant,
     editTask,
     deleteTask,
+    restoreTask,
     addSubtask,
     removeSubtask,
     toggleSubtask,
@@ -184,6 +186,7 @@ function App() {
             toggleTask={toggleTask}
             toggleImportant={toggleImportant}
             deleteTask={deleteTask}
+            restoreTask={restoreTask}
             editTask={editTask}
             addTask={addTask}
             addSubtask={addSubtask}
@@ -221,6 +224,8 @@ function App() {
         onEnable={notif.requestPermission}
         permission={notif.permission}
       />
+
+      <ToastContainer />
     </div>
   );
 }

@@ -35,6 +35,7 @@ function Dashboard({
   planProgress,
   onTogglePlanBlock,
   onOpenDetail,
+  restoreTask,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -194,6 +195,7 @@ function Dashboard({
             toggleTask={toggleTask}
             toggleImportant={toggleImportant}
             deleteTask={deleteTask}
+            onRestoreTask={restoreTask}
             editTask={editTask}
             onAddSubtask={addSubtask}
             onToggleSubtask={toggleSubtask}

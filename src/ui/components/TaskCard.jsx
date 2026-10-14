@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Star,
   Trash2,
@@ -11,6 +11,7 @@ import {
 import { useTranslation } from "../../application/hooks/useTranslation";
 import SubtaskList from "./SubtaskList";
 import SubtaskProgress from "./SubtaskProgress";
+import { useToast } from "../../application/hooks/useToast";
 
 function TaskCard({
   task,
@@ -23,11 +24,24 @@ function TaskCard({
   onEditSubtask,
   onDeleteSubtask,
   onOpenDetail,
+  onRestoreTask,
 }) {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [expanded, setExpanded] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isNew, setIsNew] = useState(true);
+
+  const { showToast } = useToast();
+  const checkRef = useRef(null);
+
+  useEffect(() => {
+    if (isNew) {
+      const timer = setTimeout(() => setIsNew(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isNew]);
 
   const formatDueDate = (date) =>
     new Date(date).toLocaleDateString(undefined, {
@@ -56,6 +70,40 @@ function TaskCard({
     setIsEditing(false);
   };
 
+  const handleToggle = (e) => {
+    e?.stopPropagation();
+    if (checkRef.current) {
+      checkRef.current.classList.add("animate-check-pop");
+      setTimeout(() => {
+        checkRef.current?.classList.remove("animate-check-pop");
+      }, 300);
+    }
+    toggleTask(task.id);
+  };
+
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+
+    setIsExiting(true);
+
+    await new Promise((r) => setTimeout(r, 300));
+
+    const deletedTask = await deleteTask(task.id);
+
+    if (deletedTask) {
+      showToast({
+        title: t("toast.deletedTitle"),
+        description: `«${deletedTask.title}»`,
+        tone: "danger",
+        action: {
+          label: t("actions.undo"),
+          onClick: () => onRestoreTask?.(deletedTask),
+        },
+        duration: 5000,
+      });
+    }
+  };
+
   const { total: subTotal, completed: subCompleted } = {
     total: task.subtasks?.length ?? 0,
     completed: task.subtasks?.filter((s) => s.completed).length ?? 0,
@@ -74,25 +122,27 @@ function TaskCard({
         flex flex-col gap-2
         transition-all duration-200
         hover:shadow-[var(--shadow-soft)]
-        ${task.completed ? "opacity-65" : ""}`}
+        ${task.completed ? "opacity-65" : ""}
+        ${isNew ? "animate-task-enter" : ""}
+        ${isExiting ? "animate-task-exit" : ""}`}
     >
-      {/* Top row: checkbox + title + actions */}
+      {/* Top row */}
       <div
         className="flex items-start gap-3 cursor-pointer"
         onClick={() => onOpenDetail?.(task)}
       >
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleTask(task.id);
-          }}
+          ref={checkRef}
+          onClick={handleToggle}
           className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition mt-0.5 ${
             task.completed
               ? "bg-[var(--primary)] border-[var(--primary)] text-white"
               : "border-[var(--text-muted)] hover:border-[var(--primary)]"
           }`}
         >
-          {task.completed && "✓"}
+          {task.completed && (
+            <span className="animate-check-pop text-xs">✓</span>
+          )}
         </button>
 
         <div className="min-w-0 flex-1">
@@ -110,16 +160,11 @@ function TaskCard({
                   setIsEditing(false);
                 }
               }}
-              onClick={(e) => e.stopPropagation()}
               className="w-full min-w-0 px-3 py-2 rounded-xl bg-[var(--app-bg)] text-[var(--text-primary)] outline-none shadow-[var(--shadow-inset)]"
             />
           ) : (
             <h3
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenDetail?.(task);
-              }}
-              className={`font-semibold truncate cursor-pointer hover:text-[var(--primary)] transition ${
+              className={`font-semibold truncate ${
                 task.completed
                   ? "line-through text-[var(--text-muted)]"
                   : "text-[var(--text-primary)]"
@@ -156,7 +201,6 @@ function TaskCard({
                     ? `${t("task.status.overdue")} · ${formatDueDate(task.dueDate)}`
                     : formatDueDate(task.dueDate)}
 
-                  {}
                   {task.dueTime && (
                     <>
                       {" · "}
@@ -201,6 +245,11 @@ function TaskCard({
           <button
             onClick={(e) => {
               e.stopPropagation();
+              const btn = e.currentTarget;
+              if (!task.important) {
+                btn.classList.add("animate-star-pop");
+                setTimeout(() => btn.classList.remove("animate-star-pop"), 400);
+              }
               toggleImportant(task.id);
             }}
             className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${
@@ -213,10 +262,7 @@ function TaskCard({
           </button>
 
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteTask(task.id);
-            }}
+            onClick={handleDelete}
             className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition"
           >
             <Trash2 size={18} />

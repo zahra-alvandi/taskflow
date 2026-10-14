@@ -288,4 +288,18 @@ export default {
     quickAdd: "Quick add",
     addTask: "Add",
   },
+
+  toast: {
+    deletedTitle: "Task deleted",
+    createdTitle: "Task created",
+    completedTitle: "Well done!",
+    savedTitle: "Saved",
+    errorTitle: "Error",
+    successTitle: "Success",
+    warningTitle: "Warning",
+    infoTitle: "Info",
+    deletedDesc: "You can undo this",
+    createdDesc: "Your new task was added",
+    completedDesc: "One less thing to do",
+  },
 };

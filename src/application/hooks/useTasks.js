@@ -84,17 +84,9 @@ export function useTasks(repository) {
     [tasks, repository, refresh],
   );
 
-  const deleteTask = useCallback(
-    async (id) => {
-      await repository.delete(id);
-      await refresh();
-    },
-    [repository, refresh],
-  );
-
-  /* ================================
+  /*
      Subtasks
-  ================================ */
+  */
 
   const addSubtask = useCallback(
     async (taskId, title) => {
@@ -139,6 +131,7 @@ export function useTasks(repository) {
 
       await repository.save(next);
       await refresh();
+      return task;
     },
     [tasks, repository, refresh],
   );
@@ -164,6 +157,26 @@ export function useTasks(repository) {
     };
   }, [tasks]);
 
+  const deleteTask = useCallback(
+    async (id) => {
+      const task = tasks.find((t) => t.id === id);
+      if (!task) return null;
+
+      await repository.delete(id);
+      await refresh();
+      return task;
+    },
+    [tasks, repository, refresh],
+  );
+
+  const restoreTask = useCallback(
+    async (task) => {
+      await repository.save(task);
+      await refresh();
+    },
+    [repository, refresh],
+  );
+
   return {
     tasks,
     loading,
@@ -178,5 +191,6 @@ export function useTasks(repository) {
     removeSubtask,
     toggleSubtask,
     editSubtask,
+    restoreTask,
   };
 }
