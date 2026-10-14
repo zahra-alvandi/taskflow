@@ -13,6 +13,7 @@ import { useTranslation } from "../../application/hooks/useTranslation";
 import SubtaskList from "./SubtaskList";
 import SubtaskProgress from "./SubtaskProgress";
 import { useToast } from "../../application/hooks/useToast";
+import { describeRecurrence } from "../../core/services/recurrenceService";
 
 function TaskCard({
   task,
@@ -183,18 +184,18 @@ function TaskCard({
                 {t(`task.priority.${task.priority}`)}
               </span>
 
+              {task.recurrence && (
+                <span className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-medium">
+                  <Repeat size={13} />
+                  {describeRecurrence(task.recurrence, t)}
+                </span>
+              )}
+
               <span className="text-xs text-[var(--text-muted)]">
                 {task.completed
                   ? t("task.status.completed")
                   : t("task.status.inProgress")}
               </span>
-
-              {task.recurrence && (
-                <span className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-medium">
-                  <Repeat size={13} />
-                  {t(`recurrence.${task.recurrence}`)}
-                </span>
-              )}
 
               {task.dueDate && (
                 <span

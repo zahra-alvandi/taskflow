@@ -16,7 +16,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { useNaturalLanguage } from "../../application/hooks/useNaturalLanguage";
 import { useAI } from "../../application/hooks/useAI";
+import { describeRecurrence } from "../../core/services/recurrenceService";
 import AISuggestionPanel from "./AISuggestionPanel";
+import RecurrenceSection from "./RecurrenceSection";
+import { useModal } from "../context/ModalContext";
 
 function AddTask({ addTask }) {
   const { t } = useTranslation();
@@ -29,6 +32,8 @@ function AddTask({ addTask }) {
   const [tags, setTags] = useState([]);
   const [estimatedMinutes, setEstimatedMinutes] = useState(null);
   const [timeResolved, setTimeResolved] = useState(false);
+  const [recurrence, setRecurrence] = useState(null);
+  const [showRecurrenceModal, setShowRecurrenceModal] = useState(false);
 
   // AI state
   const [aiSuggestions, setAiSuggestions] = useState(null);
@@ -40,17 +45,9 @@ function AddTask({ addTask }) {
 
   const parsedSubtasks = parsed.subtasks ?? [];
 
-  const [isNew, setIsNew] = useState(true);
-
-  const [recurrence, setRecurrence] = useState(null);
-  const [showRecurrence, setShowRecurrence] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsNew(false), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  /* Auto-resize */
+  /*
+     Auto-resize textarea
+ */
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -58,7 +55,9 @@ function AddTask({ addTask }) {
     el.style.height = el.scrollHeight + "px";
   }, [title]);
 
-  /* NLP auto-fill */
+  /*
+     NLP auto-fill
+ */
   useEffect(() => {
     if (parsed.priority && !priorityManuallySet) setPriority(parsed.priority);
   }, [parsed.priority, priorityManuallySet]);
@@ -77,13 +76,17 @@ function AddTask({ addTask }) {
     }
   }, [parsed.tags.join(",")]); // eslint-disable-line
 
-  /* Reset AI suggestions */
+  /*
+     Reset AI suggestions on title change
+ */
   useEffect(() => {
     setAiSuggestions(null);
     setAiDismissed(false);
   }, [title]);
 
-  /* AI analysis */
+  /*
+     AI analysis
+ */
   const handleAskAI = async () => {
     if (!title.trim() || !ai.isAvailable) return;
 
@@ -98,7 +101,9 @@ function AddTask({ addTask }) {
     }
   };
 
-  /* Apply AI suggestions */
+  /*
+     Apply AI suggestions
+ */
   const handleApplySuggestions = (patch) => {
     if (patch.priority && !priorityManuallySet) {
       setPriority(patch.priority);
@@ -123,27 +128,31 @@ function AddTask({ addTask }) {
     }
   };
 
-  /* Priority styles */
+  /*
+     Priority styles
+ */
   const priorityStyles = {
     high: "text-[var(--danger)] bg-[var(--danger-soft)]",
     medium: "text-[var(--warning)] bg-[var(--warning-soft)]",
     low: "text-[var(--success)] bg-[var(--success-soft)]",
   };
 
+  /*
+     Close dropdowns on outside click
+ */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".priority-picker")) {
         setShowPriority(false);
-      }
-      if (!event.target.closest(".recurrence-picker")) {
-        setShowRecurrence(false);
       }
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  /* Submit */
+  /*
+     Submit
+ */
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!title.trim()) return;
@@ -158,6 +167,7 @@ function AddTask({ addTask }) {
       recurrence,
       tags,
       subtasks: parsed.subtasks ?? [],
+      estimatedMinutes,
     });
 
     // reset
@@ -170,7 +180,17 @@ function AddTask({ addTask }) {
     setTags([]);
     setShowPriority(false);
     setRecurrence(null);
+    setEstimatedMinutes(null);
   };
+
+  const { openModal, closeModal } = useModal();
+
+  useEffect(() => {
+    if (showRecurrenceModal) {
+      openModal();
+      return () => closeModal();
+    }
+  }, [showRecurrenceModal, openModal, closeModal]);
 
   return (
     <div className="mb-8">
@@ -404,7 +424,7 @@ function AddTask({ addTask }) {
             </button>
 
             {showPriority && (
-              <div className="absolute top-full left-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
+              <div className="absolute top-full start-0 mt-2 w-full bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
                 {["high", "medium", "low"].map((item) => (
                   <button
                     key={item}
@@ -426,6 +446,24 @@ function AddTask({ addTask }) {
               </div>
             )}
           </div>
+
+          {/* Recurrence — only one button */}
+          <button
+            type="button"
+            onClick={() => setShowRecurrenceModal(true)}
+            className={`shrink-0 px-3 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition ${
+              recurrence
+                ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
+            }`}
+          >
+            <Repeat size={16} />
+            <span className="hidden sm:inline">
+              {recurrence
+                ? describeRecurrence(recurrence, t)
+                : t("recurrence.none")}
+            </span>
+          </button>
 
           {/* Date */}
           <DatePicker
@@ -470,66 +508,60 @@ function AddTask({ addTask }) {
             <Plus size={18} />
             {t("task.add")}
           </button>
-
-          {/* Recurrence Picker */}
-          <div className="recurrence-picker relative shrink-0">
-            <button
-              type="button"
-              onClick={() => setShowRecurrence(!showRecurrence)}
-              className={`px-3 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition ${
-                recurrence
-                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                  : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
-              }`}
-            >
-              <Repeat size={16} />
-              <span className="hidden sm:inline">
-                {recurrence
-                  ? t(`recurrence.${recurrence}`)
-                  : t("recurrence.none")}
-              </span>
-            </button>
-
-            {showRecurrence && (
-              <div className="absolute bottom-full start-0 mb-2 w-44 bg-[var(--surface)] rounded-xl shadow-[var(--shadow-soft)] p-1 z-20">
-                {["daily", "weekdays", "weekly", "biweekly", "monthly"].map(
-                  (item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => {
-                        setRecurrence(item);
-                        setShowRecurrence(false);
-                      }}
-                      className={`w-full text-start px-3 py-2 rounded-lg text-sm transition ${
-                        recurrence === item
-                          ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                          : "text-[var(--text-secondary)] hover:bg-[var(--app-bg)]"
-                      }`}
-                    >
-                      {t(`recurrence.${item}`)}
-                    </button>
-                  ),
-                )}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRecurrence(null);
-                    setShowRecurrence(false);
-                  }}
-                  className="w-full text-start px-3 py-2 rounded-lg text-sm text-[var(--danger)] hover:bg-[var(--danger-soft)] transition"
-                >
-                  {t("recurrence.remove")}
-                </button>
-              </div>
-            )}
-          </div>
         </div>
       </form>
+
+      {showRecurrenceModal && (
+        <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center sm:p-4">
+          {/* Backdrop — lighter */}
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            onClick={() => setShowRecurrenceModal(false)}
+          />
+
+          {/* Panel */}
+          <div className="relative w-full sm:max-w-md bg-[var(--surface)] rounded-t-3xl sm:rounded-3xl shadow-[var(--shadow-soft)] max-h-[85vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-[var(--border)]/40 sticky top-0 bg-[var(--surface)] z-10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[var(--accent-soft)] flex items-center justify-center">
+                  <Repeat size={15} className="text-[var(--accent)]" />
+                </div>
+                <span className="text-sm font-semibold">
+                  {t("task.detail.recurrence")}
+                </span>
+              </div>
+              <button
+                onClick={() => setShowRecurrenceModal(false)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:bg-[var(--app-bg)] transition"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-4">
+              <RecurrenceSection value={recurrence} onChange={setRecurrence} />
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-[var(--border)]/40 sticky bottom-0 bg-[var(--surface)]">
+              <button
+                onClick={() => setShowRecurrenceModal(false)}
+                className="w-full py-2.5 rounded-xl bg-[var(--accent)] text-white text-sm font-semibold hover:bg-[var(--accent-hover)] active:scale-[0.98] transition"
+              >
+                {t("actions.save")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
+/*
+   Detected Chip */
 function DetectedChip({
   icon,
   label,

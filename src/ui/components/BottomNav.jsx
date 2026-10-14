@@ -12,6 +12,7 @@ import {
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
 import { BarChart3 } from "lucide-react";
+import { useModal } from "../context/ModalContext";
 
 function BottomNav({
   setFilter,
@@ -23,6 +24,8 @@ function BottomNav({
 }) {
   const { t } = useTranslation();
   const [showMore, setShowMore] = useState(false);
+  const { isModalOpen } = useModal();
+  if (isModalOpen) return null;
 
   const mainItems = [
     {

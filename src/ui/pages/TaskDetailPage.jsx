@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { CatEars } from "../components/CatDecorations";
+import RecurrenceSection from "../components/RecurrenceSection";
+import { describeRecurrence } from "../../core/services/recurrenceService";
 
 function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
   const { t } = useTranslation();
@@ -41,6 +43,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [recurrence, setRecurrence] = useState(task.recurrence ?? null);
+  const [showRecurrence, setShowRecurrence] = useState(false);
 
   /* 
      Sync state when task changes
@@ -369,9 +372,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
           </div>
         </section>
 
-        {/* 
-            Scheduling Section
-         */}
+        {/* Scheduling Section */}
         <section className="bg-[var(--surface)] rounded-3xl p-4 sm:p-5 shadow-[var(--shadow-soft-small)]">
           <div className="flex items-center justify-between mb-3">
             <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
@@ -407,65 +408,85 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
             </div>
 
             {/* Start time */}
-            <div className="sm:col-span-3 sm:grid-cols-3 sm:grid">
-              <div>
-                <label className="text-xs font-medium text-[var(--text-secondary)] mb-1.5 flex items-center gap-1.5">
-                  <Clock size={12} />
-                  {t("task.detail.startTime")}
-                </label>
-                <input
-                  type="time"
-                  value={dueTime}
-                  onChange={(e) => setDueTime(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-primary)] outline-none tabular-nums focus:ring-2 focus:ring-[var(--primary)]/30 transition"
-                  dir="ltr"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-medium text-[var(--text-secondary)] mb-1.5 flex items-center gap-1.5">
+                <Clock size={12} />
+                {t("task.detail.startTime")}
+              </label>
+              <input
+                type="time"
+                value={dueTime}
+                onChange={(e) => setDueTime(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-primary)] outline-none tabular-nums focus:ring-2 focus:ring-[var(--primary)]/30 transition"
+                dir="ltr"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-medium text-[var(--text-secondary)] mb-1.5 flex items-center gap-1.5">
-                  <Clock size={12} />
-                  {t("task.detail.endTime")}
-                </label>
-                <input
-                  type="time"
-                  value={dueEndTime}
-                  onChange={(e) => setDueEndTime(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-primary)] outline-none tabular-nums focus:ring-2 focus:ring-[var(--primary)]/30 transition"
-                  dir="ltr"
-                />
-              </div>
-
-              {/* Recurrence */}
-              <div className="bg-[var(--surface)] rounded-3xl p-4 sm:p-5 shadow-[var(--shadow-soft-small)]">
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-3 flex items-center gap-1.5">
-                  <Repeat size={12} />
-                  {t("task.detail.recurrence")}
-                </label>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {["daily", "weekdays", "weekly", "biweekly", "monthly"].map(
-                    (item) => (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() =>
-                          setRecurrence(recurrence === item ? null : item)
-                        }
-                        className={`py-2.5 rounded-xl text-xs font-medium transition ${
-                          recurrence === item
-                            ? "bg-[var(--accent)] text-white shadow-[0_4px_10px_rgba(124,92,255,0.3)]"
-                            : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)]"
-                        }`}
-                      >
-                        {t(`recurrence.${item}`)}
-                      </button>
-                    ),
-                  )}
-                </div>
-              </div>
+            {/* End time */}
+            <div>
+              <label className="text-xs font-medium text-[var(--text-secondary)] mb-1.5 flex items-center gap-1.5">
+                <Clock size={12} />
+                {t("task.detail.endTime")}
+              </label>
+              <input
+                type="time"
+                value={dueEndTime}
+                onChange={(e) => setDueEndTime(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl bg-[var(--app-bg)] shadow-[var(--shadow-inset)] text-sm text-[var(--text-primary)] outline-none tabular-nums focus:ring-2 focus:ring-[var(--primary)]/30 transition"
+                dir="ltr"
+              />
             </div>
           </div>
+        </section>
+
+        {/* Recurrence Section — مستقل */}
+        <section className="bg-[var(--surface)] rounded-3xl shadow-[var(--shadow-soft-small)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setShowRecurrence((x) => !x)}
+            className="w-full flex items-center justify-between p-4 sm:p-5 hover:bg-[var(--app-bg)]/30 transition"
+          >
+            <div className="flex items-center gap-2.5">
+              <div
+                className={`w-8 h-8 rounded-xl flex items-center justify-center transition ${
+                  recurrence
+                    ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                    : "bg-[var(--app-bg)] text-[var(--text-muted)]"
+                }`}
+              >
+                <Repeat size={15} />
+              </div>
+              <div className="flex-1 text-start">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                  {t("task.detail.recurrence")}
+                </p>
+                <p
+                  className={`text-sm font-medium mt-0.5 ${
+                    recurrence
+                      ? "text-[var(--accent)]"
+                      : "text-[var(--text-secondary)]"
+                  }`}
+                >
+                  {recurrence
+                    ? describeRecurrence(recurrence, t)
+                    : t("recurrence.none")}
+                </p>
+              </div>
+            </div>
+
+            <ChevronDown
+              size={18}
+              className={`text-[var(--text-muted)] transition-transform ${
+                showRecurrence ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {showRecurrence && (
+            <div className="px-4 pb-5 sm:px-5 border-t border-[var(--border)]/40 pt-4">
+              <RecurrenceSection value={recurrence} onChange={setRecurrence} />
+            </div>
+          )}
         </section>
 
         {/* 

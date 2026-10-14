@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.jsx";
 import { ThemeProvider } from "./ui/context/ThemeContext.jsx";
 import { ToastProvider } from "./ui/context/ToastContext.jsx";
+import { ModalProvider } from "./ui/context/ModalContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <ThemeProvider>
     <ToastProvider>
-      <App />
+      <ModalProvider>
+        <App />
+      </ModalProvider>
     </ToastProvider>
   </ThemeProvider>,
 );
