@@ -35,7 +35,7 @@ function App() {
   const [filter, setFilter] = useState("all");
 
   const dailyPlan = useDailyPlan(planRepository);
-  const { notes, addNote, editNote, deleteNote, togglePin } =
+  const { notes, addNote, editNote, deleteNote, togglePin, restoreNote } =
     useNotes(noteRepository);
 
   const {
@@ -136,6 +136,7 @@ function App() {
             editNote={editNote}
             deleteNote={deleteNote}
             togglePin={togglePin}
+            onRestoreNote={restoreNote}
             onBack={() => {
               setPage("dashboard");
               setActiveNav("dashboard");

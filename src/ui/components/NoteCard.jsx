@@ -3,12 +3,15 @@ import { Pin, PinOff, Trash2, Check, Palette, Pencil } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { NOTE_COLORS, getNoteColor } from "../../core/domain/Note";
 import PawIcon from "./PawIcon";
+import { useToast } from "../../application/hooks/useToast";
 
-function NoteCard({ note, editNote, deleteNote, togglePin }) {
+function NoteCard({ note, editNote, deleteNote, togglePin, onRestoreNote }) {
   const { t } = useTranslation();
+  const { showToast } = useToast();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(note.content);
   const [showColors, setShowColors] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
 
   const color = getNoteColor(note.color);
 
@@ -24,9 +27,31 @@ function NoteCard({ note, editNote, deleteNote, togglePin }) {
     setEditing(false);
   };
 
+  const handleDelete = async () => {
+    setIsExiting(true);
+    await new Promise((r) => setTimeout(r, 250));
+
+    const deletedNote = await deleteNote(note.id);
+
+    if (deletedNote) {
+      showToast({
+        title: t("toast.noteDeletedTitle"),
+        description: `«${deletedNote.content.slice(0, 40)}${deletedNote.content.length > 40 ? "..." : ""}»`,
+        tone: "danger",
+        action: {
+          label: t("actions.undo"),
+          onClick: () => onRestoreNote?.(deletedNote),
+        },
+        duration: 5000,
+      });
+    }
+  };
+
   return (
     <div
-      className="group relative rounded-3xl p-4 shadow-[var(--shadow-soft-small)] hover:shadow-[var(--shadow-soft)] transition-all min-h-[100px] flex flex-col"
+      className={`group relative rounded-3xl p-4 shadow-[var(--shadow-soft-small)] hover:shadow-[var(--shadow-soft)] transition-all min-h-[100px] flex flex-col ${
+        isExiting ? "animate-task-exit" : ""
+      }`}
       style={{
         background: color.bg,
         border: `1px solid ${color.border}`,
@@ -49,7 +74,6 @@ function NoteCard({ note, editNote, deleteNote, togglePin }) {
           onBlur={save}
           onKeyDown={(e) => {
             if (e.key === "Escape") cancel();
-            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) save();
           }}
           rows={4}
           className="w-full bg-transparent outline-none text-sm resize-none"
@@ -77,7 +101,18 @@ function NoteCard({ note, editNote, deleteNote, togglePin }) {
       </p>
 
       {/* Actions */}
-      <div className="flex items-center gap-0.5 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-0.5 mt-2 opacity-40 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+        <button
+          onClick={() => {
+            setDraft(note.content);
+            setEditing(true);
+          }}
+          className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:scale-110"
+          style={{ color: color.accent }}
+        >
+          <Pencil size={13} />
+        </button>
+
         <div className="relative">
           <button
             onClick={() => setShowColors(!showColors)}
@@ -117,7 +152,6 @@ function NoteCard({ note, editNote, deleteNote, togglePin }) {
           onClick={() => togglePin(note.id)}
           className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:scale-110"
           style={{ color: color.accent }}
-          title={note.pinned ? t("note.unpin") : t("note.pin")}
         >
           {note.pinned ? <PinOff size={13} /> : <Pin size={13} />}
         </button>
@@ -133,19 +167,7 @@ function NoteCard({ note, editNote, deleteNote, togglePin }) {
         )}
 
         <button
-          onClick={() => {
-            setDraft(note.content);
-            setEditing(true);
-          }}
-          className="w-7 h-7 rounded-lg flex items-center justify-center transition hover:scale-110"
-          style={{ color: color.accent }}
-          title={t("actions.edit")}
-        >
-          <Pencil size={13} />
-        </button>
-
-        <button
-          onClick={() => deleteNote(note.id)}
+          onClick={handleDelete}
           className="w-7 h-7 rounded-lg flex items-center justify-center ms-auto transition hover:scale-110"
           style={{ color: color.accent }}
         >

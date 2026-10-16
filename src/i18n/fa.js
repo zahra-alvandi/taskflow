@@ -304,6 +304,8 @@ export default {
     deletedDesc: "می‌تونی برگردونی",
     createdDesc: "تسک جدیدت اضافه شد",
     completedDesc: "کار امروزت کم شد",
+    noteDeletedTitle: "یادداشت حذف شد",
+    subtaskDeletedTitle: "زیرتسک حذف شد",
   },
 
   recurrence: {

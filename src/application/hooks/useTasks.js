@@ -123,6 +123,7 @@ export function useTasks(repository) {
       const next = removeSubtaskFromTask(task, subtaskId);
       await repository.save(next);
       await refresh();
+      return { task, subtask };
     },
     [tasks, repository, refresh],
   );
@@ -183,6 +184,18 @@ export function useTasks(repository) {
     [tasks, repository, refresh],
   );
 
+  const restoreSubtask = useCallback(
+    async (taskId, subtask) => {
+      const task = tasks.find((t) => t.id === taskId);
+      if (!task) return;
+
+      const next = addSubtaskToTask(task, subtask);
+      await repository.save(next);
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
   const restoreTask = useCallback(
     async (task) => {
       await repository.save(task);
@@ -203,6 +216,7 @@ export function useTasks(repository) {
     refresh,
     addSubtask,
     removeSubtask,
+    restoreSubtask,
     toggleSubtask,
     editSubtask,
     restoreTask,

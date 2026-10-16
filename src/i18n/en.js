@@ -302,6 +302,8 @@ export default {
     deletedDesc: "You can undo this",
     createdDesc: "Your new task was added",
     completedDesc: "One less thing to do",
+    noteDeletedTitle: "Note deleted",
+    subtaskDeletedTitle: "Subtask deleted",
   },
 
   recurrence: {

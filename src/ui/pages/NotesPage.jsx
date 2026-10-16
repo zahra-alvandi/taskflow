@@ -11,6 +11,7 @@ function NotesPage({
   editNote,
   deleteNote,
   togglePin,
+  onRestoreNote,
   onBack,
 }) {
   const { t } = useTranslation();
@@ -101,6 +102,7 @@ function NotesPage({
                   editNote={editNote}
                   deleteNote={deleteNote}
                   togglePin={togglePin}
+                  onRestoreNote={onRestoreNote}
                 />
               ))}
             </div>

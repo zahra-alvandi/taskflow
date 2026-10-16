@@ -48,10 +48,14 @@ export function useNotes(repository) {
 
   const deleteNote = useCallback(
     async (id) => {
+      const note = notes.find((n) => n.id === id);
+      if (!note) return null;
+
       await repository.delete(id);
       await refresh();
+      return note;
     },
-    [repository, refresh],
+    [notes, repository, refresh],
   );
 
   const togglePin = useCallback(
@@ -72,12 +76,21 @@ export function useNotes(repository) {
     });
   }, [notes]);
 
+  const restoreNote = useCallback(
+    async (note) => {
+      await repository.save(note);
+      await refresh();
+    },
+    [repository, refresh],
+  );
+
   return {
     notes: sorted,
     loading,
     addNote,
     editNote,
     deleteNote,
+    restoreNote,
     togglePin,
     refresh,
   };
