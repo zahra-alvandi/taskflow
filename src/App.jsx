@@ -28,11 +28,13 @@ import FocusPage from "./ui/components/FocusPage";
 import StatsPage from "./ui/pages/StatsPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
 import ToastContainer from "./ui/components/ToastContainer";
+import { useHistorySync } from "./application/hooks/useHistorySync";
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [filter, setFilter] = useState("all");
+  const [detailTaskId, setDetailTaskId] = useState(null);
 
   const dailyPlan = useDailyPlan(planRepository);
   const { notes, addNote, editNote, deleteNote, togglePin, restoreNote } =
@@ -54,12 +56,19 @@ function App() {
   } = useTasks(taskRepository);
 
   const { lang, changeLang } = useLanguage();
-  const currentTasks = filtered[filter] ?? [];
-
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
-  const [detailTaskId, setDetailTaskId] = useState(null);
 
+  // 👇 همه‌ی hook ها اینجا (قبل از هر return)
+  useHistorySync(page, setPage, null, null);
+
+  // derived values
+  const currentTasks = filtered[filter] ?? [];
+  const detailTask = detailTaskId
+    ? tasks.find((t) => t.id === detailTaskId)
+    : null;
+
+  /* Conditional renders — بعد از همه‌ی hook ها */
   if (auth.loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--app-bg)]">
@@ -71,10 +80,6 @@ function App() {
   if (!auth.isAuthenticated) {
     return <LoginPage onLogin={auth.login} />;
   }
-
-  const detailTask = detailTaskId
-    ? tasks.find((t) => t.id === detailTaskId)
-    : null;
 
   return (
     <div className="w-full h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row overflow-hidden">

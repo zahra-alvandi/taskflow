@@ -125,6 +125,11 @@ export default {
     calendar: "Calendar",
     jalali: "Jalali",
     gregorian: "Gregorian",
+    background: "Background",
+    backgroundHint: "When you pick a background, all cards become glass.",
+    appearanceDesc: "Dark and light mode",
+    backgroundDesc: "Background and glass",
+    languageDesc: "Persian or English",
   },
 
   subtask: {

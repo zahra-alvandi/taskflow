@@ -127,6 +127,11 @@ export default {
     calendar: "تقویم",
     jalali: "شمسی",
     gregorian: "میلادی",
+    background: "پس زمینه",
+    backgroundHint: "وقتی پس زمینه انتخاب میکنی، همه ی کارت ها شیشه ای میشن",
+    appearanceDesc: "حالت تاریک و روشن",
+    backgroundDesc: "پس‌زمینه و شیشه‌ای",
+    languageDesc: "فارسی یا انگلیسی",
   },
 
   subtask: {
