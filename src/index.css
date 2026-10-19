@@ -491,83 +491,161 @@ body {
 }
 
 /* 
-   Glassmorphism
+   Backgrounds & Glassmorphism
  */
 
-/* HTML holds the background, body and containers are transparent */
 html.has-background {
+  /* Desktop background */
   background-image: var(--bg-image);
   background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  background-position: var(--bg-position, center);
   background-repeat: no-repeat;
+  background-attachment: fixed;
 
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-bg-strong: rgba(255, 255, 255, 0.75);
-  --glass-bg-weak: rgba(255, 255, 255, 0.35);
-  --glass-border: rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 8px 32px rgba(40, 30, 20, 0.12);
-  --glass-blur: 16px;
+  /* Glass surfaces */
+  --glass-bg: rgba(30, 24, 20, 0.48);
+  --glass-bg-strong: rgba(30, 24, 20, 0.68);
+  --glass-bg-weak: rgba(30, 24, 20, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-blur: 18px;
 
+  /* Transparent application canvas */
   --app-bg: transparent;
   --surface: var(--glass-bg);
   --sidebar-bg: var(--glass-bg);
+
+  /* Text contrast */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.88);
+  --text-muted: rgba(255, 255, 255, 0.68);
+
+  /* Shadows */
+  --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.22);
+  --shadow-soft-small: 0 4px 14px rgba(0, 0, 0, 0.18);
+  --shadow-soft-hover: 0 12px 36px rgba(0, 0, 0, 0.3);
+  --shadow-inset: inset 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
 html.has-background.dark {
-  --glass-bg: rgba(25, 20, 16, 0.55);
-  --glass-bg-strong: rgba(25, 20, 16, 0.75);
-  --glass-bg-weak: rgba(25, 20, 16, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-bg: rgba(20, 16, 14, 0.58);
+  --glass-bg-strong: rgba(20, 16, 14, 0.76);
+  --glass-bg-weak: rgba(20, 16, 14, 0.38);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: 20px;
+
+  --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-soft-small: 0 4px 14px rgba(0, 0, 0, 0.25);
+  --shadow-soft-hover: 0 12px 36px rgba(0, 0, 0, 0.42);
 }
 
-/* IMPORTANT: Make body, root, main completely transparent and remove ALL blur */
+/* Keep the app transparent so the selected wallpaper is visible */
 html.has-background body,
 html.has-background #root,
-html.has-background main,
-html.has-background main::before,
-html.has-background main::after {
-  background: transparent !important;
+html.has-background main {
   background-color: transparent !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
-  border: none !important;
 }
 
-/* Target ONLY cards, sidebar, bottom nav, modals, dropdowns */
+/* Readability overlay */
+html.has-background body {
+  position: relative;
+  isolation: isolate;
+}
+
+html.has-background body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(30, 20, 15, 0.12);
+}
+
+html.has-background.dark body::before {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+/* Glass surfaces */
 html.has-background .bg-\[var\(--surface\)\],
 html.has-background .bg-\[var\(--sidebar-bg\)\],
 html.has-background nav.fixed,
 html.has-background aside > div {
   background-color: var(--glass-bg) !important;
-  backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: var(--glass-shadow) !important;
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.15);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.15);
+  border-color: var(--glass-border) !important;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Stronger glass for modals and dropdowns */
+/* Dialogs and floating panels */
 html.has-background .fixed .bg-\[var\(--surface\)\] {
   background-color: var(--glass-bg-strong) !important;
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  backdrop-filter: blur(24px) saturate(1.2);
+  box-shadow: var(--shadow-soft-small);
 }
 
-/* Inputs */
+/* Form controls */
 html.has-background input,
 html.has-background textarea,
 html.has-background select {
   background-color: var(--glass-bg-weak) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-border) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--glass-border) !important;
+  box-shadow: none !important;
 }
 
-/* Remove paw backgrounds when glass is active */
+html.has-background input::placeholder,
+html.has-background textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Avoid adding text shadows to every small label and button */
+html.has-background h1,
+html.has-background h2,
+html.has-background h3 {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+}
+
+/* Remove decorative patterns that compete with wallpapers */
 html.has-background .paw-bg-warm,
 html.has-background .paw-bg-ai,
 html.has-background .cat-bg-warm {
   background-image: none !important;
+}
+
+/* 
+   Mobile wallpaper
+ */
+
+@media (max-width: 767px) {
+  html.has-background {
+    /* Falls back to desktop image if no mobile image is configured */
+    background-image: var(--bg-image-mobile, var(--bg-image));
+    background-size: cover;
+    background-position: var(--bg-position-mobile, center);
+    background-attachment: scroll;
+  }
+
+  html.has-background {
+    background-repeat: no-repeat;
+  }
+
+  html.has-background .bg-\[var\(--surface\)\],
+  html.has-background .bg-\[var\(--sidebar-bg\)\],
+  html.has-background nav.fixed,
+  html.has-background aside > div {
+    -webkit-backdrop-filter: blur(12px) saturate(1.1);
+    backdrop-filter: blur(12px) saturate(1.1);
+  }
+}
+
+/* Respect accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  html.has-background *,
+  html.has-background *::before,
+  html.has-background *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
