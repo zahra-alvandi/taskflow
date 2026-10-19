@@ -130,6 +130,9 @@ export default {
     appearanceDesc: "Dark and light mode",
     backgroundDesc: "Background and glass",
     languageDesc: "Persian or English",
+    desktop: "Desktop",
+    mobile: "Mobile",
+    noMobileImage: "No mobile image",
   },
 
   subtask: {

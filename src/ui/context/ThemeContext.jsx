@@ -1,103 +1,106 @@
-  import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-  export const ThemeContext = createContext();
+export const ThemeContext = createContext();
 
-  export const BACKGROUNDS = [
-    {
-      id: "default",
-      label: "پیش‌فرض",
-      desktopUrl: null,
-      mobileUrl: null,
-    },
-    {
-      id: "cat",
-      label: "پیشی",
-      desktopUrl: "/backgrounds/cat.jpg",
-      mobileUrl: null,
-    },
-    {
-      id: "shadow",
-      label: "سایه",
-      desktopUrl: "/backgrounds/catShadow.jpg",
-      mobileUrl: null,
-    },
-    {
-      id: "Jepan",
-      label: "ژاپن",
-      desktopUrl: "/backgrounds/jepan.jpg",
-      mobileUrl: null,
-    },
-    {
-      id: "Lazy Cat",
-      label: "پیشی تنبل",
-      desktopUrl: "/backgrounds/lazyCat.jpg",
-      mobileUrl: null,
-    },
-    {
-      id: "White",
-      label: "پیشی سفید",
-      desktopUrl: "/backgrounds/white-cat.jpg",
-      mobileUrl: null,
-    },
-  ];
+export const BACKGROUNDS = [
+  {
+    id: "default",
+    label: "پیش‌فرض",
+    desktopUrl: null,
+    mobileUrl: null,
+  },
+  {
+    id: "cat",
+    label: "پیشی",
+    desktopUrl: "/backgrounds/cat.jpg",
+    mobileUrl: "backgrounds/shelfCat-mobile.jpg",
+  },
+  {
+    id: "shadow",
+    label: "سایه",
+    desktopUrl: "/backgrounds/catShadow.jpg",
+    mobileUrl: "backgrounds/catTail-mobile.jpg",
+  },
+  {
+    id: "rainy",
+    label: "بارونی",
+    desktopUrl: "/backgrounds/jepan.jpg",
+    mobileUrl: "backgrounds/rainCat-mobile.jpg",
+  },
+  {
+    id: "lazycat",
+    label: "پیشی تنبل",
+    desktopUrl: "/backgrounds/lazycat.jpg",
+    mobileUrl: "backgrounds/nightCat-mobile.jpg",
+  },
+  {
+    id: "white",
+    label: "پیشی سفید",
+    desktopUrl: "/backgrounds/catt.jpg",
+    mobileUrl: "backgrounds/white-cat-mobile.jpg",
+  },
+  {
+    id: "star",
+    label: "پیشی و ستاره",
+    desktopUrl: "/backgrounds/catt.jpg",
+    mobileUrl: "backgrounds/starCat-mobile.jpg",
+  },
+];
 
-  export function ThemeProvider({ children }) {
-    const [darkMode, setDarkMode] = useState(() => {
-      return localStorage.getItem("theme") === "dark";
-    });
+export function ThemeProvider({ children }) {
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
 
-    const [background, setBackground] = useState(() => {
-      return localStorage.getItem("whiskerly:background") || "default";
-    });
+  const [background, setBackground] = useState(() => {
+    return localStorage.getItem("whiskerly:background") || "default";
+  });
 
-    // Apply light/dark theme
-    useEffect(() => {
-      const root = document.documentElement;
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("dark", darkMode);
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
-      root.classList.toggle("dark", darkMode);
-      localStorage.setItem("theme", darkMode ? "dark" : "light");
-    }, [darkMode]);
+  useEffect(() => {
+    localStorage.setItem("whiskerly:background", background);
 
-    // Apply selected background
-    useEffect(() => {
-      localStorage.setItem("whiskerly:background", background);
+    const root = document.documentElement;
+    const selectedBg = BACKGROUNDS.find((item) => item.id === background);
 
-      const root = document.documentElement;
-      const selectedBackground = BACKGROUNDS.find(
-        (item) => item.id === background,
-      );
-
-      const desktopUrl = selectedBackground?.desktopUrl;
-      const mobileUrl = selectedBackground?.mobileUrl;
-
-      if (desktopUrl) {
-        root.style.setProperty("--bg-image", `url("${desktopUrl}")`);
-
-        if (mobileUrl) {
-          root.style.setProperty("--bg-image-mobile", `url("${mobileUrl}")`);
-        } else {
-          root.style.removeProperty("--bg-image-mobile");
-        }
-
-        root.classList.add("has-background");
-      } else {
-        root.style.removeProperty("--bg-image");
-        root.style.removeProperty("--bg-image-mobile");
-        root.classList.remove("has-background");
+    if (selectedBg && (selectedBg.desktopUrl || selectedBg.mobileUrl)) {
+      if (selectedBg.desktopUrl) {
+        root.style.setProperty("--bg-image", `url("${selectedBg.desktopUrl}")`);
       }
-    }, [background]);
 
-    return (
-      <ThemeContext.Provider
-        value={{
-          darkMode,
-          setDarkMode,
-          background,
-          setBackground,
-          backgrounds: BACKGROUNDS,
-        }}
-      >
-        {children}
-      </ThemeContext.Provider>
-    );
-  }
+      if (selectedBg.mobileUrl) {
+        root.style.setProperty(
+          "--bg-image-mobile",
+          `url("${selectedBg.mobileUrl}")`,
+        );
+      } else {
+        root.style.removeProperty("--bg-image-mobile");
+      }
+
+      root.classList.add("has-background");
+    } else {
+      root.style.removeProperty("--bg-image");
+      root.style.removeProperty("--bg-image-mobile");
+      root.classList.remove("has-background");
+    }
+  }, [background]);
+
+  return (
+    <ThemeContext.Provider
+      value={{
+        darkMode,
+        setDarkMode,
+        background,
+        setBackground,
+        backgrounds: BACKGROUNDS,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
+  );
+}

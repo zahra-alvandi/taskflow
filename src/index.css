@@ -619,10 +619,9 @@ html.has-background .cat-bg-warm {
 
 @media (max-width: 767px) {
   html.has-background {
-    /* Falls back to desktop image if no mobile image is configured */
     background-image: var(--bg-image-mobile, var(--bg-image));
     background-size: cover;
-    background-position: var(--bg-position-mobile, center);
+    background-position: center;
     background-attachment: scroll;
   }
 

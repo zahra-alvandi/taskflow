@@ -132,6 +132,9 @@ export default {
     appearanceDesc: "حالت تاریک و روشن",
     backgroundDesc: "پس‌زمینه و شیشه‌ای",
     languageDesc: "فارسی یا انگلیسی",
+    desktop: "دسکتاپ",
+    mobile: "موبایل",
+    noMobileImage: "بدون تصویر موبایل",
   },
 
   subtask: {
