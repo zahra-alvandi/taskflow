@@ -106,104 +106,106 @@ function Dashboard({
 
   return (
     <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-28 sm:px-6 md:p-8 md:pb-8">
-      <header className="mb-6">
-        {isDashboard ? (
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <p className="text-sm text-[var(--text-secondary)] mb-2">
-                {t("greeting.welcomeBack")} <span className="ml-1">👋</span>
-              </p>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                {t("greeting.morning")}
-              </h2>
-              <p className="text-sm text-[var(--text-secondary)] mt-2">
-                {t("greeting.subtitle")}
-              </p>
-            </div>
-            <SearchInput value={search} onChange={setSearch} t={t} />
-          </div>
-        ) : (
-          <>
-            {isAllTasks ? (
-              <div className="flex items-center justify-between gap-4 mb-4">
-                <h2 className="text-2xl font-bold tracking-tight">
-                  {t("nav.all")}
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-6">
+          {isDashboard ? (
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <p className="text-sm text-[var(--text-secondary)] mb-2">
+                  {t("greeting.welcomeBack")} <span className="ml-1">👋</span>
+                </p>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  {t("greeting.morning")}
                 </h2>
-                <span className="text-sm text-[var(--text-muted)] tabular-nums bg-[var(--app-bg)] px-2.5 py-1 rounded-lg">
-                  {tasks.length}
-                </span>
+                <p className="text-sm text-[var(--text-secondary)] mt-2">
+                  {t("greeting.subtitle")}
+                </p>
               </div>
-            ) : (
-              <Breadcrumb pageTitle={pageTitle} setFilter={setFilter} t={t} />
-            )}
-            <SearchInput value={search} onChange={setSearch} t={t} />
-          </>
-        )}
-      </header>
+              <SearchInput value={search} onChange={setSearch} t={t} />
+            </div>
+          ) : (
+            <>
+              {isAllTasks ? (
+                <div className="flex items-center justify-between gap-4 mb-4">
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    {t("nav.all")}
+                  </h2>
+                  <span className="text-sm text-[var(--text-muted)] tabular-nums bg-[var(--app-bg)] px-2.5 py-1 rounded-lg">
+                    {tasks.length}
+                  </span>
+                </div>
+              ) : (
+                <Breadcrumb pageTitle={pageTitle} setFilter={setFilter} t={t} />
+              )}
+              <SearchInput value={search} onChange={setSearch} t={t} />
+            </>
+          )}
+        </header>
 
-      {showStatCards && (
-        <div className="grid grid-cols-2 gap-3 mb-6 sm:gap-4 xl:grid-cols-4">
-          {statcards.map((s) => (
-            <StatCard
-              key={s.id}
-              id={s.id}
-              title={s.title}
-              value={s.value}
-              description={s.description}
-              icon={s.icon}
-              isActive={filter === s.targetFilter && viewMode === "tasks"}
-              onClick={() => {
-                setFilter(s.targetFilter);
-                setPage("tasks");
+        {showStatCards && (
+          <div className="grid grid-cols-2 gap-3 mb-6 sm:gap-4 md:grid-cols-4">
+            {statcards.map((s) => (
+              <StatCard
+                key={s.id}
+                id={s.id}
+                title={s.title}
+                value={s.value}
+                description={s.description}
+                icon={s.icon}
+                isActive={filter === s.targetFilter && viewMode === "tasks"}
+                onClick={() => {
+                  setFilter(s.targetFilter);
+                  setPage("tasks");
+                }}
+              />
+            ))}
+          </div>
+        )}
+
+        {isDashboard && <AddTask addTask={addTask} />}
+
+        {isDashboard && plan && (
+          <div className="mt-6">
+            <DailyPlanCard
+              plan={plan}
+              progress={planProgress}
+              onOpen={() => setPage("ai")}
+              onToggleBlock={onTogglePlanBlock}
+            />
+          </div>
+        )}
+
+        {isDashboard && (
+          <h3 className="text-lg font-bold my-4">{t("task.recent")}</h3>
+        )}
+
+        <div key={`${viewMode}-${filter}`} className="animate-fade-slide">
+          {searchedTasks.length === 0 ? (
+            <EmptyState
+              text={pageText}
+              t={t}
+              showAddButton={!isDashboard}
+              onGoToDashboard={() => {
+                setPage("dashboard");
+                setFilter("all");
               }}
             />
-          ))}
+          ) : (
+            <TaskList
+              tasks={searchedTasks}
+              toggleTask={toggleTask}
+              toggleImportant={toggleImportant}
+              deleteTask={deleteTask}
+              onRestoreTask={restoreTask}
+              editTask={editTask}
+              onAddSubtask={addSubtask}
+              onToggleSubtask={toggleSubtask}
+              onEditSubtask={editSubtask}
+              onDeleteSubtask={removeSubtask}
+              onOpenDetail={onOpenDetail}
+            />
+          )}
         </div>
-      )}
-
-      {isDashboard && <AddTask addTask={addTask} />}
-
-      {isDashboard && plan && (
-        <div className="mt-6">
-          <DailyPlanCard
-            plan={plan}
-            progress={planProgress}
-            onOpen={() => setPage("ai")}
-            onToggleBlock={onTogglePlanBlock}
-          />
-        </div>
-      )}
-
-      {isDashboard && (
-        <h3 className="text-lg font-bold my-4">{t("task.recent")}</h3>
-      )}
-
-      <div key={`${viewMode}-${filter}`} className="animate-fade-slide">
-        {searchedTasks.length === 0 ? (
-          <EmptyState
-            text={pageText}
-            t={t}
-            showAddButton={!isDashboard}
-            onGoToDashboard={() => {
-              setPage("dashboard");
-              setFilter("all");
-            }}
-          />
-        ) : (
-          <TaskList
-            tasks={searchedTasks}
-            toggleTask={toggleTask}
-            toggleImportant={toggleImportant}
-            deleteTask={deleteTask}
-            onRestoreTask={restoreTask}
-            editTask={editTask}
-            onAddSubtask={addSubtask}
-            onToggleSubtask={toggleSubtask}
-            onEditSubtask={editSubtask}
-            onDeleteSubtask={removeSubtask}
-            onOpenDetail={onOpenDetail}
-          />
-        )}
       </div>
     </main>
   );
