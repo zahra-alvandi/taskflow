@@ -47,6 +47,7 @@ export function useTasks(repository) {
         tags: payload.tags ?? [],
         subtasks: payload.subtasks ?? [],
         estimatedMinutes: payload.estimatedMinutes ?? null,
+        order: tasks.length,
       });
       await repository.save(task);
       await refresh();
@@ -163,14 +164,18 @@ export function useTasks(repository) {
     [tasks, repository, refresh],
   );
 
+  const sortedTasks = useMemo(() => {
+    return [...tasks].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [tasks]);
+
   const filtered = useMemo(() => {
     return {
-      all: tasks,
-      completed: tasks.filter((t) => t.completed),
-      important: tasks.filter((t) => t.important && !t.completed),
-      pending: tasks.filter((t) => !t.completed),
+      all: sortedTasks,
+      completed: sortedTasks.filter((t) => t.completed),
+      important: sortedTasks.filter((t) => t.important && !t.completed),
+      pending: sortedTasks.filter((t) => !t.completed),
     };
-  }, [tasks]);
+  }, [sortedTasks]);
 
   const deleteTask = useCallback(
     async (id) => {
@@ -204,6 +209,36 @@ export function useTasks(repository) {
     [repository, refresh],
   );
 
+  const reorderTasks = useCallback(
+    async (fromIndex, toIndex, visibleTasks) => {
+      if (fromIndex === toIndex) return;
+
+      const newVisibleTasks = [...visibleTasks];
+
+      const [movedTask] = newVisibleTasks.splice(fromIndex, 1);
+      newVisibleTasks.splice(toIndex, 0, movedTask);
+
+      const newOrders = new Map();
+      newVisibleTasks.forEach((task, index) => {
+        newOrders.set(task.id, index);
+      });
+
+      const updatedTasks = tasks.map((task) => {
+        if (newOrders.has(task.id)) {
+          return { ...task, order: newOrders.get(task.id) };
+        }
+        return task;
+      });
+
+      for (const t of updatedTasks) {
+        await repository.save(t);
+      }
+
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
   return {
     tasks,
     loading,
@@ -213,12 +248,13 @@ export function useTasks(repository) {
     toggleImportant,
     editTask,
     deleteTask,
-    refresh,
+    restoreTask,
     addSubtask,
     removeSubtask,
     restoreSubtask,
     toggleSubtask,
     editSubtask,
-    restoreTask,
+    reorderTasks,
+    refresh,
   };
 }

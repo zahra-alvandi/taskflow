@@ -36,6 +36,7 @@ function Dashboard({
   onOpenDetail,
   restoreTask,
   onAddClick,
+  onReorder,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -210,6 +211,8 @@ function Dashboard({
               onEditSubtask={editSubtask}
               onDeleteSubtask={removeSubtask}
               onOpenDetail={onOpenDetail}
+              tasks={searchedTasks}
+              onReorder={onReorder}
             />
           )}
         </div>

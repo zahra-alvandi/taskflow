@@ -58,6 +58,7 @@ function App() {
     removeSubtask,
     toggleSubtask,
     editSubtask,
+    reorderTasks,
   } = useTasks(taskRepository);
 
   const { lang, changeLang } = useLanguage();
@@ -214,6 +215,7 @@ function App() {
               setPage("task-detail");
             }}
             onAddClick={openAddTask}
+            onReorder={reorderTasks}
           />
         )}
       </PageTransition>
