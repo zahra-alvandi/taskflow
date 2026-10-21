@@ -24,7 +24,6 @@ function SettingsPage({ lang, onChangeLang, notif }) {
     }
   }, [section]);
 
-  // Handle back button
   useEffect(() => {
     const handlePopState = (event) => {
       const state = event.state;
@@ -88,81 +87,77 @@ function SettingsPage({ lang, onChangeLang, notif }) {
     warning: "bg-[var(--warning-soft)] text-[var(--warning)]",
   };
 
-  /*
-     Sub-pages
-  */
-  if (section === "appearance") {
-    return <AppearanceSettingsPage onBack={handleBack} />;
-  }
-
-  if (section === "background") {
-    return <BackgroundSettingsPage onBack={handleBack} />;
-  }
-
-  if (section === "language") {
+  //  Sub-pages
+  if (section) {
     return (
-      <LanguageSettingsPage
-        lang={lang}
-        onChangeLang={onChangeLang}
-        onBack={handleBack}
-      />
+      <div key={section} className="flex-1 flex flex-col h-full animate-page">
+        {section === "appearance" && (
+          <AppearanceSettingsPage onBack={handleBack} />
+        )}
+        {section === "background" && (
+          <BackgroundSettingsPage onBack={handleBack} />
+        )}
+        {section === "language" && (
+          <LanguageSettingsPage
+            lang={lang}
+            onChangeLang={onChangeLang}
+            onBack={handleBack}
+          />
+        )}
+        {section === "notifications" && (
+          <NotificationSettingsPage notif={notif} onBack={handleBack} />
+        )}
+        {section === "ai" && <AISettingsPage onBack={handleBack} />}
+      </div>
     );
   }
 
-  if (section === "notifications") {
-    return <NotificationSettingsPage notif={notif} onBack={handleBack} />;
-  }
-
-  if (section === "ai") {
-    return <AISettingsPage onBack={handleBack} />;
-  }
-
-  /*
-     Hub
-  */
+  // ── Hub ──
   return (
-    <main className="flex-1 min-w-0 w-full h-full overflow-y-auto pb-32 md:pb-8">
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 md:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-          {t("settings.title")}
-        </h1>
-        <p className="text-sm text-[var(--text-secondary)] mt-2">
-          {t("settings.subtitle")}
-        </p>
+    <div key="hub" className="flex-1 flex flex-col h-full animate-page">
+      <main className="flex-1 min-w-0 w-full h-full overflow-y-auto pb-32 md:pb-8">
+        <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 md:p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+            {t("settings.title")}
+          </h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-2">
+            {t("settings.subtitle")}
+          </p>
 
-        <div className="mt-8 space-y-2">
-          {sections.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setSection(s.id)}
-              className="group w-full flex items-center gap-4 p-4 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] hover:shadow-[var(--shadow-soft)] hover:-translate-y-0.5 active:scale-[0.98] transition-all"
-            >
-              <div
-                className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center ${colorStyles[s.color]}`}
+          <div className="mt-8 space-y-2">
+            {sections.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => setSection(s.id)}
+                className="group w-full flex items-center gap-4 p-4 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-soft-small)] hover:shadow-[var(--shadow-soft)] hover:-translate-y-0.5 active:scale-[0.98] transition-all"
               >
-                {s.icon}
-              </div>
-              <div className="flex-1 min-w-0 text-start">
-                <p className="text-sm font-semibold text-[var(--text-primary)]">
-                  {s.title}
-                </p>
-                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                  {s.description}
-                </p>
-              </div>
-              <ChevronRight
-                size={18}
-                className="text-[var(--text-muted)] group-hover:text-[var(--primary)] rtl:rotate-180 transition shrink-0"
-              />
-            </button>
-          ))}
-        </div>
+                <div
+                  className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center ${colorStyles[s.color]}`}
+                >
+                  {s.icon}
+                </div>
+                <div className="flex-1 min-w-0 text-start">
+                  <p className="text-sm font-semibold text-[var(--text-primary)]">
+                    {s.title}
+                  </p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                    {s.description}
+                  </p>
+                </div>
+                <ChevronRight
+                  size={18}
+                  className="text-[var(--text-muted)] group-hover:text-[var(--primary)] rtl:rotate-180 transition shrink-0"
+                />
+              </button>
+            ))}
+          </div>
 
-        <p className="text-xs text-[var(--text-muted)] text-center mt-8">
-          {t("app.name")} · v0.0.0
-        </p>
-      </div>
-    </main>
+          <p className="text-xs text-[var(--text-muted)] text-center mt-8">
+            {t("app.name")} · v0.0.0
+          </p>
+        </div>
+      </main>
+    </div>
   );
 }
 

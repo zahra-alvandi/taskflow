@@ -515,12 +515,12 @@ function AddTask({ addTask }) {
         <div className="fixed inset-0 z-[300] flex items-end sm:items-center justify-center sm:p-4">
           {/* Backdrop — lighter */}
           <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/40 animate-backdrop-enter"
             onClick={() => setShowRecurrenceModal(false)}
           />
 
           {/* Panel */}
-          <div className="relative w-full sm:max-w-md bg-[var(--surface)] rounded-t-3xl sm:rounded-3xl shadow-[var(--shadow-soft)] max-h-[85vh] overflow-y-auto">
+          <div className="relative w-full sm:max-w-md bg-[var(--surface)] rounded-t-3xl sm:rounded-3xl shadow-[var(--shadow-soft)] max-h-[85vh] overflow-y-auto animate-modal-enter">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-[var(--border)]/40 sticky top-0 bg-[var(--surface)] z-10">
               <div className="flex items-center gap-2">

@@ -648,3 +648,108 @@ html.has-background .cat-bg-warm {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* 
+   Animations (Smooth & Fast)
+ */
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-page {
+  animation: fadeSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: fadeSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stagger-item:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.stagger-item:nth-child(2) {
+  animation-delay: 0.04s;
+}
+.stagger-item:nth-child(3) {
+  animation-delay: 0.06s;
+}
+.stagger-item:nth-child(4) {
+  animation-delay: 0.08s;
+}
+.stagger-item:nth-child(5) {
+  animation-delay: 0.1s;
+}
+.stagger-item:nth-child(6) {
+  animation-delay: 0.12s;
+}
+.stagger-item:nth-child(7) {
+  animation-delay: 0.14s;
+}
+.stagger-item:nth-child(8) {
+  animation-delay: 0.16s;
+}
+.stagger-item:nth-child(9) {
+  animation-delay: 0.18s;
+}
+.stagger-item:nth-child(10) {
+  animation-delay: 0.2s;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-modal-enter {
+  animation: modalEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes backdropEnter {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+.animate-backdrop-enter {
+  animation: backdropEnter 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-page,
+  .stagger-item,
+  .animate-modal-enter,
+  .animate-backdrop-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
