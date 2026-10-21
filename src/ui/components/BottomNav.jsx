@@ -8,11 +8,11 @@ import {
   Target,
   Settings,
   LogOut,
+  Plus,
+  BarChart3,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
-import { BarChart3 } from "lucide-react";
-import { useModal } from "../context/ModalContext";
 
 function BottomNav({
   setFilter,
@@ -21,13 +21,12 @@ function BottomNav({
   setActiveNav,
   setPage,
   onLogout,
+  onAddClick,
 }) {
   const { t } = useTranslation();
   const [showMore, setShowMore] = useState(false);
-  const { isModalOpen } = useModal();
-  if (isModalOpen) return null;
 
-  const mainItems = [
+  const leftItems = [
     {
       id: "dashboard",
       label: t("nav.dashboard"),
@@ -43,21 +42,33 @@ function BottomNav({
       icon: <Target size={20} />,
       action: () => setPage("focus"),
     },
-    {
-      id: "ai",
-      label: t("ai.title"),
-      icon: <Sparkles size={20} />,
-      action: () => setPage("ai"),
-    },
+  ];
+
+  const rightItems = [
     {
       id: "notes",
       label: t("note.title"),
       icon: <PawIcon size={20} />,
       action: () => setPage("notes"),
     },
+    {
+      id: "ai",
+      label: t("ai.title"),
+      icon: <Sparkles size={20} />,
+      action: () => setPage("ai"),
+    },
   ];
 
   const moreItems = [
+    {
+      id: "all",
+      label: t("nav.all"),
+      icon: <ListTodo size={20} />,
+      action: () => {
+        setPage("dashboard");
+        setFilter("all");
+      },
+    },
     {
       id: "stats",
       label: t("stats.pageTitle"),
@@ -87,7 +98,7 @@ function BottomNav({
             className="fixed inset-0 z-[80] bg-black/40 backdrop-blur-sm md:hidden"
             onClick={() => setShowMore(false)}
           />
-          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-[90] md:hidden animate-fade-slide-sm">
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-sm z-[90] md:hidden animate-fade-slide">
             <div className="rounded-3xl bg-[var(--surface)] p-3 shadow-[var(--shadow-soft)]">
               <div className="flex items-center justify-between px-2 py-1 mb-2">
                 <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide">
@@ -133,51 +144,88 @@ function BottomNav({
 
       {/* Bottom Nav */}
       <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-[var(--surface)] px-2 py-2.5 rounded-3xl shadow-[var(--shadow-soft)] md:hidden z-[70]">
-        <div className="flex items-center justify-around">
-          {mainItems.map((item) => {
-            const isActive = activeNav === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleItem(item)}
-                className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-                  isActive
-                    ? "text-[var(--primary)]"
-                    : "text-[var(--text-muted)]"
-                }`}
-              >
-                <div
-                  className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${
-                    isActive ? "bg-[var(--primary-soft)]" : ""
+        <div className="flex items-center justify-between relative">
+          {/* 2 Left Items */}
+          <div className="flex flex-1 justify-around">
+            {leftItems.map((item) => {
+              const isActive = activeNav === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleItem(item)}
+                  className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
+                    isActive
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-muted)]"
                   }`}
                 >
-                  {item.icon}
-                </div>
-                <span className="text-[9px] font-medium mt-0.5 truncate max-w-[50px]">
-                  {item.label}
-                </span>
-              </button>
-            );
-          })}
+                  <div
+                    className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${isActive ? "bg-[var(--primary-soft)]" : ""}`}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="text-[9px] font-medium mt-0.5 truncate max-w-[50px]">
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-          {/* More Button */}
-          <button
-            onClick={() => setShowMore(!showMore)}
-            className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
-              showMore ? "text-[var(--primary)]" : "text-[var(--text-muted)]"
-            }`}
-          >
-            <div
-              className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${
-                showMore ? "bg-[var(--primary-soft)]" : ""
+          {/* Center FAB Button */}
+          <div className="relative -mt-8 shrink-0 z-10">
+            <button
+              onClick={onAddClick}
+              className="w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-[0_6px_16px_rgba(232,135,74,0.5)] hover:bg-[var(--primary-hover)] active:scale-95 transition-all flex items-center justify-center border-4 border-[var(--app-bg)]"
+              aria-label={t("task.add")}
+            >
+              <Plus size={24} strokeWidth={2.5} />
+            </button>
+          </div>
+
+          {/* 2 Right Items + More Button */}
+          <div className="flex flex-1 justify-around">
+            {rightItems.map((item) => {
+              const isActive = activeNav === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleItem(item)}
+                  className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
+                    isActive
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-muted)]"
+                  }`}
+                >
+                  <div
+                    className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${isActive ? "bg-[var(--primary-soft)]" : ""}`}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="text-[9px] font-medium mt-0.5 truncate max-w-[50px]">
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+
+            {/* More Button */}
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
+                showMore ? "text-[var(--primary)]" : "text-[var(--text-muted)]"
               }`}
             >
-              <MoreHorizontal size={20} />
-            </div>
-            <span className="text-[9px] font-medium mt-0.5">
-              {t("nav.more")}
-            </span>
-          </button>
+              <div
+                className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${showMore ? "bg-[var(--primary-soft)]" : ""}`}
+              >
+                <MoreHorizontal size={20} />
+              </div>
+              <span className="text-[9px] font-medium mt-0.5">
+                {t("nav.more")}
+              </span>
+            </button>
+          </div>
         </div>
       </nav>
     </>

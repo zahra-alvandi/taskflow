@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import StatCard from "../components/StatsCard";
 import TaskList from "../components/TaskList";
-import AddTask from "../components/AddTasks";
 import DailyPlanCard from "../components/DailyPlanCard";
 import { useTranslation } from "../../application/hooks/useTranslation";
 
@@ -36,6 +35,7 @@ function Dashboard({
   onTogglePlanBlock,
   onOpenDetail,
   restoreTask,
+  onAddClick,
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
@@ -162,8 +162,6 @@ function Dashboard({
           </div>
         )}
 
-        {isDashboard && <AddTask addTask={addTask} />}
-
         {isDashboard && plan && (
           <div className="mt-6">
             <DailyPlanCard
@@ -176,7 +174,16 @@ function Dashboard({
         )}
 
         {isDashboard && (
-          <h3 className="text-lg font-bold my-4">{t("task.recent")}</h3>
+          <div className="flex items-center justify-between my-4">
+            <h3 className="text-lg font-bold">{t("task.recent")}</h3>
+            <button
+              onClick={onAddClick}
+              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium shadow-[0_4px_10px_rgba(232,135,74,0.3)] hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 active:scale-95 transition-all"
+            >
+              <Plus size={18} />
+              {t("task.add")}
+            </button>
+          </div>
         )}
 
         <div key={`${viewMode}-${filter}`} className="animate-fade-slide">

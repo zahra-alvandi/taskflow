@@ -29,12 +29,17 @@ import StatsPage from "./ui/pages/StatsPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
 import ToastContainer from "./ui/components/ToastContainer";
 import { useHistorySync } from "./application/hooks/useHistorySync";
+import AddTaskFAB from "./ui/components/AddTaskFAB";
+import AddTaskModal from "./ui/components/AddTaskFAB";
 
 function App() {
   const [page, setPage] = useState("dashboard");
   const [activeNav, setActiveNav] = useState("dashboard");
   const [filter, setFilter] = useState("all");
   const [detailTaskId, setDetailTaskId] = useState(null);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const openAddTask = () => setShowAddTask(true);
+  const closeAddTask = () => setShowAddTask(false);
 
   const dailyPlan = useDailyPlan(planRepository);
   const { notes, addNote, editNote, deleteNote, togglePin, restoreNote } =
@@ -59,16 +64,13 @@ function App() {
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
 
-  // 👇 همه‌ی hook ها اینجا (قبل از هر return)
   useHistorySync(page, setPage, null, null);
 
-  // derived values
   const currentTasks = filtered[filter] ?? [];
   const detailTask = detailTaskId
     ? tasks.find((t) => t.id === detailTaskId)
     : null;
 
-  /* Conditional renders — بعد از همه‌ی hook ها */
   if (auth.loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--app-bg)]">
@@ -211,6 +213,7 @@ function App() {
               setDetailTaskId(task.id);
               setPage("task-detail");
             }}
+            onAddClick={openAddTask}
           />
         )}
       </PageTransition>
@@ -222,6 +225,13 @@ function App() {
         setActiveNav={setActiveNav}
         setPage={setPage}
         onLogout={auth.logout}
+        onAddClick={openAddTask}
+      />
+
+      <AddTaskModal
+        open={showAddTask}
+        onClose={closeAddTask}
+        addTask={addTask}
       />
 
       <InstallPrompt />
@@ -232,6 +242,8 @@ function App() {
       />
 
       <ToastContainer />
+
+      <AddTaskFAB addTask={addTask} />
     </div>
   );
 }
