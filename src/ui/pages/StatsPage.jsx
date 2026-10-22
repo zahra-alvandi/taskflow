@@ -15,9 +15,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import { CatEars, WhiskerLine } from "../components/CatDecorations";
@@ -206,7 +203,7 @@ function StatsPage({ tasks, onBack }) {
         </div>
 
         {/* Heatmap */}
-        <div className="mb-6 rounded-3xl bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)]">
+        <div className="stat-heatmap-container mb-6 rounded-3xl bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)]">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-[var(--text-primary)]">
               {t("stats.heatmap")}
@@ -323,19 +320,11 @@ function PriorityBar({ label, data, color, softColor }) {
  */
 function Heatmap({ weeks, t }) {
   const getColor = (count) => {
-    if (count === 0) return "var(--app-bg)";
-    if (count === 1) return "var(--primary-soft)";
-    if (count <= 3) return "var(--primary)";
-    if (count <= 5) return "var(--primary-hover)";
-    return "var(--primary-hover)";
-  };
-
-  const getOpacity = (count) => {
-    if (count === 0) return 1;
-    if (count === 1) return 1;
-    if (count <= 3) return 0.7;
-    if (count <= 5) return 0.85;
-    return 1;
+    if (count === 0) return "rgba(255,255,255,0.1)";
+    if (count === 1) return "rgba(232,135,74,0.3)";
+    if (count <= 3) return "rgba(232,135,74,0.6)";
+    if (count <= 5) return "rgba(232,135,74,0.9)";
+    return "rgba(232,135,74,1)";
   };
 
   return (
@@ -349,7 +338,6 @@ function Heatmap({ weeks, t }) {
                 className="w-3 h-3 rounded-sm transition-all hover:scale-125"
                 style={{
                   background: day ? getColor(day.count) : "transparent",
-                  opacity: day ? getOpacity(day.count) : 0,
                 }}
                 title={
                   day
@@ -362,14 +350,28 @@ function Heatmap({ weeks, t }) {
         ))}
       </div>
 
-      {/* Legend */}
       <div className="flex items-center gap-1.5 mt-3 text-[10px] text-[var(--text-muted)]">
         <span>{t("stats.less")}</span>
-        <div className="w-3 h-3 rounded-sm bg-[var(--app-bg)]" />
-        <div className="w-3 h-3 rounded-sm bg-[var(--primary-soft)]" />
-        <div className="w-3 h-3 rounded-sm bg-[var(--primary)] opacity-70" />
-        <div className="w-3 h-3 rounded-sm bg-[var(--primary)] opacity-85" />
-        <div className="w-3 h-3 rounded-sm bg-[var(--primary-hover)]" />
+        <div
+          className="w-3 h-3 rounded-sm"
+          style={{ background: "rgba(255,255,255,0.1)" }}
+        />
+        <div
+          className="w-3 h-3 rounded-sm"
+          style={{ background: "rgba(232,135,74,0.3)" }}
+        />
+        <div
+          className="w-3 h-3 rounded-sm"
+          style={{ background: "rgba(232,135,74,0.6)" }}
+        />
+        <div
+          className="w-3 h-3 rounded-sm"
+          style={{ background: "rgba(232,135,74,0.9)" }}
+        />
+        <div
+          className="w-3 h-3 rounded-sm"
+          style={{ background: "rgba(232,135,74,1)" }}
+        />
         <span>{t("stats.more")}</span>
       </div>
     </div>

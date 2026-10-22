@@ -55,7 +55,7 @@ export function useNotifications(tasks) {
           }
         }
 
-        if (diffMin <= 0 && diffMin > -30) {
+        if (diffMin <= -30 && diffMin > -180) {
           const key = `${task.id}-due`;
           if (!notifiedRef.current.has(key)) {
             notifiedRef.current.add(key);

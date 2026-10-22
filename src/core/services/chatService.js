@@ -11,6 +11,13 @@ export const ACTION_TYPES = {
  * @param {Array} history
  * @returns {Object}
  */
+
+function localISODate(d) {
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
 export function buildChatContext(tasks, history = []) {
   const activeTasks = tasks
     .filter((t) => !t.completed)
@@ -32,6 +39,7 @@ export function buildChatContext(tasks, history = []) {
     completedCount: tasks.filter((t) => t.completed).length,
     today: new Date().toISOString().slice(0, 10),
     history: history.slice(-10),
+    today: localISODate(new Date()),
   };
 }
 

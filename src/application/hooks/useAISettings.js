@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 
 const STORAGE_KEY = "whiskerly:ai-settings";
+const SAME_TAB_EVENT = "whiskerly:ai-settings-changed";
 
 const DEFAULT_SETTINGS = {
   enabled: false,
@@ -40,15 +41,25 @@ export function useAISettings() {
   }, []);
 
   useEffect(() => {
-    const handler = (e) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        try {
-          setSettingsState({ ...DEFAULT_SETTINGS, ...JSON.parse(e.newValue) });
-        } catch {}
-      }
+    // "storage" fires for other tabs; SAME_TAB_EVENT keeps every hook
+    // instance in this tab in sync too.
+    const reload = () => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        setSettingsState(
+          raw ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } : DEFAULT_SETTINGS,
+        );
+      } catch {}
     };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    const onStorage = (e) => {
+      if (e.key === STORAGE_KEY) reload();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(SAME_TAB_EVENT, reload);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(SAME_TAB_EVENT, reload);
+    };
   }, []);
 
   const updateSettings = useCallback(
@@ -64,19 +75,18 @@ export function useAISettings() {
         patch = { ...patch, apiKey: trimmed };
       }
 
-      setSettingsState((prev) => {
-        const next = { ...prev, ...patch };
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        } catch (err) {
-          console.error("Failed to save AI settings", err);
-        }
-        return next;
-      });
+      const next = { ...settings, ...patch };
+      setSettingsState(next);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        window.dispatchEvent(new Event(SAME_TAB_EVENT));
+      } catch (err) {
+        console.error("Failed to save AI settings", err);
+      }
 
       return true;
     },
-    [settings.provider],
+    [settings],
   );
 
   const clearSettings = useCallback(() => {
@@ -84,6 +94,7 @@ export function useAISettings() {
       localStorage.removeItem(STORAGE_KEY);
     } catch {}
     setSettingsState(DEFAULT_SETTINGS);
+    window.dispatchEvent(new Event(SAME_TAB_EVENT));
   }, []);
 
   return {

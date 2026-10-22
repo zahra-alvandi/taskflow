@@ -74,7 +74,7 @@ export function isOverdue(task) {
   if (!task.dueDate || task.completed) return false;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const due = new Date(task.dueDate);
+  const due = new Date(task.dueDate + "T00:00:00");
   due.setHours(0, 0, 0, 0);
   return due < today;
 }

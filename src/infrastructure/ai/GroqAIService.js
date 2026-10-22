@@ -4,6 +4,10 @@ import {
   buildAnalyzePrompt,
   buildEstimatePrompt,
   buildSubtaskPrompt,
+  PLANNER_SYSTEM_PROMPT,
+  buildPlanPrompt,
+  CHAT_SYSTEM_PROMPT,
+  buildChatPrompt,
 } from "./prompts";
 
 export class GroqAIService extends AIService {
@@ -52,7 +56,7 @@ export class GroqAIService extends AIService {
 
     try {
       return JSON.parse(content);
-    } catch (err) {
+    } catch {
       console.error("Failed to parse Groq response:", content);
       throw new Error("Invalid JSON from Groq");
     }
@@ -83,6 +87,23 @@ export class GroqAIService extends AIService {
     ];
 
     return await this._call(messages);
+  }
+
+  async planDay(context) {
+    const messages = [
+      { role: "system", content: PLANNER_SYSTEM_PROMPT },
+      { role: "user", content: buildPlanPrompt(context) },
+    ];
+    return await this._call(messages, { maxTokens: 1500, temperature: 0.3 });
+  }
+
+  async chat(message, context) {
+    const messages = [
+      { role: "system", content: CHAT_SYSTEM_PROMPT },
+      { role: "user", content: buildChatPrompt(context) },
+      { role: "user", content: message },
+    ];
+    return await this._call(messages, { maxTokens: 800, temperature: 0.4 });
   }
 
   async parseNaturalLanguage(text) {

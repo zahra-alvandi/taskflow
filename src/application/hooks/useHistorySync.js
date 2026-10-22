@@ -1,41 +1,30 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-/**
- * @param {string} page
- * @param {Function} setPage
- * @param {string|null} section
- * @param {Function|null} setSection
- */
-export function useHistorySync(
-  page,
-  setPage,
-  section = null,
-  setSection = null,
-) {
+export function useHistorySync(page, setPage) {
+  const fromPopState = useRef(false);
+  const initialized = useRef(false);
+
   useEffect(() => {
-    window.history.pushState({ page, section }, "", "");
-
-    const handlePopState = (event) => {
-      const state = event.state;
-
-      if (state) {
-        if (state.page && state.page !== page) {
-          setPage(state.page);
-        }
-
-        if (setSection && state.section !== section) {
-          setSection(state.section ?? null);
-        }
-      } else {
-        setPage("dashboard");
-        if (setSection) setSection(null);
-      }
+    const onPop = (event) => {
+      fromPopState.current = true;
+      setPage(event.state?.page ?? "dashboard");
     };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [setPage]);
 
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [page, section, setPage, setSection]);
+  useEffect(() => {
+    if (!initialized.current) {
+      initialized.current = true;
+      window.history.replaceState({ page }, "");
+      return;
+    }
+    if (fromPopState.current) {
+      fromPopState.current = false;
+      return;
+    }
+    if (window.history.state?.page !== page) {
+      window.history.pushState({ page }, "");
+    }
+  }, [page]);
 }

@@ -53,7 +53,7 @@ export function useTasks(repository) {
       await refresh();
       return task;
     },
-    [repository, refresh],
+    [repository, refresh, tasks.length],
   );
 
   const toggleTask = useCallback(
@@ -121,6 +121,7 @@ export function useTasks(repository) {
       const task = tasks.find((t) => t.id === taskId);
       if (!task) return;
 
+      const subtask = task.subtasks.find((s) => s.id === subtaskId);
       const next = removeSubtaskFromTask(task, subtaskId);
       await repository.save(next);
       await refresh();
@@ -128,7 +129,7 @@ export function useTasks(repository) {
     },
     [tasks, repository, refresh],
   );
-
+  
   const toggleSubtask = useCallback(
     async (taskId, subtaskId) => {
       const task = tasks.find((t) => t.id === taskId);

@@ -11,7 +11,6 @@ import {
   planRepository,
   noteRepository,
   userRepository,
-  storage,
 } from "./core/container";
 import { useDailyPlan } from "./application/hooks/useDailyPlan";
 import OfflineBanner from "./ui/components/OfflineBanner";
@@ -29,7 +28,6 @@ import StatsPage from "./ui/pages/StatsPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
 import ToastContainer from "./ui/components/ToastContainer";
 import { useHistorySync } from "./application/hooks/useHistorySync";
-import AddTaskFAB from "./ui/components/AddTaskFAB";
 import AddTaskModal from "./ui/components/AddTaskFAB";
 
 function App() {
@@ -44,6 +42,7 @@ function App() {
   const dailyPlan = useDailyPlan(planRepository);
   const { notes, addNote, editNote, deleteNote, togglePin, restoreNote } =
     useNotes(noteRepository);
+  useHistorySync(page, setPage);
 
   const {
     tasks,
@@ -244,8 +243,6 @@ function App() {
       />
 
       <ToastContainer />
-
-      <AddTaskFAB addTask={addTask} />
     </div>
   );
 }

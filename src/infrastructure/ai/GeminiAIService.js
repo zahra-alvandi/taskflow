@@ -6,6 +6,8 @@ import {
   buildSubtaskPrompt,
   PLANNER_SYSTEM_PROMPT,
   buildPlanPrompt,
+  CHAT_SYSTEM_PROMPT,
+  buildChatPrompt,
 } from "./prompts";
 
 const MODEL_FALLBACKS = [
@@ -19,7 +21,7 @@ export class GeminiAIService extends AIService {
     super();
     this.apiKey = apiKey;
     this.model = model;
-    this.baseURL = "/api/gemini";
+    this.baseURL = "https://generativelanguage.googleapis.com";
   }
 
   async _callWithRetry(systemPrompt, userPrompt, options = {}) {
@@ -69,7 +71,7 @@ export class GeminiAIService extends AIService {
       throw new Error("Gemini API key is missing");
     }
 
-    const url = `${this.baseURL}/v1beta/models/${model}:generateContent?key=${this.apiKey}`;
+    const url = `${this.baseURL}/v1beta/models/${model}:generateContent`;
 
     const body = {
       contents: [
@@ -90,7 +92,10 @@ export class GeminiAIService extends AIService {
 
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": this.apiKey,
+      },
       body: JSON.stringify(body),
     });
 
@@ -146,6 +151,14 @@ export class GeminiAIService extends AIService {
       PLANNER_SYSTEM_PROMPT,
       buildPlanPrompt(context),
       { maxTokens: 2000, temperature: 0.3 },
+    );
+  }
+
+  async chat(message, context) {
+    return await this._callWithRetry(
+      CHAT_SYSTEM_PROMPT,
+      `${buildChatPrompt(context)}\n\n${message}`,
+      { maxTokens: 800, temperature: 0.4 },
     );
   }
 

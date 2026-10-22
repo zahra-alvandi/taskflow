@@ -15,8 +15,7 @@ export class OpenRouterAIService extends AIService {
     super();
     this.apiKey = apiKey;
     this.model = model;
-    this.baseURL =
-      "https://openrouter-proxy.zalvandi39.workers.dev/api/v1/chat/completions";
+    this.baseURL = "https://openrouter.ai/api/v1/chat/completions";
   }
 
   /**
