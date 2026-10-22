@@ -211,7 +211,6 @@ function Dashboard({
               onEditSubtask={editSubtask}
               onDeleteSubtask={removeSubtask}
               onOpenDetail={onOpenDetail}
-              tasks={searchedTasks}
               onReorder={onReorder}
             />
           )}

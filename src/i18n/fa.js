@@ -36,6 +36,7 @@ export default {
 
   task: {
     add: "کار جدید",
+    reorderHint: "برای جابه‌جایی، دستگیره را بکشید",
     title: "چه کاری داری؟",
     pickDate: "انتخاب تاریخ",
     am: "صبح",

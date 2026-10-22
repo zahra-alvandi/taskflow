@@ -33,6 +33,7 @@ export default {
 
   task: {
     add: "Add Task",
+    reorderHint: "Drag the handle to reorder",
     title: "What do you want to do?",
     pickDate: "Pick a date",
     am: "AM",

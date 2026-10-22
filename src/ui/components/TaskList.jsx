@@ -17,6 +17,7 @@ import {
 import TaskCard from "./TaskCard";
 import NoteCard from "./NoteCard";
 import SortableTaskItem from "./SortableTaskItem";
+import { useTranslation } from "../../application/hooks/useTranslation";
 
 function TaskList({
   tasks,
@@ -32,11 +33,12 @@ function TaskList({
   onRestoreTask,
   onReorder,
 }) {
+  const { t } = useTranslation();
   const [activeId, setActiveId] = useState(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
+      activationConstraint: { distance: 4 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -94,7 +96,7 @@ function TaskList({
       onDragCancel={handleDragCancel}
     >
       <div className="flex items-center justify-end mb-2 pe-1 text-[10px] md:text-[14px] text-[var(--text-muted)] opacity-90">
-        <span>برای جابه‌جایی، تسک را نگه دارید و بکشید</span>
+        <span>{t("task.reorderHint")}</span>
       </div>
 
       <SortableContext
@@ -103,7 +105,11 @@ function TaskList({
       >
         <div className="w-full space-y-3 mt-5">
           {tasks.map((task) => (
-            <SortableTaskItem key={task.id} id={task.id}>
+            <SortableTaskItem
+              key={task.id}
+              id={task.id}
+              handleLabel={t("board.drag")}
+            >
               {renderCard(task)}
             </SortableTaskItem>
           ))}
