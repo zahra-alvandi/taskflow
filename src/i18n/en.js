@@ -4,12 +4,31 @@ export default {
   nav: {
     dashboard: "Dashboard",
     all: "All Tasks",
+    allShort: "Tasks",
     important: "Important",
     completed: "Completed",
     pending: "Pending",
     settings: "Settings",
     notes: "Notes",
     more: "More",
+  },
+
+  board: {
+    title: "Board",
+    subtitle: "Drag tasks between columns to update their progress",
+    todo: "To do",
+    doing: "In progress",
+    done: "Done",
+    all: "All",
+    search: "Search tasks...",
+    addPlaceholder: "Task title, then press Enter",
+    empty: "Nothing here yet",
+    dropHere: "Drop here",
+    showMore: "Show more",
+    moveNext: "Move to the next column",
+    markDone: "Mark as done",
+    reopen: "Reopen task",
+    drag: "Drag to move",
   },
 
   task: {

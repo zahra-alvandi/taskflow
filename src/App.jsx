@@ -25,6 +25,7 @@ import NotificationPrompt from "./ui/components/NotificationPrompt";
 import { useNotifications } from "./application/hooks/useNotifications";
 import FocusPage from "./ui/components/FocusPage";
 import StatsPage from "./ui/pages/StatsPage";
+import BoardPage from "./ui/pages/BoardPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
 import ToastContainer from "./ui/components/ToastContainer";
 import { useHistorySync } from "./application/hooks/useHistorySync";
@@ -42,13 +43,13 @@ function App() {
   const dailyPlan = useDailyPlan(planRepository);
   const { notes, addNote, editNote, deleteNote, togglePin, restoreNote } =
     useNotes(noteRepository);
-  useHistorySync(page, setPage);
 
   const {
     tasks,
     filtered,
     addTask,
     toggleTask,
+    moveTask,
     toggleImportant,
     editTask,
     deleteTask,
@@ -64,7 +65,7 @@ function App() {
   const auth = useAuth(userRepository);
   const notif = useNotifications(tasks);
 
-  useHistorySync(page, setPage, null, null);
+  useHistorySync(page, setPage);
 
   const currentTasks = filtered[filter] ?? [];
   const detailTask = detailTaskId
@@ -109,9 +110,11 @@ function App() {
                   ? "focus"
                   : page === "stats"
                     ? "stats"
-                    : page === "task-detail"
-                      ? `task-${detailTaskId}`
-                      : filter
+                    : page === "board"
+                      ? "board"
+                      : page === "task-detail"
+                        ? `task-${detailTaskId}`
+                        : filter
         }
       >
         {page === "settings" ? (
@@ -170,6 +173,17 @@ function App() {
             onSave={editTask}
             onDelete={deleteTask}
             onToggleTask={toggleTask}
+          />
+        ) : page === "board" ? (
+          <BoardPage
+            tasks={tasks}
+            onMove={moveTask}
+            onAdd={addTask}
+            onToggle={toggleTask}
+            onOpenDetail={(task) => {
+              setDetailTaskId(task.id);
+              setPage("task-detail");
+            }}
           />
         ) : page === "stats" ? (
           <StatsPage

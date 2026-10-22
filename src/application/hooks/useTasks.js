@@ -3,6 +3,7 @@ import {
   createTask,
   toggleTask as toggleTaskEntity,
   updateTask,
+  getTaskStatus,
   addSubtaskToTask,
   removeSubtaskFromTask,
   toggleSubtaskInTask,
@@ -47,6 +48,7 @@ export function useTasks(repository) {
         tags: payload.tags ?? [],
         subtasks: payload.subtasks ?? [],
         estimatedMinutes: payload.estimatedMinutes ?? null,
+        status: payload.status ?? null,
         order: tasks.length,
       });
       await repository.save(task);
@@ -69,6 +71,38 @@ export function useTasks(repository) {
         if (nextTaskPayload) {
           const nextTask = createTask(nextTaskPayload);
           await repository.save(nextTask);
+        }
+      }
+
+      await refresh();
+    },
+    [tasks, repository, refresh],
+  );
+
+  const moveTask = useCallback(
+    async (id, status) => {
+      const task = tasks.find((t) => t.id === id);
+      if (!task || getTaskStatus(task) === status) return;
+
+      const next =
+        status === "done"
+          ? updateTask(task, {
+              completed: true,
+              completedAt: new Date().toISOString(),
+              status: null,
+            })
+          : updateTask(task, {
+              completed: false,
+              completedAt: null,
+              status: status === "doing" ? "doing" : null,
+            });
+
+      await repository.save(next);
+
+      if (status === "done" && next.recurrence) {
+        const nextTaskPayload = buildNextRecurrence(next);
+        if (nextTaskPayload) {
+          await repository.save(createTask(nextTaskPayload));
         }
       }
 
@@ -129,7 +163,7 @@ export function useTasks(repository) {
     },
     [tasks, repository, refresh],
   );
-  
+
   const toggleSubtask = useCallback(
     async (taskId, subtaskId) => {
       const task = tasks.find((t) => t.id === taskId);
@@ -246,6 +280,7 @@ export function useTasks(repository) {
     filtered,
     addTask,
     toggleTask,
+    moveTask,
     toggleImportant,
     editTask,
     deleteTask,

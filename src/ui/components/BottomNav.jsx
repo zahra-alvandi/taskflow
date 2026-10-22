@@ -10,13 +10,37 @@ import {
   LogOut,
   Plus,
   BarChart3,
+  SquareKanban,
 } from "lucide-react";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
 
+function NavButton({ item, active, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={item.label}
+      className={`flex-1 min-w-0 flex flex-col items-center justify-center py-1 rounded-xl transition ${
+        active ? "text-[var(--primary)]" : "text-[var(--text-muted)]"
+      }`}
+    >
+      <div
+        className={`flex items-center justify-center w-9 h-8 rounded-xl transition ${
+          active ? "bg-[var(--primary-soft)]" : ""
+        }`}
+      >
+        {item.icon}
+      </div>
+      <span className="text-[9px] font-medium mt-0.5 w-full text-center truncate px-0.5">
+        {item.label}
+      </span>
+    </button>
+  );
+}
+
 function BottomNav({
   setFilter,
-  filter,
   activeNav,
   setActiveNav,
   setPage,
@@ -26,30 +50,41 @@ function BottomNav({
   const { t } = useTranslation();
   const [showMore, setShowMore] = useState(false);
 
-  const leftItems = [
+  // First group: appears on the right of the "+" button in RTL (Persian)
+  const startItems = [
     {
       id: "dashboard",
       label: t("nav.dashboard"),
       icon: <LayoutDashboard size={20} />,
       action: () => {
-        setPage("dashboard");
         setFilter("all");
+        setPage("dashboard");
       },
     },
+    {
+      id: "all",
+      label: t("nav.allShort"),
+      icon: <ListTodo size={20} />,
+      action: () => {
+        setFilter("all");
+        setPage("tasks");
+      },
+    },
+    {
+      id: "board",
+      label: t("board.title"),
+      icon: <SquareKanban size={20} />,
+      action: () => setPage("board"),
+    },
+  ];
+
+  // Second group: appears on the left of the "+" button in RTL (Persian)
+  const endItems = [
     {
       id: "focus",
       label: t("focus.title"),
       icon: <Target size={20} />,
       action: () => setPage("focus"),
-    },
-  ];
-
-  const rightItems = [
-    {
-      id: "notes",
-      label: t("note.title"),
-      icon: <PawIcon size={20} />,
-      action: () => setPage("notes"),
     },
     {
       id: "ai",
@@ -61,13 +96,10 @@ function BottomNav({
 
   const moreItems = [
     {
-      id: "all",
-      label: t("nav.all"),
-      icon: <ListTodo size={20} />,
-      action: () => {
-        setPage("dashboard");
-        setFilter("all");
-      },
+      id: "notes",
+      label: t("note.title"),
+      icon: <PawIcon size={20} />,
+      action: () => setPage("notes"),
     },
     {
       id: "stats",
@@ -88,6 +120,9 @@ function BottomNav({
     item.action();
     setShowMore(false);
   };
+
+  const moreActive =
+    showMore || moreItems.some((item) => item.id === activeNav);
 
   return (
     <>
@@ -117,7 +152,11 @@ function BottomNav({
                   <button
                     key={item.id}
                     onClick={() => handleItem(item)}
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--app-bg)] hover:text-[var(--text-primary)] transition"
+                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium transition hover:bg-[var(--app-bg)] ${
+                      activeNav === item.id
+                        ? "text-[var(--primary)]"
+                        : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                    }`}
                   >
                     {item.icon}
                     {item.label}
@@ -142,38 +181,23 @@ function BottomNav({
         </>
       )}
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-[var(--surface)] px-2 py-2.5 rounded-3xl shadow-[var(--shadow-soft)] md:hidden z-[70]">
-        <div className="flex items-center justify-between relative">
-          {/* 2 Left Items */}
-          <div className="flex flex-1 justify-around">
-            {leftItems.map((item) => {
-              const isActive = activeNav === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleItem(item)}
-                  className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                    isActive
-                      ? "text-[var(--primary)]"
-                      : "text-[var(--text-muted)]"
-                  }`}
-                >
-                  <div
-                    className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${isActive ? "bg-[var(--primary-soft)]" : ""}`}
-                  >
-                    {item.icon}
-                  </div>
-                  <span className="text-[9px] font-medium mt-0.5 truncate max-w-[50px]">
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
+      {/* Bottom Nav: 3 buttons | + | 3 buttons */}
+      <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md bg-[var(--surface)] px-1.5 py-2.5 rounded-3xl shadow-[var(--shadow-soft)] md:hidden z-[70]">
+        <div className="flex items-center relative">
+          {/* Group 1 (3 buttons) */}
+          <div className="flex flex-1 min-w-0">
+            {startItems.map((item) => (
+              <NavButton
+                key={item.id}
+                item={item}
+                active={activeNav === item.id}
+                onClick={() => handleItem(item)}
+              />
+            ))}
           </div>
 
-          {/* Center FAB Button */}
-          <div className="relative -mt-8 shrink-0 z-10">
+          {/* Center FAB */}
+          <div className="relative -mt-8 shrink-0 z-10 mx-1">
             <button
               onClick={onAddClick}
               className="w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-[0_6px_16px_rgba(232,135,74,0.5)] hover:bg-[var(--primary-hover)] active:scale-95 transition-all flex items-center justify-center border-4 border-[var(--app-bg)]"
@@ -183,48 +207,25 @@ function BottomNav({
             </button>
           </div>
 
-          {/* 2 Right Items + More Button */}
-          <div className="flex flex-1 justify-around">
-            {rightItems.map((item) => {
-              const isActive = activeNav === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleItem(item)}
-                  className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                    isActive
-                      ? "text-[var(--primary)]"
-                      : "text-[var(--text-muted)]"
-                  }`}
-                >
-                  <div
-                    className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${isActive ? "bg-[var(--primary-soft)]" : ""}`}
-                  >
-                    {item.icon}
-                  </div>
-                  <span className="text-[9px] font-medium mt-0.5 truncate max-w-[50px]">
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
+          {/* Group 2 (2 buttons + More) */}
+          <div className="flex flex-1 min-w-0">
+            {endItems.map((item) => (
+              <NavButton
+                key={item.id}
+                item={item}
+                active={activeNav === item.id}
+                onClick={() => handleItem(item)}
+              />
+            ))}
 
-            {/* More Button */}
-            <button
-              onClick={() => setShowMore(!showMore)}
-              className={`relative flex flex-col items-center justify-center py-1 px-1 rounded-xl transition ${
-                showMore ? "text-[var(--primary)]" : "text-[var(--text-muted)]"
-              }`}
-            >
-              <div
-                className={`flex items-center justify-center w-9 h-9 rounded-xl transition ${showMore ? "bg-[var(--primary-soft)]" : ""}`}
-              >
-                <MoreHorizontal size={20} />
-              </div>
-              <span className="text-[9px] font-medium mt-0.5">
-                {t("nav.more")}
-              </span>
-            </button>
+            <NavButton
+              item={{
+                label: t("nav.more"),
+                icon: <MoreHorizontal size={20} />,
+              }}
+              active={moreActive}
+              onClick={() => setShowMore((v) => !v)}
+            />
           </div>
         </div>
       </nav>

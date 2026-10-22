@@ -19,6 +19,7 @@ export function createTask({
   recurrence = null,
   recurrenceEndDate = null,
   order = 0,
+  status = null,
   createdAt = new Date().toISOString(),
   updatedAt = new Date().toISOString(),
   completedAt = null,
@@ -47,11 +48,22 @@ export function createTask({
     recurrence,
     recurrenceEndDate,
     order,
+    status,
     createdAt,
     updatedAt,
     completedAt,
     aiMetadata,
   });
+}
+
+/**
+ * Kanban status. "done" always follows `completed`, so older saved tasks
+ * (which have no `status`) still land in the right column.
+ * @returns {"todo"|"doing"|"done"}
+ */
+export function getTaskStatus(task) {
+  if (task.completed) return "done";
+  return task.status === "doing" ? "doing" : "todo";
 }
 
 export function updateTask(task, patch) {

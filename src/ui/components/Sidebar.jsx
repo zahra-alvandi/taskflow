@@ -10,6 +10,7 @@ import {
   Sparkles,
   LogOut,
   Target,
+  SquareKanban,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
@@ -104,6 +105,18 @@ function Sidebar({
           >
             <ListTodo size={19} />
             {t("nav.all")}
+          </button>
+
+          {/* Board */}
+          <button
+            onClick={() => {
+              setPage("board");
+              setActiveNav("board");
+            }}
+            className={itemClass(isActive("board"))}
+          >
+            <SquareKanban size={19} />
+            {t("board.title")}
           </button>
 
           {/* Focus */}

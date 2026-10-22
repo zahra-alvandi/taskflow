@@ -7,12 +7,31 @@ export default {
   nav: {
     dashboard: "داشبورد",
     all: "همه‌ی کارها",
+    allShort: "کارها",
     important: "مهم",
     completed: "انجام‌شده",
     pending: "در انتظار",
     settings: "تنظیمات",
     notes: "یادداشت‌ها",
     more: "بیشتر",
+  },
+
+  board: {
+    title: "برد",
+    subtitle: "کارها را بین ستون‌ها بکش تا پیشرفتشان به‌روز شود",
+    todo: "برای انجام",
+    doing: "در حال انجام",
+    done: "انجام‌شده",
+    all: "همه",
+    search: "جستجوی کار...",
+    addPlaceholder: "عنوان کار را بنویس و Enter بزن",
+    empty: "هنوز چیزی اینجا نیست",
+    dropHere: "اینجا رها کن",
+    showMore: "نمایش بیشتر",
+    moveNext: "انتقال به ستون بعدی",
+    markDone: "انجام شد",
+    reopen: "بازگرداندن کار",
+    drag: "برای جابه‌جایی بکش",
   },
 
   task: {
