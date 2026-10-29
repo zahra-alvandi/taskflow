@@ -54,12 +54,12 @@ function FocusMode({ task, onClose, onComplete }) {
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="max-w-md w-full text-center">
           {/* Cat Icon */}
-          <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_12px_30px_rgba(232,135,74,0.4)] relative mb-6">
+          <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_12px_30px_rgb(var(--primary-rgb)/0.4)] relative mb-6">
             <CatEars
               size={26}
               className="absolute -top-3 start-1/2 -translate-x-1/2 text-[var(--primary)]"
             />
-            <ListChecks size={32} className="text-white" />
+            <ListChecks size={32} className="text-[var(--on-solid)]" />
           </div>
 
           {/* Task Title */}
@@ -88,7 +88,7 @@ function FocusMode({ task, onClose, onComplete }) {
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center ${
                       sub.completed
-                        ? "bg-[var(--primary)] text-white"
+                        ? "bg-[var(--primary)] text-[var(--on-solid)]"
                         : "border-2 border-[var(--text-muted)]/40"
                     }`}
                   >
@@ -112,7 +112,7 @@ function FocusMode({ task, onClose, onComplete }) {
           <div className="space-y-3">
             <button
               onClick={onComplete}
-              className="w-full py-4 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-semibold flex items-center justify-center gap-2 shadow-[0_8px_20px_rgba(232,135,74,0.35)] active:scale-[0.98] transition"
+              className="w-full py-4 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-[var(--on-solid)] font-semibold flex items-center justify-center gap-2 shadow-[0_8px_20px_rgb(var(--primary-rgb)/0.35)] active:scale-[0.98] transition"
             >
               <Check size={20} strokeWidth={3} />
               {t("focus.markDone")}

@@ -41,7 +41,7 @@ function NavButton({ item, active, onClick }) {
 
 function BottomNav({
   setFilter,
-  activeNav,
+  page,
   setActiveNav,
   setPage,
   onLogout,
@@ -115,14 +115,16 @@ function BottomNav({
     },
   ];
 
+  // Highlight comes from the real current page (a filtered task list counts as "all")
+  const activeId = page === "tasks" ? "all" : page;
+
   const handleItem = (item) => {
     setActiveNav(item.id);
     item.action();
     setShowMore(false);
   };
 
-  const moreActive =
-    showMore || moreItems.some((item) => item.id === activeNav);
+  const moreActive = showMore || moreItems.some((item) => item.id === activeId);
 
   return (
     <>
@@ -153,7 +155,7 @@ function BottomNav({
                     key={item.id}
                     onClick={() => handleItem(item)}
                     className={`w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-sm font-medium transition hover:bg-[var(--app-bg)] ${
-                      activeNav === item.id
+                      activeId === item.id
                         ? "text-[var(--primary)]"
                         : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     }`}
@@ -190,7 +192,7 @@ function BottomNav({
               <NavButton
                 key={item.id}
                 item={item}
-                active={activeNav === item.id}
+                active={activeId === item.id}
                 onClick={() => handleItem(item)}
               />
             ))}
@@ -200,7 +202,7 @@ function BottomNav({
           <div className="relative -mt-8 shrink-0 z-10 mx-1">
             <button
               onClick={onAddClick}
-              className="w-14 h-14 rounded-full bg-[var(--primary)] text-white shadow-[0_6px_16px_rgba(232,135,74,0.5)] hover:bg-[var(--primary-hover)] active:scale-95 transition-all flex items-center justify-center border-4 border-[var(--app-bg)]"
+              className="w-14 h-14 rounded-full bg-[var(--primary)] text-[var(--on-solid)] shadow-[0_6px_16px_rgb(var(--primary-rgb)/0.5)] hover:bg-[var(--primary-hover)] active:scale-95 transition-all flex items-center justify-center border-4 border-[var(--app-bg)]"
               aria-label={t("task.add")}
             >
               <Plus size={24} strokeWidth={2.5} />
@@ -213,7 +215,7 @@ function BottomNav({
               <NavButton
                 key={item.id}
                 item={item}
-                active={activeNav === item.id}
+                active={activeId === item.id}
                 onClick={() => handleItem(item)}
               />
             ))}

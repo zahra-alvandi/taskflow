@@ -35,7 +35,7 @@ function UpdatePrompt() {
 
           <button
             onClick={handleUpdate}
-            className="mt-2 px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white text-xs font-medium hover:bg-[var(--primary-hover)] transition"
+            className="mt-2 px-3 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-xs font-medium hover:bg-[var(--primary-hover)] transition"
           >
             {t("pwa.update")}
           </button>

@@ -11,12 +11,57 @@ import {
   LogOut,
   Target,
   SquareKanban,
+  BarChart3,
+  CalendarDays,
+  CalendarClock,
+  Plus,
 } from "lucide-react";
 import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "../../application/hooks/useTranslation";
 import PawIcon from "./PawIcon";
-import { BarChart3 } from "lucide-react";
+
+function NavItem({ icon, label, active, onClick, count, tone = "primary" }) {
+  const activeStyle =
+    tone === "accent"
+      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+      : "bg-[var(--primary-soft)] text-[var(--primary)]";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-current={active ? "page" : undefined}
+      className={`relative w-full flex items-center gap-3 ps-3 pe-2.5 py-2 rounded-lg text-sm transition-colors ${
+        active
+          ? `${activeStyle} font-semibold`
+          : "text-[var(--text-secondary)] font-medium hover:bg-[var(--primary-soft)]/60 hover:text-[var(--text-primary)]"
+      }`}
+    >
+      {active && (
+        <span className="absolute start-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-current" />
+      )}
+      <span className="shrink-0">{icon}</span>
+      <span className="truncate">{label}</span>
+      {count != null && count > 0 && (
+        <span className="ms-auto text-[11px] tabular-nums text-[var(--text-muted)]">
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function Group({ label, children }) {
+  return (
+    <div>
+      <p className="px-3 mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+        {label}
+      </p>
+      <div className="space-y-0.5">{children}</div>
+    </div>
+  );
+}
 
 function Sidebar({
   setFilter,
@@ -25,230 +70,180 @@ function Sidebar({
   setPage,
   setActiveNav,
   onLogout,
+  onAddClick,
+  counts = {},
   user,
 }) {
   const { t } = useTranslation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
-  const filterItems = [
-    { id: "important", label: t("nav.important"), icon: <Star size={19} /> },
-    {
-      id: "completed",
-      label: t("nav.completed"),
-      icon: <CircleCheckBig size={19} />,
-    },
-    { id: "pending", label: t("nav.pending"), icon: <Clock size={19} /> },
-  ];
+  // A "tasks" page is active only for its own filter; other pages by name.
+  const isActive = (target, targetFilter) =>
+    target === "tasks"
+      ? page === "tasks" && filter === targetFilter
+      : page === target;
 
-  const isActive = (checkPage, checkFilter) => {
-    if (checkPage === "tasks") {
-      return page === "tasks" && filter === checkFilter;
-    }
-    if (checkPage === "dashboard") {
-      return page === "dashboard";
-    }
-    return page === checkPage;
+  const go = (target, { nextFilter, nav } = {}) => {
+    if (nextFilter) setFilter(nextFilter);
+    setPage(target);
+    setActiveNav(nav ?? target);
   };
 
-  const itemClass = (active) =>
-    `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-      active
-        ? "bg-[var(--surface)] text-[var(--primary)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-        : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-    }`;
+  const viewItem = (id, icon) => ({
+    id,
+    icon,
+    label: t(`nav.${id}`),
+    active: isActive("tasks", id),
+    count: counts[id],
+    onClick: () => go("tasks", { nextFilter: id, nav: id }),
+  });
 
-  const aiItemClass = (active) =>
-    `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:cursor-pointer ${
-      active
-        ? "bg-[var(--surface)] text-[var(--accent)] font-medium shadow-[var(--shadow-soft-small)] -translate-y-0.5"
-        : "text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]"
-    }`;
+  const views = [
+    viewItem("today", <CalendarClock size={18} />),
+    viewItem("upcoming", <CalendarDays size={18} />),
+    viewItem("important", <Star size={18} />),
+    viewItem("pending", <Clock size={18} />),
+    viewItem("completed", <CircleCheckBig size={18} />),
+  ];
 
   return (
-    <aside className="hidden md:block w-64 shrink-0 p-4">
-      <div className="h-full rounded-3xl bg-[var(--sidebar-bg)] p-5 flex flex-col shadow-[var(--shadow-soft-small)]">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-2 mb-10">
-          <div className="w-10 h-10 rounded-xl overflow-hidden bg-[var(--primary)] shadow-[0_6px_14px_rgba(232,135,74,0.3)]">
+    <aside className="hidden md:block w-60 shrink-0">
+      <div className="h-full flex flex-col bg-[var(--sidebar-bg)] border-e border-[var(--border)] px-3 py-4">
+        {/* Brand */}
+        <div className="flex items-center gap-2.5 px-2 mb-4">
+          <div className="w-8 h-8 rounded-lg overflow-hidden bg-[var(--primary)]">
             <img
               src="/favicon/logo-icon.png"
-              alt="Whiskerly"
+              alt=""
               className="w-full h-full object-cover"
             />
           </div>
-          <h1 className="text-xl font-bold tracking-tight">{t("app.name")}</h1>
+          <span className="text-lg font-semibold tracking-tight">
+            {t("app.name")}
+          </span>
         </div>
 
-        {/* Navigation */}
-        <nav className="space-y-2 flex-1 overflow-y-auto">
-          {/* Dashboard */}
-          <button
-            onClick={() => {
-              setFilter("all");
-              setPage("dashboard");
-              setActiveNav("dashboard");
-            }}
-            className={itemClass(isActive("dashboard"))}
-          >
-            <LayoutDashboard size={19} />
-            {t("nav.dashboard")}
-          </button>
+        {/* Primary action */}
+        <button
+          type="button"
+          onClick={onAddClick}
+          className="mb-4 w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-sm font-medium hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
+        >
+          <Plus size={16} />
+          {t("task.add")}
+        </button>
 
-          {/* All Tasks */}
-          <button
-            onClick={() => {
-              setFilter("all");
-              setPage("tasks");
-              setActiveNav("all");
-            }}
-            className={itemClass(isActive("tasks", "all"))}
-          >
-            <ListTodo size={19} />
-            {t("nav.all")}
-          </button>
+        <nav
+          aria-label={t("app.name")}
+          className="flex-1 overflow-y-auto space-y-5 -mx-1 px-1"
+        >
+          <Group label={t("nav.groupWorkspace")}>
+            <NavItem
+              icon={<LayoutDashboard size={18} />}
+              label={t("nav.dashboard")}
+              active={isActive("dashboard")}
+              onClick={() => go("dashboard", { nextFilter: "all" })}
+            />
+            <NavItem
+              icon={<ListTodo size={18} />}
+              label={t("nav.all")}
+              active={isActive("tasks", "all")}
+              count={counts.all}
+              onClick={() => go("tasks", { nextFilter: "all", nav: "all" })}
+            />
+            <NavItem
+              icon={<SquareKanban size={18} />}
+              label={t("board.title")}
+              active={isActive("board")}
+              onClick={() => go("board")}
+            />
+          </Group>
 
-          {/* Board */}
-          <button
-            onClick={() => {
-              setPage("board");
-              setActiveNav("board");
-            }}
-            className={itemClass(isActive("board"))}
-          >
-            <SquareKanban size={19} />
-            {t("board.title")}
-          </button>
+          <Group label={t("nav.groupViews")}>
+            {views.map(({ id, ...item }) => (
+              <NavItem key={id} {...item} />
+            ))}
+          </Group>
 
-          {/* Focus */}
-          <button
-            onClick={() => {
-              setPage("focus");
-              setActiveNav("focus");
-            }}
-            className={itemClass(isActive("focus"))}
-          >
-            <Target size={19} />
-            {t("focus.title")}
-          </button>
-
-          <button
-            onClick={() => {
-              setPage("stats");
-              setActiveNav("stats");
-            }}
-            className={itemClass(isActive("stats"))}
-          >
-            <BarChart3 size={19} />
-            {t("stats.pageTitle")}
-          </button>
-
-          {/* Filters */}
-          {filterItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                setFilter(item.id);
-                setPage("tasks");
-                setActiveNav(item.id);
-              }}
-              className={itemClass(isActive("tasks", item.id))}
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
-
-          {/* Divider */}
-          <div className="h-px bg-[var(--border)]/40 my-2" />
-
-          {/* AI */}
-          <button
-            onClick={() => {
-              setPage("ai");
-              setActiveNav("ai");
-            }}
-            className={aiItemClass(isActive("ai"))}
-          >
-            <Sparkles size={19} />
-            {t("ai.title")}
-          </button>
-
-          {/* Notes */}
-          <button
-            onClick={() => {
-              setPage("notes");
-              setActiveNav("notes");
-            }}
-            className={itemClass(isActive("notes"))}
-          >
-            <PawIcon size={19} />
-            {t("note.title")}
-          </button>
-
-          {/* Settings */}
-          <button
-            onClick={() => {
-              setPage("settings");
-              setActiveNav("settings");
-            }}
-            className={itemClass(isActive("settings"))}
-          >
-            <Settings size={19} />
-            {t("nav.settings")}
-          </button>
+          <Group label={t("nav.groupTools")}>
+            <NavItem
+              icon={<Target size={18} />}
+              label={t("focus.title")}
+              active={isActive("focus")}
+              onClick={() => go("focus")}
+            />
+            <NavItem
+              icon={<BarChart3 size={18} />}
+              label={t("stats.pageTitle")}
+              active={isActive("stats")}
+              onClick={() => go("stats")}
+            />
+            <NavItem
+              tone="accent"
+              icon={<Sparkles size={18} />}
+              label={t("ai.title")}
+              active={isActive("ai")}
+              onClick={() => go("ai")}
+            />
+            <NavItem
+              icon={<PawIcon size={18} />}
+              label={t("note.title")}
+              active={isActive("notes")}
+              onClick={() => go("notes")}
+            />
+          </Group>
         </nav>
 
-        {/* User + Logout */}
-        {user && (
-          <div className="mt-4 pt-4 border-t border-black/5 dark:border-white/5">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center shrink-0">
-                <span className="text-sm font-bold text-[var(--primary)]">
-                  {user.email[0].toUpperCase()}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-[var(--text-primary)] truncate">
+        {/* Footer */}
+        <div className="mt-3 pt-3 border-t border-[var(--border)] space-y-1">
+          <NavItem
+            icon={<Settings size={18} />}
+            label={t("nav.settings")}
+            active={isActive("settings")}
+            onClick={() => go("settings")}
+          />
+
+          <div className="flex items-center gap-1.5 ps-2 pt-1">
+            {user && (
+              <>
+                <div className="w-8 h-8 rounded-lg bg-[var(--primary-soft)] flex items-center justify-center shrink-0">
+                  <span className="text-sm font-semibold text-[var(--primary)]">
+                    {user.email[0].toUpperCase()}
+                  </span>
+                </div>
+                <p className="flex-1 min-w-0 text-xs text-[var(--text-secondary)] truncate">
                   {user.email}
                 </p>
-              </div>
-              <button
-                onClick={onLogout}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition shrink-0"
-                title={t("auth.logout")}
-              >
-                <LogOut size={15} />
-              </button>
-            </div>
-          </div>
-        )}
+              </>
+            )}
+            {!user && <span className="flex-1" />}
 
-        {/* Dark mode */}
-        <div className="mt-4 pt-4 border-t border-black/5 dark:border-white/5">
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="w-full flex items-center gap-3 px-3 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition"
-          >
-            <div className="w-9 h-9 rounded-xl bg-[var(--surface)] flex items-center justify-center shadow-[var(--shadow-soft-small)]">
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </div>
-
-            <span className="text-sm font-medium">
-              {darkMode ? t("settings.lightMode") : t("settings.darkMode")}
-            </span>
-
-            <div
-              className={`ml-auto w-10 h-5 rounded-full p-0.5 transition ${
-                darkMode ? "bg-[var(--primary)]" : "bg-[var(--text-muted)]/30"
-              }`}
+            <button
+              type="button"
+              onClick={() => setDarkMode(!darkMode)}
+              aria-label={
+                darkMode ? t("settings.lightMode") : t("settings.darkMode")
+              }
+              title={
+                darkMode ? t("settings.lightMode") : t("settings.darkMode")
+              }
+              className="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-[var(--text-secondary)] hover:bg-[var(--primary-soft)] hover:text-[var(--text-primary)] transition"
             >
-              <div
-                className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                  darkMode ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </div>
-          </button>
+              {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+
+            {user && (
+              <button
+                type="button"
+                onClick={onLogout}
+                aria-label={t("auth.logout")}
+                title={t("auth.logout")}
+                className="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition"
+              >
+                <LogOut size={16} />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </aside>

@@ -191,7 +191,7 @@ function ChatPanel({ tasks, onAction }) {
           <button
             onClick={handleSend}
             disabled={!input.trim() || sending}
-            className="w-10 h-10 rounded-2xl bg-[var(--primary)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(232,135,74,0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0"
+            className="w-10 h-10 rounded-2xl bg-[var(--primary)] text-[var(--on-solid)] flex items-center justify-center shadow-[0_4px_10px_rgb(var(--primary-rgb)/0.35)] hover:bg-[var(--primary-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition shrink-0"
           >
             {sending ? (
               <Loader2 size={16} className="animate-spin" />
@@ -216,7 +216,7 @@ function MessageBubble({ message }) {
       <div
         className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
           isUser
-            ? "bg-[var(--primary)] text-white"
+            ? "bg-[var(--primary)] text-[var(--on-solid)]"
             : "bg-[var(--primary-soft)] text-[var(--primary)]"
         }`}
       >
@@ -229,7 +229,7 @@ function MessageBubble({ message }) {
         <div
           className={`inline-block px-3 py-2 rounded-2xl text-sm ${
             isUser
-              ? "bg-[var(--primary)] text-white"
+              ? "bg-[var(--primary)] text-[var(--on-solid)]"
               : message.error
                 ? "bg-[var(--danger-soft)] text-[var(--danger)]"
                 : "bg-[var(--app-bg)] text-[var(--text-primary)]"

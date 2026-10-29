@@ -48,8 +48,8 @@ function AISettingsPage({ onBack }) {
                 onClick={handleSave}
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                   savedFlash
-                    ? "bg-[var(--success)] text-white"
-                    : "bg-[var(--primary)] text-white shadow-[0_4px_10px_rgba(232,135,74,0.3)] hover:bg-[var(--primary-hover)]"
+                    ? "bg-[var(--success)] text-[var(--on-solid)]"
+                    : "bg-[var(--primary)] text-[var(--on-solid)] shadow-[0_4px_10px_rgb(var(--primary-rgb)/0.3)] hover:bg-[var(--primary-hover)]"
                 }`}
               >
                 {savedFlash ? (

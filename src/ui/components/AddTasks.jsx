@@ -226,7 +226,7 @@ function AddTask({ addTask }) {
               type="button"
               onClick={handleAskAI}
               disabled={ai.loading}
-              className="absolute end-2 top-2 w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.35)] hover:bg-[var(--accent-hover)] disabled:opacity-60 transition"
+              className="absolute end-2 top-2 w-8 h-8 rounded-lg bg-[var(--accent)] text-[var(--on-solid)] flex items-center justify-center shadow-[0_4px_10px_rgb(var(--accent-rgb)/0.35)] hover:bg-[var(--accent-hover)] disabled:opacity-60 transition"
               title={t("ai.suggestions")}
             >
               {ai.loading ? (
@@ -343,7 +343,7 @@ function AddTask({ addTask }) {
                     setDueTime(`${newH}:${m}`);
                     setTimeResolved(true);
                   }}
-                  className="text-[10px] px-2 py-0.5 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] font-medium transition active:scale-95"
+                  className="text-[10px] px-2 py-0.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] hover:bg-[var(--primary-hover)] font-medium transition active:scale-95"
                 >
                   {t("task.pm")}
                 </button>
@@ -503,7 +503,7 @@ function AddTask({ addTask }) {
           {/* Add */}
           <button
             type="submit"
-            className="w-full sm:w-32 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.28)] hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
+            className="w-full sm:w-32 shrink-0 px-5 py-3 rounded-xl bg-[var(--primary)] text-[var(--on-solid)] font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgb(var(--primary-rgb)/0.28)] hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
           >
             <Plus size={18} />
             {t("task.add")}
@@ -548,7 +548,7 @@ function AddTask({ addTask }) {
             <div className="p-4 border-t border-[var(--border)]/40 sticky bottom-0 bg-[var(--surface)]">
               <button
                 onClick={() => setShowRecurrenceModal(false)}
-                className="w-full py-2.5 rounded-xl bg-[var(--accent)] text-white text-sm font-semibold hover:bg-[var(--accent-hover)] active:scale-[0.98] transition"
+                className="w-full py-2.5 rounded-xl bg-[var(--accent)] text-[var(--on-solid)] text-sm font-semibold hover:bg-[var(--accent-hover)] active:scale-[0.98] transition"
               >
                 {t("actions.save")}
               </button>

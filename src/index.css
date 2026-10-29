@@ -1,8 +1,29 @@
 @import "tailwindcss";
 
+/* Tailwind's `dark:` variant follows the app's own .dark class (theme toggle),
+   not the operating-system preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* 
-   Fonts
+   Whiskerly design system
+   ------------------------------------------------------------
+   Every colour, radius, shadow and font used by the UI comes from the
+   tokens below. Change them here and the whole app follows.
  */
+
+/* Fonts: Inter for Latin text, Estedad for Persian (the browser picks per glyph) */
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/Inter-latin-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212,
+    U+2215, U+FEFF, U+FFFD;
+}
 
 @font-face {
   font-family: "Estedad";
@@ -36,133 +57,130 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Cormorant Garamond";
-  src: url("/fonts/Cormorant/CormorantGaramond-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  src: url("/fonts/Cormorant/CormorantGaramond-SemiBold.woff2") format("woff2");
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Cormorant Garamond";
-  src: url("/fonts/Cormorant/CormorantGaramond-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-display: swap;
-}
-
-/* 
-   Tailwind Theme
- */
+/* Tailwind theme (utilities such as bg-primary, rounded-2xl, font-sans) */
 
 @theme {
-  --font-sans: "Estedad", system-ui, sans-serif;
-  --font-mono: "Estedad", ui-monospace, monospace;
-  --font-display: "Cormorant Garamond", serif;
+  --font-sans: "Inter", "Estedad", system-ui, sans-serif;
+  --font-mono: "Inter", "Estedad", ui-monospace, monospace;
+  --font-display: "Inter", "Estedad", system-ui, sans-serif;
 
-  --color-primary: #e8874a;
-  --color-primary-hover: #d4713a;
-  --color-accent: #7c5cff;
-  --color-background: #fef8f0;
-  --color-surface: #ffffff;
-  --color-text-primary: #3d2a1f;
-  --color-text-secondary: #6b5443;
-  --color-border: #f0d9bf;
-  --color-success: #5c9d6f;
-  --color-warning: #d99e3a;
-  --color-danger: #d65f5f;
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-background: var(--app-bg);
+  --color-surface: var(--surface);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* Tighter, calmer corner radii than Tailwind's defaults */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.625rem;
+  --radius-2xl: 0.875rem;
+  --radius-3xl: 1.125rem;
 }
 
-/* 
-   Base Variables
- */
+/* Light theme: warm neutrals, indigo primary, restrained orange accent */
 
 :root {
-  --font-display: "Cormorant Garamond", serif;
-
-  --app-bg: #fef8f0;
+  --app-bg: #faf8f5;
   --surface: #ffffff;
-  --sidebar-bg: #fceee0;
+  --sidebar-bg: #f4f0ea;
 
-  --text-primary: #3d2a1f;
-  --text-secondary: #6b5443;
-  --text-muted: #9a8478;
+  --text-primary: #26221e;
+  --text-secondary: #5a5249;
+  --text-muted: #756d63;
 
-  --primary: #e8874a;
-  --primary-hover: #d4713a;
-  --primary-soft: #fdeadb;
+  --border: #e9e3da;
+  --border-strong: #d8d0c4;
 
-  --accent: #7c5cff;
-  --accent-hover: #6a48e6;
-  --accent-soft: #ece7ff;
+  --primary: #5648d9;
+  --primary-hover: #4639c0;
+  --primary-soft: #eeecfc;
+  --primary-rgb: 86 72 217;
 
-  --success: #5c9d6f;
-  --warning: #d99e3a;
-  --danger: #d65f5f;
+  --accent: #b05216;
+  --accent-hover: #96440f;
+  --accent-soft: #fdf1e7;
+  --accent-rgb: 176 82 22;
 
-  --success-soft: #e3f0e7;
-  --warning-soft: #fbefd5;
-  --danger-soft: #fae0e0;
-  --info-soft: #e0ebf5;
+  --success: #2a7d4f;
+  --warning: #9a6700;
+  --danger: #c0392f;
 
-  --shadow-dark: rgba(180, 140, 100, 0.28);
-  --shadow-light: rgba(255, 255, 255, 0.95);
+  --success-soft: #e2f1e8;
+  --warning-soft: #f8edd2;
+  --danger-soft: #fae1de;
+  --info-soft: #e3edf8;
 
+  /* text/icon colour on solid primary, accent and status fills */
+  --on-solid: #ffffff;
+
+  /* Elevation: hairline border + very soft shadow (no heavy neumorphism) */
   --shadow-soft:
-    8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
-  --shadow-soft-small:
-    5px 5px 12px rgba(180, 140, 100, 0.22),
-    -5px -5px 12px rgba(255, 255, 255, 0.9);
-  --shadow-inset:
-    inset 4px 4px 9px rgba(180, 140, 100, 0.2),
-    inset -4px -4px 9px rgba(255, 255, 255, 0.85);
+    0 0 0 1px var(--border), 0 1px 2px rgb(40 30 20 / 0.04),
+    0 6px 16px rgb(40 30 20 / 0.05);
+  --shadow-soft-small: 0 0 0 1px var(--border), 0 1px 2px rgb(40 30 20 / 0.04);
   --shadow-soft-hover:
-    12px 12px 22px rgba(180, 140, 100, 0.32),
-    -12px -12px 22px rgba(255, 255, 255, 0.95);
+    0 0 0 1px var(--border-strong), 0 2px 4px rgb(40 30 20 / 0.05),
+    0 10px 24px rgb(40 30 20 / 0.08);
+  --shadow-inset:
+    inset 0 0 0 1px var(--border), inset 0 1px 2px rgb(40 30 20 / 0.04);
+
+  --focus-ring: 0 0 0 3px rgb(var(--primary-rgb) / 0.35);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
+/* Dark theme: deep neutral surfaces with a violet tint */
+
 .dark {
-  --app-bg: #1f1814;
-  --surface: #2a2019;
-  --sidebar-bg: #241a14;
+  --app-bg: #131217;
+  --surface: #1c1b21;
+  --sidebar-bg: #17161b;
 
-  --text-primary: #f5ede4;
-  --text-secondary: #c9b8a8;
-  --text-muted: #8a7868;
+  --text-primary: #f2eff6;
+  --text-secondary: #b9b3c4;
+  --text-muted: #8f899b;
 
-  --primary: #f0a06a;
-  --primary-hover: #e8874a;
-  --primary-soft: rgba(240, 160, 106, 0.15);
+  --border: #2c2a33;
+  --border-strong: #3a3742;
 
-  --accent: #9c7cff;
-  --accent-hover: #7c5cff;
-  --accent-soft: rgba(156, 124, 255, 0.15);
+  --primary: #9d93ff;
+  --primary-hover: #b3abff;
+  --primary-soft: rgb(157 147 255 / 0.16);
+  --primary-rgb: 157 147 255;
 
-  --success: #7cbd8e;
-  --warning: #e8b85a;
-  --danger: #e87a7a;
+  --accent: #f0a06a;
+  --accent-hover: #f5b685;
+  --accent-soft: rgb(240 160 106 / 0.16);
+  --accent-rgb: 240 160 106;
 
-  --success-soft: rgba(124, 189, 142, 0.15);
-  --warning-soft: rgba(232, 184, 90, 0.15);
-  --danger-soft: rgba(232, 122, 122, 0.15);
-  --info-soft: rgba(124, 156, 232, 0.15);
+  --success: #6fcf97;
+  --warning: #e5b04a;
+  --danger: #f07a72;
 
-  --shadow-dark: rgba(0, 0, 0, 0.5);
-  --shadow-light: rgba(255, 255, 255, 0.04);
+  --success-soft: rgb(111 207 151 / 0.14);
+  --warning-soft: rgb(229 176 74 / 0.14);
+  --danger-soft: rgb(240 122 114 / 0.14);
+  --info-soft: rgb(110 150 230 / 0.16);
+
+  --on-solid: #131217;
 
   --shadow-soft:
-    10px 10px 20px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
-  --shadow-soft-small:
-    5px 5px 12px rgba(0, 0, 0, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.03);
+    0 0 0 1px var(--border), 0 1px 2px rgb(0 0 0 / 0.3),
+    0 8px 20px rgb(0 0 0 / 0.25);
+  --shadow-soft-small: 0 0 0 1px var(--border), 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-soft-hover:
+    0 0 0 1px var(--border-strong), 0 2px 4px rgb(0 0 0 / 0.35),
+    0 12px 28px rgb(0 0 0 / 0.4);
   --shadow-inset:
-    inset 4px 4px 10px rgba(0, 0, 0, 0.4),
-    inset -3px -3px 8px rgba(255, 255, 255, 0.03);
+    inset 0 0 0 1px var(--border), inset 0 1px 3px rgb(0 0 0 / 0.35);
 }
 
 /* 
@@ -184,8 +202,18 @@ body {
   margin: 0;
   background: var(--app-bg);
   color: var(--text-primary);
-  font-family: "Estedad", system-ui, sans-serif;
+  font-family: "Inter", "Estedad", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
 }
 
 *,
@@ -519,6 +547,21 @@ html.has-background {
   --text-secondary: rgba(255, 255, 255, 0.88);
   --text-muted: rgba(255, 255, 255, 0.68);
 
+  /* Brand colours that stay readable on dark glass */
+  --primary: #a79dff;
+  --primary-hover: #bbb3ff;
+  --primary-soft: rgb(167 157 255 / 0.2);
+  --primary-rgb: 167 157 255;
+  --accent: #f0a06a;
+  --accent-hover: #f5b685;
+  --accent-soft: rgb(240 160 106 / 0.2);
+  --accent-rgb: 240 160 106;
+  --success: #6fcf97;
+  --warning: #e5b04a;
+  --danger: #f07a72;
+  --on-solid: #131217;
+  --border: rgba(255, 255, 255, 0.16);
+
   /* Shadows */
   --shadow-soft: 0 8px 28px rgba(0, 0, 0, 0.22);
   --shadow-soft-small: 0 4px 14px rgba(0, 0, 0, 0.18);
@@ -751,5 +794,25 @@ html.has-background .cat-bg-warm {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
+  }
+}
+
+/* 
+   Accessibility
+ */
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+[role="tab"]:focus-visible {
+  border-radius: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

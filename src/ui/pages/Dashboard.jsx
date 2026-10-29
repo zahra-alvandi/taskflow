@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import {
-  ListTodo,
-  CheckCircle,
-  Star,
-  Clock,
-  Search,
-  ArrowLeft,
-  ChevronRight,
-  Plus,
-} from "lucide-react";
-import StatCard from "../components/StatsCard";
+import { useMemo, useState } from "react";
+import { ListTodo, Search, ArrowLeft, ChevronRight, Plus } from "lucide-react";
 import TaskList from "../components/TaskList";
 import DailyPlanCard from "../components/DailyPlanCard";
+import FocusNextCard from "../components/FocusNextCard";
+import SummaryStrip from "../components/SummaryStrip";
 import { useTranslation } from "../../application/hooks/useTranslation";
+import { pickNextTask, summarizeTasks } from "../../core/services/focusService";
+
+function greetingKey(date = new Date()) {
+  const hour = date.getHours();
+  if (hour < 12) return "greeting.morning";
+  if (hour < 18) return "greeting.afternoon";
+  return "greeting.evening";
+}
 
 function Dashboard({
   tasks,
@@ -25,7 +25,6 @@ function Dashboard({
   toggleImportant,
   deleteTask,
   editTask,
-  addTask,
   addSubtask,
   removeSubtask,
   toggleSubtask,
@@ -40,16 +39,9 @@ function Dashboard({
 }) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
-
-  const totalTasks = allTasks.length;
-  const completedTasks = allTasks.filter((x) => x.completed).length;
-  const importantTasks = allTasks.filter(
-    (x) => x.important && !x.completed,
-  ).length;
-  const pendingTasks = allTasks.filter((x) => !x.completed).length;
+  const nextPick = useMemo(() => pickNextTask(allTasks), [allTasks]);
+  const summary = useMemo(() => summarizeTasks(allTasks), [allTasks]);
 
   const searchedTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(search.toLowerCase()),
@@ -68,59 +60,30 @@ function Dashboard({
   if (searchedTasks.length === 0 && search.trim() !== "")
     pageText = `${t("task.search")} "${search}" — ∅`;
 
-  const statcards = [
-    {
-      id: "total",
-      title: t("stats.total"),
-      value: totalTasks,
-      description: t("stats.totalDesc"),
-      icon: <ListTodo size={28} />,
-      targetFilter: "all",
-    },
-    {
-      id: "completed",
-      title: t("stats.completed"),
-      value: completedTasks,
-      description: t("stats.completedDesc"),
-      icon: <CheckCircle size={28} />,
-      targetFilter: "completed",
-    },
-    {
-      id: "important",
-      title: t("stats.important"),
-      value: importantTasks,
-      description: t("stats.importantDesc"),
-      icon: <Star size={28} />,
-      targetFilter: "important",
-    },
-    {
-      id: "pending",
-      title: t("stats.pending"),
-      value: pendingTasks,
-      description: t("stats.pendingDesc"),
-      icon: <Clock size={28} />,
-      targetFilter: "pending",
-    },
-  ];
+  const dateLabel = new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
-  const showStatCards = isDashboard && allTasks.length > 0;
+  const openFilter = (id) => {
+    setFilter(id);
+    setPage("tasks");
+  };
 
   return (
     <main className="flex-1 min-w-0 w-full h-full overflow-y-auto px-4 py-6 pb-28 sm:px-6 md:p-8 md:pb-8">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6">
           {isDashboard ? (
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
               <div>
-                <p className="text-sm text-[var(--text-secondary)] mb-2">
-                  {t("greeting.welcomeBack")} <span className="ml-1">👋</span>
+                <p className="text-sm text-[var(--text-secondary)]">
+                  {dateLabel}
                 </p>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                  {t("greeting.morning")}
+                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
+                  {t(greetingKey())}
                 </h2>
-                <p className="text-sm text-[var(--text-secondary)] mt-2">
-                  {t("greeting.subtitle")}
-                </p>
               </div>
               <SearchInput value={search} onChange={setSearch} t={t} />
             </div>
@@ -128,10 +91,10 @@ function Dashboard({
             <>
               {isAllTasks ? (
                 <div className="flex items-center justify-between gap-4 mb-4">
-                  <h2 className="text-2xl font-bold tracking-tight">
+                  <h2 className="text-2xl font-semibold tracking-tight">
                     {t("nav.all")}
                   </h2>
-                  <span className="text-sm text-[var(--text-muted)] tabular-nums bg-[var(--app-bg)] px-2.5 py-1 rounded-lg">
+                  <span className="text-sm text-[var(--text-secondary)] tabular-nums bg-[var(--sidebar-bg)] px-2.5 py-1 rounded-md">
                     {tasks.length}
                   </span>
                 </div>
@@ -143,45 +106,41 @@ function Dashboard({
           )}
         </header>
 
-        {showStatCards && (
-          <div className="grid grid-cols-2 gap-3 mb-6 sm:gap-4 md:grid-cols-4">
-            {statcards.map((s) => (
-              <StatCard
-                key={s.id}
-                id={s.id}
-                title={s.title}
-                value={s.value}
-                description={s.description}
-                icon={s.icon}
-                isActive={filter === s.targetFilter && viewMode === "tasks"}
-                onClick={() => {
-                  setFilter(s.targetFilter);
-                  setPage("tasks");
-                }}
-              />
-            ))}
-          </div>
-        )}
-
-        {isDashboard && plan && (
-          <div className="mt-6">
-            <DailyPlanCard
-              plan={plan}
-              progress={planProgress}
-              onOpen={() => setPage("ai")}
-              onToggleBlock={onTogglePlanBlock}
+        {isDashboard && (
+          <div className="space-y-4 mb-8">
+            <FocusNextCard
+              pick={nextPick}
+              hasTasks={allTasks.length > 0}
+              onStartFocus={() => setPage("focus")}
+              onOpen={onOpenDetail}
+              onComplete={toggleTask}
+              onAdd={onAddClick}
             />
+
+            {allTasks.length > 0 && (
+              <SummaryStrip summary={summary} onSelect={openFilter} />
+            )}
+
+            {plan && (
+              <DailyPlanCard
+                plan={plan}
+                progress={planProgress}
+                onOpen={() => setPage("ai")}
+                onToggleBlock={onTogglePlanBlock}
+              />
+            )}
           </div>
         )}
 
         {isDashboard && (
-          <div className="flex items-center justify-between my-4">
-            <h3 className="text-lg font-bold">{t("task.recent")}</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold">{t("task.recent")}</h3>
             <button
+              type="button"
               onClick={onAddClick}
-              className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium shadow-[0_4px_10px_rgba(232,135,74,0.3)] hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 active:scale-95 transition-all"
+              className="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-sm font-medium hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
             >
-              <Plus size={18} />
+              <Plus size={16} />
               {t("task.add")}
             </button>
           </div>
@@ -224,15 +183,16 @@ function SearchInput({ value, onChange, t }) {
   return (
     <div className="relative w-full lg:w-72">
       <Search
-        size={18}
-        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+        size={16}
+        className="absolute start-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"
       />
       <input
-        type="text"
+        type="search"
+        aria-label={t("task.search")}
         placeholder={t("task.search")}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full ps-10 pe-4 py-2.5 rounded-2xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] transition"
+        className="w-full ps-10 pe-4 py-2.5 rounded-xl bg-[var(--surface)] shadow-[var(--shadow-inset)] outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:shadow-[var(--focus-ring)] transition"
       />
     </div>
   );
@@ -245,7 +205,7 @@ function Breadcrumb({ pageTitle, setFilter, t }) {
         <button
           type="button"
           onClick={() => setFilter("all")}
-          className="text-[var(--text-muted)] hover:text-[var(--primary)] transition shrink-0"
+          className="text-[var(--text-secondary)] hover:text-[var(--primary)] transition shrink-0"
         >
           {t("nav.dashboard")}
         </button>
@@ -253,7 +213,7 @@ function Breadcrumb({ pageTitle, setFilter, t }) {
           size={14}
           className="text-[var(--text-muted)] shrink-0 rtl:rotate-180"
         />
-        <span className="font-medium text-[var(--text-primary)] truncate">
+        <span className="font-semibold text-[var(--text-primary)] truncate">
           {pageTitle}
         </span>
       </nav>
@@ -261,12 +221,9 @@ function Breadcrumb({ pageTitle, setFilter, t }) {
       <button
         type="button"
         onClick={() => setFilter("all")}
-        className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-[var(--surface)] text-[var(--text-secondary)] text-xs font-medium shadow-[var(--shadow-soft-small)] hover:text-[var(--primary)] hover:-translate-y-0.5 transition shrink-0"
+        className="group inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--surface)] text-[var(--text-secondary)] text-xs font-medium shadow-[var(--shadow-soft-small)] hover:text-[var(--primary)] transition shrink-0"
       >
-        <ArrowLeft
-          size={15}
-          className="transition-transform group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5"
-        />
+        <ArrowLeft size={15} className="rtl:rotate-180" />
         {t("task.back")}
       </button>
     </div>
@@ -276,15 +233,16 @@ function Breadcrumb({ pageTitle, setFilter, t }) {
 function EmptyState({ text, t, onGoToDashboard, showAddButton }) {
   return (
     <div className="rounded-3xl bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)] text-center paw-bg-warm">
-      <div className="w-14 h-14 mx-auto rounded-2xl bg-[var(--primary-soft)] flex items-center justify-center mb-3">
-        <ListTodo size={24} className="text-[var(--primary)]" />
+      <div className="w-12 h-12 mx-auto rounded-xl bg-[var(--primary-soft)] flex items-center justify-center mb-3">
+        <ListTodo size={22} className="text-[var(--primary)]" />
       </div>
       <p className="text-sm text-[var(--text-secondary)] mb-4">{text}</p>
 
       {showAddButton && (
         <button
+          type="button"
           onClick={onGoToDashboard}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium shadow-[0_4px_10px_rgba(232,135,74,0.3)] hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-sm font-medium hover:bg-[var(--primary-hover)] active:scale-[0.98] transition"
         >
           <Plus size={16} />
           {t("task.add")}

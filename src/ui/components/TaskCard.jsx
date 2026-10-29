@@ -138,7 +138,7 @@ function TaskCard({
           onClick={handleToggle}
           className={`w-6 h-6 shrink-0 rounded-lg border-2 flex items-center justify-center transition mt-0.5 ${
             task.completed
-              ? "bg-[var(--primary)] border-[var(--primary)] text-white"
+              ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
               : "border-[var(--text-muted)] hover:border-[var(--primary)]"
           }`}
         >

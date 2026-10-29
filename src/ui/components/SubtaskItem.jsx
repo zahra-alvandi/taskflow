@@ -35,7 +35,7 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
         }}
         className={`w-4 h-4 shrink-0 rounded border-2 flex items-center justify-center transition ${
           subtask.completed
-            ? "bg-[var(--primary)] border-[var(--primary)] text-white"
+            ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
             : "border-[var(--text-muted)] group-hover:border-[var(--primary)]"
         }`}
       >

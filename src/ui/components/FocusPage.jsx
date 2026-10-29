@@ -83,12 +83,12 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(232,135,74,0.35)] relative">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_8px_20px_rgb(var(--primary-rgb)/0.35)] relative">
               <CatEars
                 size={18}
                 className="absolute -top-2.5 start-1.5 -translate-x-1/2 text-[var(--primary)]"
               />
-              <Target size={22} className="text-white" />
+              <Target size={22} className="text-[var(--on-solid)]" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -116,7 +116,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
 
         {/* Hero Task */}
         {mainTask ? (
-          <div className="mb-6 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] p-6 shadow-[0_12px_30px_rgba(232,135,74,0.4)] text-white relative overflow-hidden">
+          <div className="mb-6 rounded-3xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] p-6 shadow-[0_12px_30px_rgb(var(--primary-rgb)/0.4)] text-[var(--on-solid)] relative overflow-hidden">
             <div className="absolute -top-8 -end-8 w-32 h-32 rounded-full bg-white/10" />
             <div className="absolute -bottom-12 -start-12 w-40 h-40 rounded-full bg-white/5" />
 
@@ -141,7 +141,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
                 {mainTask.title}
               </h2>
 
-              <div className="flex items-center gap-3 mb-5 text-xs text-white/80">
+              <div className="flex items-center gap-3 mb-5 text-xs text-[var(--on-solid)]/80">
                 {mainTask.dueTime && (
                   <span className="inline-flex items-center gap-1">
                     <Clock size={13} />
@@ -174,7 +174,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
                 </button>
                 <button
                   onClick={() => onToggleTask(mainTask.id)}
-                  className="w-12 rounded-2xl bg-white/20 text-white flex items-center justify-center hover:bg-white/30 active:scale-[0.98] transition"
+                  className="w-12 rounded-2xl bg-white/20 text-[var(--on-solid)] flex items-center justify-center hover:bg-white/30 active:scale-[0.98] transition"
                   title={t("focus.markDone")}
                 >
                   <Check size={20} strokeWidth={3} />
@@ -250,7 +250,11 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
                   className="flex items-center gap-3 px-3 py-2 rounded-xl bg-[var(--success-soft)]/40"
                 >
                   <div className="w-5 h-5 rounded-md bg-[var(--success)] flex items-center justify-center shrink-0">
-                    <Check size={11} className="text-white" strokeWidth={3} />
+                    <Check
+                      size={11}
+                      className="text-[var(--on-solid)]"
+                      strokeWidth={3}
+                    />
                   </div>
                   <p className="text-sm text-[var(--text-muted)] line-through truncate flex-1">
                     {task.title}
@@ -364,7 +368,7 @@ function FocusPage({ tasks, onBack, onToggleTask, onAddTask, onOpenDetail }) {
                 <button
                   onClick={handleQuickAdd}
                   disabled={!quickTitle.trim()}
-                  className="flex-1 py-2.5 rounded-xl bg-[var(--primary)] text-white text-sm font-medium disabled:opacity-40 hover:bg-[var(--primary-hover)] transition"
+                  className="flex-1 py-2.5 rounded-xl bg-[var(--primary)] text-[var(--on-solid)] text-sm font-medium disabled:opacity-40 hover:bg-[var(--primary-hover)] transition"
                 >
                   {t("focus.addTask")}
                 </button>

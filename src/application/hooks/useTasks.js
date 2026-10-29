@@ -4,9 +4,13 @@ import {
   toggleTask as toggleTaskEntity,
   updateTask,
   getTaskStatus,
+  isOverdue,
+  isDueToday,
+  isUpcoming,
+  completeTask,
+  toggleSubtaskWithPolicy,
   addSubtaskToTask,
   removeSubtaskFromTask,
-  toggleSubtaskInTask,
   updateSubtaskInTask,
 } from "../../core/domain/Task";
 import { createSubtask } from "../../core/domain/Subtask";
@@ -86,11 +90,7 @@ export function useTasks(repository) {
 
       const next =
         status === "done"
-          ? updateTask(task, {
-              completed: true,
-              completedAt: new Date().toISOString(),
-              status: null,
-            })
+          ? updateTask(completeTask(task), { status: null })
           : updateTask(task, {
               completed: false,
               completedAt: null,
@@ -169,16 +169,7 @@ export function useTasks(repository) {
       const task = tasks.find((t) => t.id === taskId);
       if (!task) return;
 
-      let next = toggleSubtaskInTask(task, subtaskId);
-
-      const allDone =
-        next.subtasks.length > 0 && next.subtasks.every((s) => s.completed);
-      if (allDone && !next.completed) {
-        next = updateTask(next, {
-          completed: true,
-          completedAt: new Date().toISOString(),
-        });
-      }
+      const next = toggleSubtaskWithPolicy(task, subtaskId);
 
       await repository.save(next);
       await refresh();
@@ -204,11 +195,15 @@ export function useTasks(repository) {
   }, [tasks]);
 
   const filtered = useMemo(() => {
+    const now = new Date();
     return {
       all: sortedTasks,
       completed: sortedTasks.filter((t) => t.completed),
       important: sortedTasks.filter((t) => t.important && !t.completed),
       pending: sortedTasks.filter((t) => !t.completed),
+      today: sortedTasks.filter((t) => isDueToday(t, now)),
+      overdue: sortedTasks.filter((t) => isOverdue(t, now)),
+      upcoming: sortedTasks.filter((t) => isUpcoming(t, now)),
     };
   }, [sortedTasks]);
 

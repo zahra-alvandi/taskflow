@@ -201,17 +201,20 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
 
   const priorityConfig = {
     high: {
-      active: "bg-[var(--danger)] text-white border-[var(--danger)]",
+      active:
+        "bg-[var(--danger)] text-[var(--on-solid)] border-[var(--danger)]",
       idle: "bg-[var(--danger-soft)] text-[var(--danger)] border-transparent hover:border-[var(--danger)]/40",
       dot: "bg-[var(--danger)]",
     },
     medium: {
-      active: "bg-[var(--warning)] text-white border-[var(--warning)]",
+      active:
+        "bg-[var(--warning)] text-[var(--on-solid)] border-[var(--warning)]",
       idle: "bg-[var(--warning-soft)] text-[var(--warning)] border-transparent hover:border-[var(--warning)]/40",
       dot: "bg-[var(--warning)]",
     },
     low: {
-      active: "bg-[var(--success)] text-white border-[var(--success)]",
+      active:
+        "bg-[var(--success)] text-[var(--on-solid)] border-[var(--success)]",
       idle: "bg-[var(--success-soft)] text-[var(--success)] border-transparent hover:border-[var(--success)]/40",
       dot: "bg-[var(--success)]",
     },
@@ -253,7 +256,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
               disabled={!hasChanges}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition shrink-0 ${
                 hasChanges
-                  ? "bg-[var(--primary)] text-white shadow-[0_4px_10px_rgba(232,135,74,0.3)] hover:bg-[var(--primary-hover)] active:scale-95"
+                  ? "bg-[var(--primary)] text-[var(--on-solid)] shadow-[0_4px_10px_rgb(var(--primary-rgb)/0.3)] hover:bg-[var(--primary-hover)] active:scale-95"
                   : "bg-[var(--app-bg)] text-[var(--text-muted)] shadow-[var(--shadow-inset)] cursor-not-allowed"
               }`}
             >
@@ -277,7 +280,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
               onClick={() => onToggleTask(task.id)}
               className={`w-7 h-7 mt-0.5 shrink-0 rounded-xl border-2 flex items-center justify-center transition active:scale-90 ${
                 task.completed
-                  ? "bg-[var(--primary)] border-[var(--primary)] text-white"
+                  ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
                   : "border-[var(--text-muted)] hover:border-[var(--primary)] hover:bg-[var(--primary-soft)]/40"
               }`}
               aria-label={
@@ -509,7 +512,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
           <div
             className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center transition ${
               important
-                ? "bg-[var(--warning)] border-[var(--warning)] text-white"
+                ? "bg-[var(--warning)] border-[var(--warning)] text-[var(--on-solid)]"
                 : "border-[var(--text-muted)]/50"
             }`}
           >
@@ -586,7 +589,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
               type="button"
               onClick={handleAddTag}
               disabled={!newTag.trim()}
-              className="px-4 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] font-medium hover:bg-[var(--primary)] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition"
+              className="px-4 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] font-medium hover:bg-[var(--primary)] hover:text-[var(--on-solid)] disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition"
               aria-label={t("actions.add")}
             >
               <Plus size={16} />
@@ -663,7 +666,7 @@ function TaskDetailPage({ task, onBack, onSave, onDelete, onToggleTask }) {
               type="button"
               onClick={handleAddSubtask}
               disabled={!newSubtask.trim()}
-              className="px-4 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] font-medium hover:bg-[var(--primary)] hover:text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition"
+              className="px-4 rounded-xl bg-[var(--primary-soft)] text-[var(--primary)] font-medium hover:bg-[var(--primary)] hover:text-[var(--on-solid)] disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition"
               aria-label={t("actions.add")}
             >
               <Plus size={16} />
@@ -714,7 +717,7 @@ function SubtaskRow({ subtask, onToggle, onEdit, onDelete }) {
         onClick={onToggle}
         className={`w-5 h-5 shrink-0 rounded-md border-2 flex items-center justify-center transition active:scale-90 ${
           subtask.completed
-            ? "bg-[var(--primary)] border-[var(--primary)] text-white"
+            ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
             : "border-[var(--text-muted)]/60 hover:border-[var(--primary)]"
         }`}
         aria-label={subtask.completed ? "Mark incomplete" : "Mark complete"}

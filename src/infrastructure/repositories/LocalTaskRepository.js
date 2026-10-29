@@ -2,6 +2,8 @@
 import { TaskRepository } from "../../core/ports/TaskRepository";
 import { createTask } from "../../core/domain/Task";
 
+import { loadCollection } from "./loadCollection";
+
 const STORAGE_KEY = "tasks";
 
 export class LocalTaskRepository extends TaskRepository {
@@ -13,14 +15,13 @@ export class LocalTaskRepository extends TaskRepository {
 
   async _load() {
     if (this._cache) return this._cache;
-    const raw = await this.storage.get(STORAGE_KEY, []);
-    this._cache = raw.map((t) => createTask(t));
+    this._cache = await loadCollection(this.storage, STORAGE_KEY, createTask);
     return this._cache;
   }
 
   async _persist(tasks) {
+    await this.storage.set(STORAGE_KEY, tasks); // throws StorageError on failure
     this._cache = tasks;
-    await this.storage.set(STORAGE_KEY, tasks);
   }
 
   async getAll() {

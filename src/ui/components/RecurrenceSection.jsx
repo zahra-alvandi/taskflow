@@ -60,7 +60,7 @@ function RecurrenceSection({ value, onChange }) {
                 onClick={() => handleToggleWeekday(day.id)}
                 className={`w-9 h-9 rounded-full text-xs font-semibold transition-all active:scale-95 ${
                   active
-                    ? "bg-[var(--accent)] text-white shadow-[0_2px_8px_rgba(124,92,255,0.25)]"
+                    ? "bg-[var(--accent)] text-[var(--on-solid)] shadow-[0_2px_8px_rgb(var(--accent-rgb)/0.25)]"
                     : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
@@ -85,7 +85,7 @@ function RecurrenceSection({ value, onChange }) {
                 onClick={() => handleSelectSimple(opt.type)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
                   active
-                    ? "bg-[var(--accent)] text-white shadow-[0_2px_8px_rgba(124,92,255,0.25)]"
+                    ? "bg-[var(--accent)] text-[var(--on-solid)] shadow-[0_2px_8px_rgb(var(--accent-rgb)/0.25)]"
                     : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >

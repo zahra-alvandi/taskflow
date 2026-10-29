@@ -1,6 +1,8 @@
 import { PlanRepository } from "../../core/ports/PlanRepository";
 import { createDailyPlan } from "../../core/domain/DailyPlan";
 
+import { loadCollection } from "./loadCollection";
+
 const STORAGE_KEY = "plans";
 
 export class LocalPlanRepository extends PlanRepository {
@@ -12,14 +14,17 @@ export class LocalPlanRepository extends PlanRepository {
 
   async _load() {
     if (this._cache) return this._cache;
-    const raw = await this.storage.get(STORAGE_KEY, []);
-    this._cache = raw.map((p) => createDailyPlan(p));
+    this._cache = await loadCollection(
+      this.storage,
+      STORAGE_KEY,
+      createDailyPlan,
+    );
     return this._cache;
   }
 
   async _persist(plans) {
+    await this.storage.set(STORAGE_KEY, plans); // throws StorageError on failure
     this._cache = plans;
-    await this.storage.set(STORAGE_KEY, plans);
   }
 
   async getAll() {

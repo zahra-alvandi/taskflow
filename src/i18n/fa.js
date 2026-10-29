@@ -14,6 +14,12 @@ export default {
     settings: "تنظیمات",
     notes: "یادداشت‌ها",
     more: "بیشتر",
+    today: "امروز",
+    upcoming: "پیش‌رو",
+    overdue: "عقب‌افتاده",
+    groupWorkspace: "فضای کار",
+    groupViews: "نماها",
+    groupTools: "ابزارها",
   },
 
   board: {
@@ -81,6 +87,9 @@ export default {
       completed: "هنوز کاری تموم نکردی.",
       pending: "همه‌ی کارات انجام شده! 🎉",
       notes: "هنوز یادداشتی نداری.",
+      today: "برای امروز کاری نداری.",
+      upcoming: "کار پیش‌رویی نیست.",
+      overdue: "کار عقب‌افتاده‌ای نداری. 👏",
     },
 
     detail: {
@@ -131,6 +140,7 @@ export default {
   greeting: {
     morning: "صبح بخیر",
     evening: "شب بخیر",
+    afternoon: "ظهر بخیر",
     welcomeBack: "خوش برگشتی",
     subtitle: "بذار امروز رو مفید بسازیم.",
   },
@@ -270,6 +280,39 @@ export default {
     changeColor: "تغییر رنگ",
   },
 
+  storage: {
+    write_failed: "تغییرات ذخیره نشد",
+    quota_exceeded: "حافظه مرورگر پر شده است",
+    read_failed: "خواندن اطلاعات ذخیره‌شده ممکن نشد",
+    corrupted: "بخشی از اطلاعات ذخیره‌شده آسیب دیده بود",
+    invalid_items: "برخی موارد ذخیره‌شده نامعتبر بودند و کنار گذاشته شدند",
+    hint: "چیزی عمداً پاک نشده است. دوباره امتحان کن یا فضای مرورگر را خالی کن.",
+  },
+
+  dash: {
+    focusNext: "تمرکز بعدی",
+    reason: {
+      inProgress: "در حال انجام",
+      overdue: "عقب‌افتاده",
+      today: "امروز موعد دارد",
+      highPriority: "اولویت بالا",
+      important: "مهم",
+      upcoming: "در راه",
+      next: "بعدی در فهرست",
+    },
+    open: "باز کردن",
+    markDone: "انجام شد",
+    allClear: "همه‌چیز انجام شده",
+    allClearHint: "کار معوقی نداری. استراحت کن یا برای بعد برنامه بریز.",
+    noTasks: "فضای کارت خالی است",
+    noTasksHint: "اولین کارت را اضافه کن تا بگویم روی چه چیزی تمرکز کنی.",
+    summaryOverdue: "عقب‌افتاده",
+    summaryToday: "امروز",
+    summaryImportant: "مهم",
+    summaryDone: "انجام‌شده",
+    minutes: "دقیقه",
+  },
+
   auth: {
     welcome: "به اپ گربه‌ای تسک‌ها خوش اومدی 🐱",
     emailLabel: "ایمیل",
@@ -277,7 +320,8 @@ export default {
     continue: "ادامه",
     loggingIn: "داره وارد می‌شه...",
     invalidEmail: "ایمیل معتبر نیست",
-    privacyNote: "ایمیلت فقط تو مرورگر خودت ذخیره می‌شه",
+    privacyNote:
+      "این یک پروفایل محلی است و فقط در همین مرورگر ذخیره می‌شود؛ حساب کاربری امن نیست.",
     logout: "خروج",
   },
 

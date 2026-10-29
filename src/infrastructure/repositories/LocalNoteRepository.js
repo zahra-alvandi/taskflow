@@ -1,6 +1,8 @@
 import { NoteRepository } from "../../core/ports/NoteRepository";
 import { createNote } from "../../core/domain/Note";
 
+import { loadCollection } from "./loadCollection";
+
 const STORAGE_KEY = "notes";
 
 export class LocalNoteRepository extends NoteRepository {
@@ -12,14 +14,13 @@ export class LocalNoteRepository extends NoteRepository {
 
   async _load() {
     if (this._cache) return this._cache;
-    const raw = await this.storage.get(STORAGE_KEY, []);
-    this._cache = raw.map((n) => createNote(n));
+    this._cache = await loadCollection(this.storage, STORAGE_KEY, createNote);
     return this._cache;
   }
 
   async _persist(notes) {
+    await this.storage.set(STORAGE_KEY, notes); // throws StorageError on failure
     this._cache = notes;
-    await this.storage.set(STORAGE_KEY, notes);
   }
 
   async getAll() {

@@ -11,6 +11,12 @@ export default {
     settings: "Settings",
     notes: "Notes",
     more: "More",
+    today: "Today",
+    upcoming: "Upcoming",
+    overdue: "Overdue",
+    groupWorkspace: "Workspace",
+    groupViews: "Views",
+    groupTools: "Tools",
   },
 
   board: {
@@ -79,6 +85,9 @@ export default {
       completed: "Nothing completed yet.",
       pending: "All caught up! 🎉",
       notes: "No notes yet.",
+      today: "Nothing due today.",
+      upcoming: "No upcoming deadlines.",
+      overdue: "Nothing overdue. Nice!",
     },
 
     detail: {
@@ -129,6 +138,7 @@ export default {
   greeting: {
     morning: "Good morning",
     evening: "Good evening",
+    afternoon: "Good afternoon",
     welcomeBack: "Welcome back",
     subtitle: "Let's make today productive.",
   },
@@ -268,6 +278,40 @@ export default {
     changeColor: "Change color",
   },
 
+  storage: {
+    write_failed: "Your changes could not be saved",
+    quota_exceeded: "Browser storage is full",
+    read_failed: "Your saved data could not be read",
+    corrupted: "Some saved data was damaged",
+    invalid_items: "Some saved items were invalid and were set aside",
+    hint: "Nothing was lost on purpose. Try again, free some space, or export your data.",
+  },
+
+  dash: {
+    focusNext: "Focus next",
+    reason: {
+      inProgress: "In progress",
+      overdue: "Overdue",
+      today: "Due today",
+      highPriority: "High priority",
+      important: "Marked important",
+      upcoming: "Coming up",
+      next: "Next in your list",
+    },
+    open: "Open",
+    markDone: "Mark as done",
+    allClear: "You're all caught up",
+    allClearHint: "Nothing pending. Enjoy the break, or plan what's next.",
+    noTasks: "Your workspace is empty",
+    noTasksHint:
+      "Add your first task and Whiskerly will tell you what to focus on.",
+    summaryOverdue: "Overdue",
+    summaryToday: "Due today",
+    summaryImportant: "Important",
+    summaryDone: "Completed",
+    minutes: "min",
+  },
+
   auth: {
     welcome: "Welcome to your cat-powered task app 🐱",
     emailLabel: "Email",
@@ -275,7 +319,8 @@ export default {
     continue: "Continue",
     loggingIn: "Logging in...",
     invalidEmail: "Invalid email",
-    privacyNote: "Your email is stored only in your browser",
+    privacyNote:
+      "This is a local profile stored only in this browser. It is not a secure account.",
     logout: "Log out",
   },
 

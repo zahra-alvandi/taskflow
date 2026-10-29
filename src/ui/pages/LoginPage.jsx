@@ -27,7 +27,7 @@ function LoginPage({ onLogin }) {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden bg-[var(--primary)] shadow-[0_12px_28px_rgba(232,135,74,0.4)] relative mb-4">
+          <div className="w-20 h-20 mx-auto rounded-3xl overflow-hidden bg-[var(--primary)] shadow-[0_12px_28px_rgb(var(--primary-rgb)/0.4)] relative mb-4">
             <img
               src="/favicon/logo-icon.png"
               alt="Logo"
@@ -87,7 +87,7 @@ function LoginPage({ onLogin }) {
             <button
               type="submit"
               disabled={loading || !email.trim()}
-              className="w-full mt-5 py-3.5 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(232,135,74,0.35)] hover:shadow-[0_10px_24px_rgba(232,135,74,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+              className="w-full mt-5 py-3.5 rounded-xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-[var(--on-solid)] font-semibold shadow-[0_8px_20px_rgb(var(--primary-rgb)/0.35)] hover:shadow-[0_10px_24px_rgb(var(--primary-rgb)/0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
             >
               {loading ? (
                 t("auth.loggingIn")

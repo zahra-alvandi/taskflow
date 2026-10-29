@@ -99,7 +99,7 @@ function BoardCard({
           {done ? (
             <Check
               size={18}
-              className="rounded-full bg-[var(--success)] text-white p-0.5"
+              className="rounded-full bg-[var(--success)] text-[var(--on-solid)] p-0.5"
             />
           ) : (
             <Circle size={18} />
@@ -430,8 +430,8 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
       <div className="mb-3 lg:mb-5 shrink-0">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(232,135,74,0.35)]">
-              <SquareKanban size={22} className="text-white" />
+            <div className="w-11 h-11 lg:w-12 lg:h-12 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] flex items-center justify-center shadow-[0_8px_20px_rgb(var(--primary-rgb)/0.35)]">
+              <SquareKanban size={22} className="text-[var(--on-solid)]" />
             </div>
             <div>
               <h1 className="text-xl lg:text-2xl font-bold">
@@ -479,7 +479,7 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
                 onClick={() => setPriority(p)}
                 className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
                   priority === p
-                    ? "bg-[var(--primary)] text-white shadow-[0_4px_10px_rgba(232,135,74,0.35)]"
+                    ? "bg-[var(--primary)] text-[var(--on-solid)] shadow-[0_4px_10px_rgb(var(--primary-rgb)/0.35)]"
                     : "bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-soft-small)]"
                 }`}
               >

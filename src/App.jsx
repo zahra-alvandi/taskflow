@@ -29,6 +29,7 @@ import BoardPage from "./ui/pages/BoardPage";
 import TaskDetailPage from "./ui/pages/TaskDetailPage";
 import ToastContainer from "./ui/components/ToastContainer";
 import { useHistorySync } from "./application/hooks/useHistorySync";
+import { useStorageErrors } from "./application/hooks/useStorageErrors";
 import AddTaskModal from "./ui/components/AddTaskFAB";
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
   const notif = useNotifications(tasks);
 
   useHistorySync(page, setPage);
+  useStorageErrors();
 
   const currentTasks = filtered[filter] ?? [];
   const detailTask = detailTaskId
@@ -85,7 +87,7 @@ function App() {
   }
 
   return (
-    <div className="w-full h-screen bg-[var(--app-bg)] font-mono flex flex-col md:flex-row overflow-hidden">
+    <div className="w-full h-screen bg-[var(--app-bg)] font-sans flex flex-col md:flex-row overflow-hidden">
       <OfflineBanner />
 
       <Sidebar
@@ -95,6 +97,15 @@ function App() {
         setPage={setPage}
         setActiveNav={setActiveNav}
         onLogout={auth.logout}
+        onAddClick={openAddTask}
+        counts={{
+          all: tasks.length,
+          today: filtered.today.length,
+          upcoming: filtered.upcoming.length,
+          important: filtered.important.length,
+          pending: filtered.pending.length,
+          completed: filtered.completed.length,
+        }}
         user={auth.user}
       />
 
@@ -235,7 +246,7 @@ function App() {
 
       <BottomNav
         setFilter={setFilter}
-        filter={filter}
+        page={page}
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         setPage={setPage}

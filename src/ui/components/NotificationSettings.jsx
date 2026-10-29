@@ -88,7 +88,7 @@ function NotificationSettings({ notif }) {
       {!isUnsupported && !isGranted && !isDenied && (
         <button
           onClick={handleEnable}
-          className="w-full py-3 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-white font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgba(232,135,74,0.3)] transition"
+          className="w-full py-3 rounded-2xl bg-gradient-to-br from-[var(--primary)] to-[var(--primary-hover)] text-[var(--on-solid)] font-medium flex items-center justify-center gap-2 shadow-[0_6px_14px_rgb(var(--primary-rgb)/0.3)] transition"
         >
           <Bell size={18} />
           {t("notif.enable")}
@@ -126,7 +126,7 @@ function NotificationSettings({ notif }) {
               disabled={!notif.enabled}
               className={`w-full py-2.5 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition ${
                 testSent
-                  ? "bg-[var(--success)] text-white"
+                  ? "bg-[var(--success)] text-[var(--on-solid)]"
                   : "bg-[var(--app-bg)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-[var(--shadow-inset)] disabled:opacity-40"
               }`}
             >

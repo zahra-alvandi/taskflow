@@ -103,12 +103,12 @@ function AIPage({
 
           <div className="relative rounded-3xl bg-[var(--surface)] p-10 shadow-[var(--shadow-soft)] text-center overflow-hidden">
             <div className="relative">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(124,92,255,0.35)] mb-4 relative">
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgb(var(--accent-rgb)/0.35)] mb-4 relative">
                 <CatEars
                   size={22}
                   className="absolute -top-2.5 start-1/2 -translate-x-1/2 text-[var(--accent)]"
                 />
-                <Sparkles size={26} className="text-white" />
+                <Sparkles size={26} className="text-[var(--on-solid)]" />
               </div>
               <h2 className="text-xl font-bold mb-2">{t("ai.title")}</h2>
               <p className="text-sm text-[var(--text-secondary)]">
@@ -153,12 +153,12 @@ function AIPage({
           </button>
 
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgba(124,92,255,0.35)] relative">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] flex items-center justify-center shadow-[0_8px_20px_rgb(var(--accent-rgb)/0.35)] relative">
               <CatEars
                 size={18}
                 className="absolute -top-2.5 start-1.5 -translate-x-1/2 text-[var(--accent)]"
               />
-              <Sparkles size={22} className="text-white" />
+              <Sparkles size={22} className="text-[var(--on-solid)]" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ function AIPage({
             <button
               onClick={handleGeneratePlan}
               disabled={generating}
-              className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] text-white font-semibold shadow-[0_8px_20px_rgba(124,92,255,0.35)] hover:shadow-[0_10px_24px_rgba(124,92,255,0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
+              className="w-full mb-6 py-4 rounded-3xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-hover)] text-[var(--on-solid)] font-semibold shadow-[0_8px_20px_rgb(var(--accent-rgb)/0.35)] hover:shadow-[0_10px_24px_rgb(var(--accent-rgb)/0.45)] active:scale-[0.98] disabled:opacity-60 transition-all flex items-center justify-center gap-2"
             >
               {generating ? (
                 <>
@@ -245,8 +245,11 @@ function AIPage({
                 {plan.message && (
                   <div className="rounded-3xl bg-gradient-to-br from-[var(--accent)]/10 to-[var(--accent-soft)]/40 border border-[var(--accent)]/20 p-5">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 shrink-0 rounded-xl bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.3)]">
-                        <Sparkles size={14} className="text-white" />
+                      <div className="w-8 h-8 shrink-0 rounded-xl bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgb(var(--accent-rgb)/0.3)]">
+                        <Sparkles
+                          size={14}
+                          className="text-[var(--on-solid)]"
+                        />
                       </div>
                       <p className="text-sm leading-relaxed text-[var(--text-primary)] flex-1">
                         {plan.message}
@@ -408,7 +411,7 @@ function PlanBlock({ block, t, onToggle, onEdit, onDelete }) {
               onEdit(draft);
               setEditing(false);
             }}
-            className="flex-1 py-2 rounded-xl bg-[var(--accent)] text-white text-sm font-medium"
+            className="flex-1 py-2 rounded-xl bg-[var(--accent)] text-[var(--on-solid)] text-sm font-medium"
           >
             {t("actions.save")}
           </button>
@@ -433,7 +436,7 @@ function PlanBlock({ block, t, onToggle, onEdit, onDelete }) {
         onClick={onToggle}
         className={`w-6 h-6 shrink-0 self-center rounded-lg border-2 flex items-center justify-center transition ${
           block.completed
-            ? "bg-[var(--accent)] border-[var(--accent)] text-white"
+            ? "bg-[var(--accent)] border-[var(--accent)] text-[var(--on-solid)]"
             : "border-[var(--text-muted)] hover:border-[var(--accent)]"
         }`}
       >

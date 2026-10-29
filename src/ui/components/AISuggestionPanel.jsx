@@ -105,8 +105,8 @@ function AISuggestionPanel({
       {/* Header */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgba(124,92,255,0.35)]">
-            <Sparkles size={14} className="text-white" />
+          <div className="w-7 h-7 rounded-lg bg-[var(--accent)] flex items-center justify-center shadow-[0_4px_10px_rgb(var(--accent-rgb)/0.35)]">
+            <Sparkles size={14} className="text-[var(--on-solid)]" />
           </div>
           <span className="text-sm font-semibold text-[var(--text-primary)]">
             {t("ai.suggestions")}
@@ -204,7 +204,7 @@ function AISuggestionPanel({
                     <span
                       className={`w-3.5 h-3.5 shrink-0 rounded border-2 flex items-center justify-center transition ${
                         isSelected
-                          ? "bg-[var(--primary)] border-[var(--primary)] text-white"
+                          ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
                           : "border-[var(--text-muted)]/50"
                       }`}
                     >

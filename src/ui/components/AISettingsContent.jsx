@@ -76,7 +76,7 @@ function AISettingsContent({ draft, onChange, onClear }) {
               onClick={() => set({ provider: p.id, model: p.models[0] })}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
                 draft.provider === p.id
-                  ? "bg-[var(--primary)] text-white"
+                  ? "bg-[var(--primary)] text-[var(--on-solid)]"
                   : "bg-[var(--app-bg)] text-[var(--text-secondary)] shadow-[var(--shadow-inset)] hover:text-[var(--text-primary)]"
               }`}
             >

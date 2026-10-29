@@ -43,7 +43,7 @@ function NotificationPrompt({ onEnable, permission }) {
           <div className="flex gap-2 mt-3">
             <button
               onClick={handleEnable}
-              className="px-3 py-1.5 rounded-lg bg-[var(--primary)] text-white text-xs font-medium hover:bg-[var(--primary-hover)] active:scale-95 transition"
+              className="px-3 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-xs font-medium hover:bg-[var(--primary-hover)] active:scale-95 transition"
             >
               {t("notif.enable")}
             </button>
