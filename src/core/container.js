@@ -1,4 +1,7 @@
-import { LocalStorageAdapter } from "../infrastructure/storage/LocalStorageAdapter";
+import {
+  LocalStorageAdapter,
+  CURRENT_SCHEMA_VERSION,
+} from "../infrastructure/storage/LocalStorageAdapter";
 import { LocalTaskRepository } from "../infrastructure/repositories/LocalTaskRepository";
 import { LocalPlanRepository } from "../infrastructure/repositories/LocalPlanRepository";
 import { LocalNoteRepository } from "../infrastructure/repositories/LocalNoteRepository";
@@ -8,22 +11,27 @@ import { OpenRouterAIService } from "../infrastructure/ai/OpenRouterAIService";
 import { GeminiAIService } from "../infrastructure/ai/GeminiAIService";
 import { GroqAIService } from "../infrastructure/ai/GroqAIService";
 
-/* ================================
+/* 
    Storage
-================================ */
+ */
 export const storage = new LocalStorageAdapter("whiskerly");
 
-/* ================================
+const MIGRATIONS = [{ from: 0, to: 1, migrate: () => {} }];
+
+storage.runMigrations(MIGRATIONS);
+export { CURRENT_SCHEMA_VERSION };
+
+/* 
    Repositories
-================================ */
+ */
 export const taskRepository = new LocalTaskRepository(storage);
 export const planRepository = new LocalPlanRepository(storage);
 export const noteRepository = new LocalNoteRepository(storage);
 export const userRepository = new LocalUserRepository(storage);
 
-/* ================================
+/* 
    AI Service Factory
-================================ */
+ */
 export function createAIService(settings) {
   if (!settings?.enabled || !settings?.apiKey) {
     return new NullAIService();
