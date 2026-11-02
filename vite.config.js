@@ -13,10 +13,29 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
-      injectRegister: "auto",
-      includeAssets: ["favicon/favicon.ico", "favicon/apple-touch-icon.png"],
+      // "prompt" pairs with useRegisterSW in UpdatePrompt.jsx.
+      // injectRegister: null is required because we use the virtual module.
+      registerType: "prompt",
+      injectRegister: null,
+      includeAssets: [
+        "favicon/favicon.ico",
+        "favicon/apple-touch-icon.png",
+        "favicon/logo-icon.png",
+      ],
       manifest: {
+        name: "Whiskerly",
+        short_name: "Whiskerly",
+        description:
+          "AI-assisted productivity workspace for tasks, kanban boards, daily planning, focus sessions and analytics.",
+        start_url: "/",
+        scope: "/",
+        display: "standalone",
+        orientation: "portrait-primary",
+        background_color: "#faf8f5",
+        theme_color: "#5648d9",
+        lang: "fa",
+        dir: "rtl",
+        categories: ["productivity", "utilities"],
         icons: [
           {
             src: "/favicon/web-app-manifest-192x192.png",
@@ -42,6 +61,8 @@ export default defineConfig({
           "**/backgrounds/**",
         ],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
       },
     }),
   ],

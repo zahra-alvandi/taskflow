@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# AI providers and private routes — keep these out of crawlers
+Disallow: /settings
+Disallow: /ai
+
+Sitemap: https://whiskerly.app/sitemap.xml
