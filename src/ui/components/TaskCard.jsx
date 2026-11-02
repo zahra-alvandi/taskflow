@@ -14,6 +14,7 @@ import SubtaskList from "./SubtaskList";
 import SubtaskProgress from "./SubtaskProgress";
 import { useToast } from "../../application/hooks/useToast";
 import { describeRecurrence } from "../../core/services/recurrenceService";
+import { dateFromISODate } from "../../core/domain/Task";
 
 function TaskCard({
   task,
@@ -45,19 +46,22 @@ function TaskCard({
     }
   }, [isNew]);
 
-  const formatDueDate = (date) =>
-    new Date(date).toLocaleDateString(undefined, {
+  const formatDueDate = (date) => {
+    const d = dateFromISODate(date);
+    if (!d) return "";
+    return d.toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
+  };
 
   const isOverdue = (date) => {
+    const d = dateFromISODate(date);
+    if (!d) return false;
     const today = new Date();
-    const due = new Date(date);
     today.setHours(0, 0, 0, 0);
-    due.setHours(0, 0, 0, 0);
-    return due < today;
+    return d < today;
   };
 
   const priorityStyles = {
@@ -87,7 +91,6 @@ function TaskCard({
     e.stopPropagation();
 
     setIsExiting(true);
-
     await new Promise((r) => setTimeout(r, 300));
 
     const deletedTask = await deleteTask(task.id);
@@ -128,7 +131,6 @@ function TaskCard({
         ${isNew ? "animate-task-enter" : ""}
         ${isExiting ? "animate-task-exit" : ""}`}
     >
-      {/* Top row */}
       <div
         className="flex items-start gap-3 cursor-pointer"
         onClick={() => onOpenDetail?.(task)}
@@ -223,7 +225,6 @@ function TaskCard({
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-1 shrink-0">
           {hasSubtasks && (
             <button
@@ -279,7 +280,6 @@ function TaskCard({
         </div>
       </div>
 
-      {/* Progress bar */}
       {hasSubtasks && !expanded && (
         <div
           onClick={(e) => {
@@ -292,7 +292,6 @@ function TaskCard({
         </div>
       )}
 
-      {/* Expanded subtask list */}
       {hasSubtasks && expanded && (
         <div
           className="mt-1 ps-9 border-t border-[var(--border)]/40 pt-2"

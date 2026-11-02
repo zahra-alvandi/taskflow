@@ -230,7 +230,9 @@ function StatsPage({ tasks, onBack }) {
                 <p className="text-xs text-[var(--on-solid)]/80">
                   {t("stats.bestDay")}
                 </p>
-                <h3 className="text-xl font-bold">{bestDay.dayName}</h3>
+                <h3 className="text-xl font-bold">
+                  {t(`weekdays.${bestDay.dayKey}`)}
+                </h3>
               </div>
             </div>
             <p className="text-sm text-[var(--on-solid)]/90 mt-3">

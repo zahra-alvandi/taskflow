@@ -1,14 +1,27 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { notificationService } from "../../infrastructure/notifications/NotificationService";
+import { useTranslation } from "./useTranslation";
 
 const REMINDER_MINUTES = 15;
+const DUE_WINDOW_MINUTES = 180;
 
 export function useNotifications(tasks) {
+  const { t } = useTranslation();
   const [permission, setPermission] = useState(notificationService.permission);
   const [enabled, setEnabled] = useState(
     () => localStorage.getItem("whiskerly:notif-enabled") === "true",
   );
   const notifiedRef = useRef(new Set());
+
+  useEffect(() => {
+    const sync = () => setPermission(notificationService.permission);
+    document.addEventListener("visibilitychange", sync);
+    window.addEventListener("focus", sync);
+    return () => {
+      document.removeEventListener("visibilitychange", sync);
+      window.removeEventListener("focus", sync);
+    };
+  }, []);
 
   const requestPermission = useCallback(async () => {
     const result = await notificationService.requestPermission();
@@ -33,7 +46,6 @@ export function useNotifications(tasks) {
     return notificationService.send(title, options);
   }, []);
 
-  // Check deadlines
   useEffect(() => {
     if (!enabled || permission !== "granted") return;
 
@@ -45,29 +57,26 @@ export function useNotifications(tasks) {
         if (!task.dueDate || !task.dueTime) return;
 
         const dueAt = new Date(`${task.dueDate}T${task.dueTime}:00`);
-        const diffMin = (dueAt - now) / 1000 / 60;
+        const diffMin = (dueAt - now) / 60_000;
 
         if (diffMin > 0 && diffMin <= REMINDER_MINUTES) {
           const key = `${task.id}-reminder`;
           if (!notifiedRef.current.has(key)) {
             notifiedRef.current.add(key);
-            notificationService.notifyTask(task, "reminder");
+            notificationService.notifyTask(task, "reminder", t, {
+              minutesUntil: Math.max(1, Math.round(diffMin)),
+            });
           }
-        }
-
-        if (diffMin <= -30 && diffMin > -180) {
-          const key = `${task.id}-due`;
-          if (!notifiedRef.current.has(key)) {
-            notifiedRef.current.add(key);
-            notificationService.notifyTask(task, "due");
-          }
+          return;
         }
 
         if (diffMin <= -30) {
-          const key = `${task.id}-overdue`;
+          // Mutual exclusion: pick exactly one type based on age.
+          const type = diffMin <= -DUE_WINDOW_MINUTES ? "overdue" : "due";
+          const key = `${task.id}-${type}`;
           if (!notifiedRef.current.has(key)) {
             notifiedRef.current.add(key);
-            notificationService.notifyTask(task, "overdue");
+            notificationService.notifyTask(task, type, t);
           }
         }
       });
@@ -76,7 +85,7 @@ export function useNotifications(tasks) {
     checkReminders();
     const interval = setInterval(checkReminders, 30 * 1000);
     return () => clearInterval(interval);
-  }, [tasks, enabled, permission]);
+  }, [tasks, enabled, permission, t]);
 
   return {
     permission,

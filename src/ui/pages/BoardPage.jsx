@@ -43,28 +43,6 @@ const PRIORITY_STYLE = {
   low: "bg-[var(--success-soft)] text-[var(--success)]",
 };
 
-const handleDragEnd = ({ active, over }) => {
-  setActiveId(null);
-  if (!over) return;
-
-  const overId = String(over.id);
-
-  const column = overId.match(/^(col|tab)-(todo|doing|done)$/);
-  if (column) {
-    onMove(active.id, column[2]);
-    if (column[1] === "tab") setMobileTab(column[2]);
-    return;
-  }
-
-  // Dropped on another card: resolve that card's column.
-  const target = tasks.find((t) => t.id === overId);
-  if (target) {
-    const status = getTaskStatus(target);
-    onMove(active.id, status);
-    setMobileTab(status);
-  }
-};
-
 // Prefer the pointer position; fall back to rectangles (keyboard dragging)
 function collisionDetection(args) {
   const hits = pointerWithin(args);
@@ -80,9 +58,7 @@ function formatDue(task) {
   return task.dueTime ? `${date} · ${task.dueTime}` : date;
 }
 
-/* 
-   Card
- */
+/* Card */
 
 function BoardCard({
   task,
@@ -140,15 +116,17 @@ function BoardCard({
           {task.title}
         </button>
 
-        {/* Drag handle: only this element starts a drag, so the card body
-            can still scroll on touch screens */}
-        <span
+        {/* Drag handle: focusable <button> so KeyboardSensor can reach it.
+            Card body keeps its own click target and remains touch-scrollable. */}
+        <button
+          type="button"
           {...handleProps}
-          className="shrink-0 -me-1 p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--app-bg)] cursor-grab active:cursor-grabbing touch-none"
+          className="shrink-0 -me-1 p-1 rounded-lg text-[var(--text-muted)] hover:bg-[var(--app-bg)] cursor-grab active:cursor-grabbing touch-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/60 outline-none"
           aria-label={t("board.drag")}
+          title={t("board.drag")}
         >
           <GripVertical size={16} />
-        </span>
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5 mt-2.5 ps-7">
@@ -239,9 +217,7 @@ function DraggableCard(props) {
   );
 }
 
-/* 
-   Mobile / tablet tab (also a drop target while dragging)
- */
+/* Mobile / tablet tab (also a drop target while dragging) */
 
 function StatusTab({ column, count, active, onSelect }) {
   const { t } = useTranslation();
@@ -269,9 +245,7 @@ function StatusTab({ column, count, active, onSelect }) {
   );
 }
 
-/* 
-   Column
- */
+/* Column */
 
 function Column({
   column,
@@ -302,7 +276,6 @@ function Column({
       className={`${mobileActive ? "flex" : "hidden"} lg:flex w-full lg:w-auto lg:flex-1 lg:min-w-[220px] flex-col min-h-0 max-h-full rounded-3xl bg-[var(--sidebar-bg)] p-3 shadow-[var(--shadow-soft-small)]`}
       aria-label={t(`board.${column.id}`)}
     >
-      {/* Title row: desktop only (phones/tablets use the tabs above) */}
       <header className="hidden lg:flex items-center gap-2 px-2 pt-1 pb-3">
         <span className={`w-2.5 h-2.5 rounded-full ${column.dot}`} />
         <h2 className="text-sm font-bold text-[var(--text-primary)]">
@@ -381,9 +354,7 @@ function Column({
   );
 }
 
-/* 
-   Page
- */
+/* Page */
 
 function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
   const { t } = useTranslation();
@@ -431,11 +402,23 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
   const handleDragEnd = ({ active, over }) => {
     setActiveId(null);
     if (!over) return;
-    const match = String(over.id).match(/^(col|tab)-(todo|doing|done)$/);
-    if (!match) return;
-    onMove(active.id, match[2]);
-    // Dropped on a tab: follow the card to its new column
-    if (match[1] === "tab") setMobileTab(match[2]);
+
+    const overId = String(over.id);
+
+    const column = overId.match(/^(col|tab)-(todo|doing|done)$/);
+    if (column) {
+      onMove(active.id, column[2]);
+      if (column[1] === "tab") setMobileTab(column[2]);
+      return;
+    }
+
+    // Dropped on another card: resolve that card's column.
+    const target = tasks.find((task) => task.id === overId);
+    if (target) {
+      const status = getTaskStatus(target);
+      onMove(active.id, status);
+      setMobileTab(status);
+    }
   };
 
   const cardProps = {
@@ -448,7 +431,6 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
 
   return (
     <main className="flex-1 min-w-0 w-full h-full flex flex-col overflow-hidden px-4 pt-5 pb-28 sm:px-6 md:p-8 md:pb-6">
-      {/* Header */}
       <div className="mb-3 lg:mb-5 shrink-0">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <div className="flex items-center gap-3">
@@ -478,7 +460,6 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-wrap items-center gap-2 lg:gap-3 mt-3 lg:mt-4">
           <div className="relative w-full sm:w-auto sm:flex-1 sm:max-w-xs">
             <Search
@@ -512,7 +493,6 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
         </div>
       </div>
 
-      {/* Columns */}
       <DndContext
         sensors={sensors}
         collisionDetection={collisionDetection}
@@ -520,7 +500,6 @@ function BoardPage({ tasks, onMove, onAdd, onToggle, onOpenDetail }) {
         onDragCancel={() => setActiveId(null)}
         onDragEnd={handleDragEnd}
       >
-        {/* Tabs: phones and tablets */}
         <div
           role="tablist"
           className="lg:hidden grid grid-cols-3 gap-1 p-1 mb-3 shrink-0 rounded-2xl bg-[var(--sidebar-bg)] shadow-[var(--shadow-inset)]"

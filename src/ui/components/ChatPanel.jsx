@@ -18,14 +18,12 @@ function ChatPanel({ tasks, onAction }) {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Auto-scroll
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, sending]);
 
-  // Focus input on mount
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -53,25 +51,21 @@ function ChatPanel({ tasks, onAction }) {
             error: true,
           },
         ]);
-        setSending(false);
         return;
       }
 
       const validated = validateChatResponse(raw, tasks);
 
-      // اجرای actions
-      let actionResults = [];
-      if (validated.actions.length > 0) {
-        actionResults = await executeActions(validated.actions, onAction);
-      }
-
+      // Actions are never auto-executed. They surface as proposals that the
+      // user must explicitly confirm.
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           role: "assistant",
           content: validated.message,
-          actions: actionResults,
+          pendingActions:
+            validated.actions.length > 0 ? validated.actions : null,
         },
       ]);
     } catch (err) {
@@ -89,6 +83,27 @@ function ChatPanel({ tasks, onAction }) {
       setSending(false);
       setTimeout(() => inputRef.current?.focus(), 100);
     }
+  };
+
+  const handleApplyActions = async (messageId, actions) => {
+    const results = await executeActions(actions, onAction);
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId
+          ? { ...m, pendingActions: null, actions: results }
+          : m,
+      ),
+    );
+  };
+
+  const handleDismissActions = (messageId) => {
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === messageId
+          ? { ...m, pendingActions: null, dismissed: true }
+          : m,
+      ),
+    );
   };
 
   const handleKeyDown = (e) => {
@@ -110,7 +125,6 @@ function ChatPanel({ tasks, onAction }) {
 
   return (
     <div className="flex flex-col h-[60vh] min-h-[400px] rounded-3xl bg-[var(--surface)] shadow-[var(--shadow-soft)] overflow-hidden">
-      {/* Header */}
       <div className="px-4 py-3 border-b border-[var(--border)]/40 flex items-center gap-2 shrink-0">
         <div className="w-8 h-8 rounded-xl bg-[var(--primary-soft)] flex items-center justify-center">
           <Bot size={16} className="text-[var(--primary)]" />
@@ -123,7 +137,6 @@ function ChatPanel({ tasks, onAction }) {
         </div>
       </div>
 
-      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
           <div className="text-center py-8 paw-pattern-ai rounded-2xl">
@@ -135,7 +148,6 @@ function ChatPanel({ tasks, onAction }) {
               {t("chat.welcomeHint")}
             </p>
 
-            {/* Suggestions */}
             <div className="mt-4 space-y-2">
               {[t("chat.suggest1"), t("chat.suggest2"), t("chat.suggest3")].map(
                 (s, i) => (
@@ -153,7 +165,13 @@ function ChatPanel({ tasks, onAction }) {
         )}
 
         {messages.map((msg) => (
-          <MessageBubble key={msg.id} message={msg} />
+          <MessageBubble
+            key={msg.id}
+            message={msg}
+            tasks={tasks}
+            onApply={handleApplyActions}
+            onDismiss={handleDismissActions}
+          />
         ))}
 
         {sending && (
@@ -174,7 +192,6 @@ function ChatPanel({ tasks, onAction }) {
         )}
       </div>
 
-      {/* Input */}
       <div className="p-3 border-t border-[var(--border)]/40 shrink-0">
         <div className="flex items-end gap-2">
           <textarea
@@ -205,7 +222,28 @@ function ChatPanel({ tasks, onAction }) {
   );
 }
 
-function MessageBubble({ message }) {
+function describeAction(action, tasks, t) {
+  const payload = action.payload || {};
+  const task = payload.taskId
+    ? tasks.find((x) => x.id === payload.taskId)
+    : null;
+  const ref = task ? `«${task.title}»` : "";
+
+  switch (action.type) {
+    case "create_task":
+      return `${t("chat.action.create_task")}: ${payload.title ?? ""}`;
+    case "update_task":
+      return `${t("chat.action.update_task")} ${ref}`.trim();
+    case "delete_task":
+      return `${t("chat.action.delete_task")} ${ref}`.trim();
+    case "complete_task":
+      return `${t("chat.action.complete_task")} ${ref}`.trim();
+    default:
+      return action.type;
+  }
+}
+
+function MessageBubble({ message, tasks, onApply, onDismiss }) {
   const { t } = useTranslation();
   const isUser = message.role === "user";
 
@@ -238,6 +276,43 @@ function MessageBubble({ message }) {
           {message.content}
         </div>
 
+        {message.pendingActions && message.pendingActions.length > 0 && (
+          <div className="mt-2 rounded-xl bg-[var(--primary-soft)]/40 border border-[var(--primary)]/20 p-2.5">
+            <p className="text-[11px] font-semibold text-[var(--primary)] mb-1.5">
+              {t("chat.proposedActions")}
+            </p>
+            <div className="space-y-1 mb-2">
+              {message.pendingActions.map((a, i) => (
+                <div
+                  key={i}
+                  className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1.5"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] shrink-0" />
+                  <span className="truncate">
+                    {describeAction(a, tasks, t)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-1.5">
+              <button
+                type="button"
+                onClick={() => onApply(message.id, message.pendingActions)}
+                className="px-3 py-1.5 rounded-lg bg-[var(--primary)] text-[var(--on-solid)] text-[11px] font-semibold hover:bg-[var(--primary-hover)] active:scale-95 transition"
+              >
+                {t("chat.applyAll")}
+              </button>
+              <button
+                type="button"
+                onClick={() => onDismiss(message.id)}
+                className="px-3 py-1.5 rounded-lg text-[var(--text-muted)] text-[11px] font-medium hover:bg-[var(--app-bg)] transition"
+              >
+                {t("chat.dismiss")}
+              </button>
+            </div>
+          </div>
+        )}
+
         {message.actions && message.actions.length > 0 && (
           <div className="mt-1.5 space-y-1">
             {message.actions.map((r, i) => (
@@ -250,10 +325,16 @@ function MessageBubble({ message }) {
                 }`}
               >
                 {r.success ? <Check size={10} strokeWidth={3} /> : "✕"}
-                {t(`chat.action.${r.action.type}`) || r.action.type}
+                {describeAction(r.action, tasks, t)}
               </div>
             ))}
           </div>
+        )}
+
+        {message.dismissed && (
+          <p className="mt-1.5 text-[11px] text-[var(--text-muted)] italic">
+            {t("chat.dismissed")}
+          </p>
         )}
       </div>
     </div>

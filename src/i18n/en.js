@@ -229,6 +229,10 @@ export default {
     suggest1: "What should I do today?",
     suggest2: "Create a task: doctor tomorrow",
     suggest3: "Which tasks are overdue?",
+    proposedActions: "Proposed actions",
+    applyAll: "Apply all",
+    dismiss: "Dismiss",
+    dismissed: "Proposal Dismissed",
     action: {
       create_task: "Task created",
       update_task: "Task updated",
@@ -344,6 +348,16 @@ export default {
     testBody: "This is a test notification 🐱",
     iosHint:
       "On iPhone, first add the app to Home Screen, then notifications will work",
+    title: {
+      reminder: "⏰ {title}",
+      due: "🔥 {title}",
+      overdue: "⚠️ {title}",
+    },
+    body: {
+      reminder: "Deadline in {minutes} minutes",
+      due: "It's time — do it now",
+      overdue: "Past the deadline",
+    },
   },
 
   focus: {

@@ -230,6 +230,10 @@ export default {
     suggest1: "امروز چیکار کنم؟",
     suggest2: "یه تسک جدید بساز: فردا دکتر",
     suggest3: "کدوم تسکام عقب‌افتاده‌ن؟",
+    proposedActions: "اقدامات پیشنهادی",
+    applyAll: "اعمال همه",
+    dismiss: "بیخیال",
+    dismissed: "پیشنهاد رد شد",
     action: {
       create_task: "تسک ساخته شد",
       update_task: "تسک آپدیت شد",
@@ -345,6 +349,16 @@ export default {
     testBody: "این یه نوتیف تستیه 🐱",
     iosHint:
       "روی iPhone، اول اپ رو به Home Screen اضافه کن (Add to Home Screen)، بعد نوتیف فعال می‌شه",
+    title: {
+      reminder: "⏰ {title}",
+      due: "🔥 {title}",
+      overdue: "⚠️ {title}",
+    },
+    body: {
+      reminder: "تا {minutes} دقیقه‌ی دیگه ددلاین داری",
+      due: "وقتشه! الان انجامش بده",
+      overdue: "از ددلاین گذشته!",
+    },
   },
 
   focus: {

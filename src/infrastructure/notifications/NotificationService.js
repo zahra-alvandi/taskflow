@@ -1,7 +1,3 @@
-/**
- * Notification Service
- */
-
 class NotificationService {
   get isSupported() {
     return typeof window !== "undefined" && "Notification" in window;
@@ -19,8 +15,7 @@ class NotificationService {
   async requestPermission() {
     if (!this.isSupported) return "unsupported";
     try {
-      const result = await Notification.requestPermission();
-      return result;
+      return await Notification.requestPermission();
     } catch (err) {
       console.error("Failed to request permission:", err);
       return "denied";
@@ -46,40 +41,26 @@ class NotificationService {
     }
   }
 
-  notifyTask(task, type = "reminder") {
-    const messages = {
-      reminder: {
-        title: `⏰ ${task.title}`,
-        body: this._getReminderBody(task),
-      },
-      due: {
-        title: `🔥 ${task.title}`,
-        body: "وقتشه! الان انجامش بده",
-      },
-      overdue: {
-        title: `⚠️ ${task.title}`,
-        body: "از ددلاین گذشته!",
-      },
-    };
+  /**
+   * @param {object} task
+   * @param {"reminder"|"due"|"overdue"} type
+   * @param {(key: string) => string} [t]  translation function
+   * @param {{minutesUntil?: number}} [ctx]
+   */
+  notifyTask(task, type = "reminder", t, ctx = {}) {
+    const translate = typeof t === "function" ? t : (k) => k;
 
-    const msg = messages[type] ?? messages.reminder;
-    return this.send(msg.title, {
-      body: msg.body,
-      tag: `task-${task.id}`,
-    });
-  }
+    const title = translate(`notif.title.${type}`).replace(
+      "{title}",
+      task.title,
+    );
+    let body = translate(`notif.body.${type}`).replace("{title}", task.title);
 
-  _getReminderBody(task) {
-    if (!task.dueTime) return "ددلاین نزدیکه";
-    const [h, m] = task.dueTime.split(":");
-    const dueAt = new Date();
-    dueAt.setHours(Number(h), Number(m), 0, 0);
-    const diffMin = Math.round((dueAt - new Date()) / 1000 / 60);
+    if (ctx.minutesUntil != null) {
+      body = body.replace("{minutes}", ctx.minutesUntil);
+    }
 
-    if (diffMin <= 1) return "همین الان ددلاین داری";
-    if (diffMin < 60) return `تا ${diffMin} دقیقه‌ی دیگه ددلاین داری`;
-    const hours = Math.round(diffMin / 60);
-    return `تا ${hours} ساعت دیگه ددلاین داری`;
+    return this.send(title, { body, tag: `task-${task.id}` });
   }
 }
 

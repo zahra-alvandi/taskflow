@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./ui/components/Sidebar";
 import BottomNav from "./ui/components/BottomNav";
 import Dashboard from "./ui/pages/Dashboard";
@@ -68,6 +68,16 @@ function App() {
 
   useHistorySync(page, setPage);
   useStorageErrors();
+
+  useEffect(() => {
+    if (page === "task-detail" && detailTaskId) {
+      const stillExists = tasks.some((t) => t.id === detailTaskId);
+      if (!stillExists) {
+        setDetailTaskId(null);
+        setPage("dashboard");
+      }
+    }
+  }, [page, detailTaskId, tasks]);
 
   const currentTasks = filtered[filter] ?? [];
   const detailTask = detailTaskId
@@ -173,6 +183,10 @@ function App() {
             onToggleTask={toggleTask}
             onEditTask={editTask}
             onAddTask={addTask}
+            onOpenDetail={(task) => {
+              setDetailTaskId(task.id);
+              setPage("task-detail");
+            }}
           />
         ) : page === "task-detail" && detailTask ? (
           <TaskDetailPage

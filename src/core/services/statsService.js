@@ -1,3 +1,5 @@
+import { dateFromISODate, localISODate } from "../domain/Task";
+
 export function getOverview(tasks) {
   const total = tasks.length;
   const completed = tasks.filter((t) => t.completed).length;
@@ -7,9 +9,8 @@ export function getOverview(tasks) {
     if (!t.dueDate || t.completed) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const due = new Date(t.dueDate);
-    due.setHours(0, 0, 0, 0);
-    return due < today;
+    const due = dateFromISODate(t.dueDate);
+    return due && due < today;
   }).length;
 
   const completionRate =
@@ -70,7 +71,6 @@ export function getStreak(tasks) {
 
   if (completionDates.size === 0) return { current: 0, best: 0 };
 
-  // Current streak
   let current = 0;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -87,7 +87,6 @@ export function getStreak(tasks) {
     }
   }
 
-  // Best streak
   const sortedDates = [...completionDates].sort((a, b) => a - b);
   let best = 1;
   let currentRun = 1;
@@ -117,12 +116,13 @@ export function getHeatmap(tasks) {
   const startDate = new Date(endDate);
   startDate.setDate(startDate.getDate() - 12 * 7 + 1);
 
+  // Local-date keys — never UTC (avoids off-by-one on negative offsets).
   const completionMap = {};
   tasks.forEach((t) => {
     if (t.completed && t.completedAt) {
       const date = new Date(t.completedAt);
       date.setHours(0, 0, 0, 0);
-      const key = date.toISOString().slice(0, 10);
+      const key = localISODate(date);
       completionMap[key] = (completionMap[key] || 0) + 1;
     }
   });
@@ -138,7 +138,7 @@ export function getHeatmap(tasks) {
         continue;
       }
 
-      const key = date.toISOString().slice(0, 10);
+      const key = localISODate(date);
       week.push({
         date,
         count: completionMap[key] || 0,
@@ -150,6 +150,17 @@ export function getHeatmap(tasks) {
   return weeks;
 }
 
+// Stable weekday keys — UI translates via t("weekdays.<key>").
+const WEEKDAY_KEYS = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
+
 export function getBestDayOfWeek(tasks) {
   const dayCount = Array(7).fill(0);
 
@@ -160,25 +171,15 @@ export function getBestDayOfWeek(tasks) {
     }
   });
 
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
   let maxIdx = 0;
   for (let i = 1; i < 7; i++) {
     if (dayCount[i] > dayCount[maxIdx]) maxIdx = i;
   }
 
   return {
-    dayName: dayNames[maxIdx],
+    dayKey: WEEKDAY_KEYS[maxIdx],
     count: dayCount[maxIdx],
-    all: dayCount.map((count, i) => ({ day: dayNames[i], count })),
+    all: dayCount.map((count, i) => ({ dayKey: WEEKDAY_KEYS[i], count })),
   };
 }
 
