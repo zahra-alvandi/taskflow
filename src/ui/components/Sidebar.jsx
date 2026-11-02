@@ -32,7 +32,7 @@ function NavItem({ icon, label, active, onClick, count, tone = "primary" }) {
       type="button"
       onClick={onClick}
       aria-current={active ? "page" : undefined}
-      className={`relative w-full flex items-center gap-3 ps-3 pe-2.5 py-2 rounded-lg text-sm transition-colors ${
+      className={`relative w-full flex items-center gap-3 ps-3 pe-2.5 py-2 rounded-lg text-sm hover:cursor-pointer transition-colors ${
         active
           ? `${activeStyle} font-semibold`
           : "text-[var(--text-secondary)] font-medium hover:bg-[var(--primary-soft)]/60 hover:text-[var(--text-primary)]"

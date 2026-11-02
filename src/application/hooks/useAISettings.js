@@ -3,11 +3,12 @@ import { useEffect, useState, useCallback } from "react";
 const STORAGE_KEY = "whiskerly:ai-settings";
 const SAME_TAB_EVENT = "whiskerly:ai-settings-changed";
 
+// Default model must be one of the options exposed by AISettingsContent.
 const DEFAULT_SETTINGS = {
   enabled: false,
   provider: "openrouter",
   apiKey: "",
-  model: "openrouter/free",
+  model: "openai/gpt-oss-20b:free",
 };
 
 function isValidApiKey(key, provider) {
@@ -41,15 +42,15 @@ export function useAISettings() {
   }, []);
 
   useEffect(() => {
-    // "storage" fires for other tabs; SAME_TAB_EVENT keeps every hook
-    // instance in this tab in sync too.
     const reload = () => {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         setSettingsState(
           raw ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } : DEFAULT_SETTINGS,
         );
-      } catch {}
+      } catch {
+        /* ignore */
+      }
     };
     const onStorage = (e) => {
       if (e.key === STORAGE_KEY) reload();
@@ -92,7 +93,9 @@ export function useAISettings() {
   const clearSettings = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     setSettingsState(DEFAULT_SETTINGS);
     window.dispatchEvent(new Event(SAME_TAB_EVENT));
   }, []);

@@ -180,6 +180,7 @@ export default {
     undo: "Undo",
     deleteConfirm: "Delete this task?",
     addSubtask: "Add subtask",
+    close: "Close",
   },
 
   ai: {
@@ -417,5 +418,9 @@ export default {
       thursday: "T",
       friday: "F",
     },
+  },
+
+  offline: {
+    banner: "You're offline. Changes are saved on this device.",
   },
 };

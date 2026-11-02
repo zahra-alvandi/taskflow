@@ -17,6 +17,13 @@ export function isValidISODate(value) {
   );
 }
 
+/** Parse a YYYY-MM-DD string as local midnight (never UTC, no off-by-one). */
+export function dateFromISODate(iso) {
+  if (!isValidISODate(iso)) return null;
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 function normalizeDate(value, field) {
   if (value == null || value === "") return null;
   if (!isValidISODate(value)) throw new Error(`Invalid ${field}: ${value}`);
@@ -111,11 +118,69 @@ export function createTask({
   });
 }
 
+/** Fields that are copied through unchanged by updateTask. */
+const TASK_PASSTHROUGH = Object.freeze([
+  "description",
+  "tags",
+  "subtasks",
+  "recurrence",
+  "projectId",
+  "aiMetadata",
+  "createdAt",
+]);
+
 /**
- * Kanban status. "done" always follows `completed`, so older saved tasks
- * (which have no `status`) still land in the right column.
- * @returns {"todo"|"doing"|"done"}
+ * Validate and coerce a partial task patch before it is spread into the
+ * stored task. Every writer (useTasks, TaskDetailPage, future AI tools)
+ * goes through this so invalid values never enter state.
  */
+export function normalizeTaskPatch(patch = {}) {
+  const out = {};
+
+  if ("title" in patch) {
+    if (typeof patch.title !== "string" || !patch.title.trim()) {
+      throw new Error("Task title is required");
+    }
+    out.title = patch.title.trim();
+  }
+  if ("priority" in patch) out.priority = normalizePriority(patch.priority);
+  if ("status" in patch) out.status = normalizeStatus(patch.status);
+  if ("dueDate" in patch) out.dueDate = normalizeDate(patch.dueDate, "dueDate");
+  if ("dueTime" in patch) out.dueTime = normalizeTime(patch.dueTime, "dueTime");
+  if ("dueEndTime" in patch)
+    out.dueEndTime = normalizeTime(patch.dueEndTime, "dueEndTime");
+  if ("durationMinutes" in patch)
+    out.durationMinutes = normalizeMinutes(
+      patch.durationMinutes,
+      "durationMinutes",
+    );
+  if ("estimatedMinutes" in patch)
+    out.estimatedMinutes = normalizeMinutes(
+      patch.estimatedMinutes,
+      "estimatedMinutes",
+    );
+  if ("actualMinutes" in patch)
+    out.actualMinutes = normalizeMinutes(patch.actualMinutes, "actualMinutes");
+  if ("recurrenceEndDate" in patch)
+    out.recurrenceEndDate = normalizeDate(
+      patch.recurrenceEndDate,
+      "recurrenceEndDate",
+    );
+  if ("order" in patch) {
+    const n = Number(patch.order);
+    out.order = Number.isFinite(n) ? n : 0;
+  }
+  if ("completed" in patch) out.completed = Boolean(patch.completed);
+  if ("important" in patch) out.important = Boolean(patch.important);
+  if ("completedAt" in patch) out.completedAt = patch.completedAt ?? null;
+
+  for (const key of TASK_PASSTHROUGH) {
+    if (key in patch) out[key] = patch[key];
+  }
+
+  return out;
+}
+
 export function getTaskStatus(task) {
   if (task.completed) return "done";
   return task.status === "doing" ? "doing" : "todo";
@@ -124,7 +189,7 @@ export function getTaskStatus(task) {
 export function updateTask(task, patch) {
   return Object.freeze({
     ...task,
-    ...patch,
+    ...normalizeTaskPatch(patch),
     updatedAt: new Date().toISOString(),
   });
 }
@@ -192,14 +257,8 @@ export function isOverdue(task, now = new Date()) {
   return due < today;
 }
 
-/* 
-   Subtask Helpers
- */
-
 export function addSubtaskToTask(task, subtask) {
-  return updateTask(task, {
-    subtasks: [...task.subtasks, subtask],
-  });
+  return updateTask(task, { subtasks: [...task.subtasks, subtask] });
 }
 
 export function removeSubtaskFromTask(task, subtaskId) {

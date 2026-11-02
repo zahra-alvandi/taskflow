@@ -39,8 +39,16 @@ export function useTasks(repository) {
     };
   }, [repository]);
 
+  /** Next free order value, computed from fresh storage. */
+  const nextOrder = useCallback(async () => {
+    const all = await repository.getAll();
+    return all.reduce((max, t) => Math.max(max, t.order ?? 0), -1) + 1;
+  }, [repository]);
+
   const addTask = useCallback(
     async (payload) => {
+      const order = await nextOrder();
+
       const task = createTask({
         title: payload.title,
         priority: payload.priority ?? "medium",
@@ -53,39 +61,41 @@ export function useTasks(repository) {
         subtasks: payload.subtasks ?? [],
         estimatedMinutes: payload.estimatedMinutes ?? null,
         status: payload.status ?? null,
-        order: tasks.length,
+        order,
       });
+
       await repository.save(task);
       await refresh();
       return task;
     },
-    [repository, refresh, tasks.length],
+    [nextOrder, repository, refresh],
   );
 
   const toggleTask = useCallback(
     async (id) => {
-      const task = tasks.find((t) => t.id === id);
+      // Fresh read — never trust the render snapshot for mutations.
+      const task = await repository.getById(id);
       if (!task) return;
 
       const next = toggleTaskEntity(task);
       await repository.save(next);
 
       if (next.completed && next.recurrence) {
-        const nextTaskPayload = buildNextRecurrence(next);
-        if (nextTaskPayload) {
-          const nextTask = createTask(nextTaskPayload);
-          await repository.save(nextTask);
+        const payload = buildNextRecurrence(next);
+        if (payload) {
+          const order = await nextOrder();
+          await repository.save(createTask({ ...payload, order }));
         }
       }
 
       await refresh();
     },
-    [tasks, repository, refresh],
+    [nextOrder, repository, refresh],
   );
 
   const moveTask = useCallback(
     async (id, status) => {
-      const task = tasks.find((t) => t.id === id);
+      const task = await repository.getById(id);
       if (!task || getTaskStatus(task) === status) return;
 
       const next =
@@ -100,46 +110,43 @@ export function useTasks(repository) {
       await repository.save(next);
 
       if (status === "done" && next.recurrence) {
-        const nextTaskPayload = buildNextRecurrence(next);
-        if (nextTaskPayload) {
-          await repository.save(createTask(nextTaskPayload));
+        const payload = buildNextRecurrence(next);
+        if (payload) {
+          const order = await nextOrder();
+          await repository.save(createTask({ ...payload, order }));
         }
       }
 
       await refresh();
     },
-    [tasks, repository, refresh],
+    [nextOrder, repository, refresh],
   );
 
   const toggleImportant = useCallback(
     async (id) => {
-      const task = tasks.find((t) => t.id === id);
+      const task = await repository.getById(id);
       if (!task) return;
       const next = updateTask(task, { important: !task.important });
       await repository.save(next);
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const editTask = useCallback(
     async (id, patch) => {
-      const task = tasks.find((t) => t.id === id);
+      const task = await repository.getById(id);
       if (!task) return;
       const next = updateTask(task, patch);
       await repository.save(next);
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
-
-  /*
-     Subtasks
-  */
 
   const addSubtask = useCallback(
     async (taskId, title) => {
-      const task = tasks.find((t) => t.id === taskId);
+      const task = await repository.getById(taskId);
       if (!task) return;
 
       const subtask = createSubtask({ title });
@@ -147,12 +154,12 @@ export function useTasks(repository) {
       await repository.save(next);
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const removeSubtask = useCallback(
     async (taskId, subtaskId) => {
-      const task = tasks.find((t) => t.id === taskId);
+      const task = await repository.getById(taskId);
       if (!task) return;
 
       const subtask = task.subtasks.find((s) => s.id === subtaskId);
@@ -161,38 +168,38 @@ export function useTasks(repository) {
       await refresh();
       return { task, subtask };
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const toggleSubtask = useCallback(
     async (taskId, subtaskId) => {
-      const task = tasks.find((t) => t.id === taskId);
+      const task = await repository.getById(taskId);
       if (!task) return;
 
       const next = toggleSubtaskWithPolicy(task, subtaskId);
-
       await repository.save(next);
       await refresh();
       return task;
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const editSubtask = useCallback(
     async (taskId, subtaskId, title) => {
-      const task = tasks.find((t) => t.id === taskId);
+      const task = await repository.getById(taskId);
       if (!task) return;
 
       const next = updateSubtaskInTask(task, subtaskId, { title });
       await repository.save(next);
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
-  const sortedTasks = useMemo(() => {
-    return [...tasks].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  }, [tasks]);
+  const sortedTasks = useMemo(
+    () => [...tasks].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)),
+    [tasks],
+  );
 
   const filtered = useMemo(() => {
     const now = new Date();
@@ -209,26 +216,24 @@ export function useTasks(repository) {
 
   const deleteTask = useCallback(
     async (id) => {
-      const task = tasks.find((t) => t.id === id);
+      const task = await repository.getById(id);
       if (!task) return null;
-
       await repository.delete(id);
       await refresh();
       return task;
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const restoreSubtask = useCallback(
     async (taskId, subtask) => {
-      const task = tasks.find((t) => t.id === taskId);
+      const task = await repository.getById(taskId);
       if (!task) return;
-
       const next = addSubtaskToTask(task, subtask);
       await repository.save(next);
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   const restoreTask = useCallback(
@@ -239,34 +244,42 @@ export function useTasks(repository) {
     [repository, refresh],
   );
 
+  /**
+   * Reorder only the visible subset while keeping every hidden task's slot
+   * intact. One storage write for the whole batch.
+   */
   const reorderTasks = useCallback(
     async (fromIndex, toIndex, visibleTasks) => {
       if (fromIndex === toIndex) return;
+      if (!visibleTasks?.length) return;
 
-      const newVisibleTasks = [...visibleTasks];
+      const reordered = [...visibleTasks];
+      const [moved] = reordered.splice(fromIndex, 1);
+      if (!moved) return;
+      reordered.splice(toIndex, 0, moved);
 
-      const [movedTask] = newVisibleTasks.splice(fromIndex, 1);
-      newVisibleTasks.splice(toIndex, 0, movedTask);
+      const all = await repository.getAll();
+      const fullOrdered = [...all].sort(
+        (a, b) => (a.order ?? 0) - (b.order ?? 0),
+      );
+      const visibleIds = new Set(visibleTasks.map((t) => t.id));
+      const queue = [...reordered];
 
-      const newOrders = new Map();
-      newVisibleTasks.forEach((task, index) => {
-        newOrders.set(task.id, index);
-      });
+      const merged = fullOrdered.map((t) =>
+        visibleIds.has(t.id) ? (queue.shift() ?? t) : t,
+      );
 
-      const updatedTasks = tasks.map((task) => {
-        if (newOrders.has(task.id)) {
-          return { ...task, order: newOrders.get(task.id) };
-        }
-        return task;
-      });
+      const orderById = new Map(merged.map((t, i) => [t.id, i]));
+      const updated = all
+        .filter((t) => orderById.get(t.id) !== t.order)
+        .map((t) => updateTask(t, { order: orderById.get(t.id) }));
 
-      for (const t of updatedTasks) {
-        await repository.save(t);
+      if (updated.length > 0) {
+        await repository.saveMany(updated);
       }
-
       await refresh();
     },
-    [tasks, repository, refresh],
+    [repository, refresh],
   );
 
   return {

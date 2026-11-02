@@ -19,6 +19,14 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
     setIsEditing(false);
   };
 
+  const priorityTone = subtask.priority
+    ? subtask.priority === "high"
+      ? "bg-[var(--danger-soft)] text-[var(--danger)]"
+      : subtask.priority === "low"
+        ? "bg-[var(--success-soft)] text-[var(--success)]"
+        : "bg-[var(--warning-soft)] text-[var(--warning)]"
+    : "";
+
   return (
     <div
       onClick={() => {
@@ -26,41 +34,41 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
       }}
       className="group flex items-center gap-2.5 py-2 px-2 rounded-lg hover:bg-[var(--app-bg)] transition cursor-pointer select-none"
     >
-      {/* Checkbox */}
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           onToggle();
         }}
+        aria-label={
+          subtask.completed
+            ? t("task.status.completed")
+            : t("task.status.inProgress")
+        }
+        aria-pressed={subtask.completed}
         className={`w-4 h-4 shrink-0 rounded border-2 flex items-center justify-center transition ${
           subtask.completed
             ? "bg-[var(--primary)] border-[var(--primary)] text-[var(--on-solid)]"
             : "border-[var(--text-muted)] group-hover:border-[var(--primary)]"
         }`}
       >
-        {subtask.priority && (
-          <span
-            className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
-              subtask.priority === "high"
-                ? "bg-[var(--danger-soft)] text-[var(--danger)]"
-                : subtask.priority === "low"
-                  ? "bg-[var(--success-soft)] text-[var(--success)]"
-                  : "bg-[var(--warning-soft)] text-[var(--warning)]"
-            }`}
-          >
-            {t(`task.priority.${subtask.priority}`)}
-          </span>
-        )}
-
-        {subtask.dueTime && (
-          <span className="text-[10px] text-[var(--text-muted)] tabular-nums">
-            {subtask.dueTime}
-          </span>
-        )}
+        {subtask.completed && <Check size={10} strokeWidth={3} />}
       </button>
 
-      {/* Title */}
+      {subtask.priority && (
+        <span
+          className={`shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded ${priorityTone}`}
+        >
+          {t(`task.priority.${subtask.priority}`)}
+        </span>
+      )}
+
+      {subtask.dueTime && (
+        <span className="shrink-0 text-[10px] text-[var(--text-muted)] tabular-nums">
+          {subtask.dueTime}
+        </span>
+      )}
+
       {isEditing ? (
         <input
           autoFocus
@@ -80,7 +88,7 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
             e.stopPropagation();
             setIsEditing(true);
           }}
-          className={`flex-1 min-w-0 text-sm truncate cursor-pointer ${
+          className={`flex-1 min-w-0 text-sm truncate ${
             subtask.completed
               ? "line-through text-[var(--text-muted)]"
               : "text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]"
@@ -90,7 +98,6 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
         </span>
       )}
 
-      {/* Actions — visible on hover */}
       <div
         className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
         onClick={(e) => e.stopPropagation()}
@@ -106,7 +113,6 @@ function SubtaskItem({ subtask, onToggle, onEdit, onDelete }) {
         >
           <Pencil size={12} />
         </button>
-
         <button
           type="button"
           onClick={(e) => {

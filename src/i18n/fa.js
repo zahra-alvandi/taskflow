@@ -182,6 +182,7 @@ export default {
     undo: "برگردون",
     deleteConfirm: "این کار حذف بشه؟",
     addSubtask: "افزودن زیرتسک",
+    close: "بستن",
   },
 
   ai: {
@@ -416,5 +417,9 @@ export default {
       thursday: "پ",
       friday: "ج",
     },
+  },
+
+  offline: {
+    banner: "آفلاین هستی. تغییرات روی همین دستگاه ذخیره میشه.",
   },
 };

@@ -8,6 +8,9 @@ export class TaskRepository {
   async save(task) {
     throw new Error("Not implemented");
   }
+  async saveMany(tasks) {
+    throw new Error("Not implemented");
+  }
   async delete(id) {
     throw new Error("Not implemented");
   }

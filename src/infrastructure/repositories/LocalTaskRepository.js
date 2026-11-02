@@ -1,7 +1,5 @@
-// src/infrastructure/repositories/LocalTaskRepository.js
 import { TaskRepository } from "../../core/ports/TaskRepository";
 import { createTask } from "../../core/domain/Task";
-
 import { loadCollection } from "./loadCollection";
 
 const STORAGE_KEY = "tasks";
@@ -46,6 +44,16 @@ export class LocalTaskRepository extends TaskRepository {
     }
 
     return task;
+  }
+
+  /** Persist a batch in a single write (used by reorder). */
+  async saveMany(tasks) {
+    if (!tasks?.length) return tasks;
+    const current = await this._load();
+    const byId = new Map(current.map((t) => [t.id, t]));
+    for (const task of tasks) byId.set(task.id, task);
+    await this._persist([...byId.values()]);
+    return tasks;
   }
 
   async delete(id) {

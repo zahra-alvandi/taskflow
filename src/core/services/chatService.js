@@ -6,12 +6,6 @@ export const ACTION_TYPES = {
   SUGGEST_PLAN: "suggest_plan",
 };
 
-/**
- * @param {Array} tasks
- * @param {Array} history
- * @returns {Object}
- */
-
 function localISODate(d) {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
@@ -37,23 +31,14 @@ export function buildChatContext(tasks, history = []) {
     tasks: activeTasks,
     taskCount: tasks.length,
     completedCount: tasks.filter((t) => t.completed).length,
-    today: new Date().toISOString().slice(0, 10),
-    history: history.slice(-10),
     today: localISODate(new Date()),
+    history: history.slice(-10),
   };
 }
 
-/**
- * @param {Object} response - { message, actions }
- * @param {Array} tasks
- * @returns {Object} validated
- */
 export function validateChatResponse(response, tasks) {
   if (!response || typeof response !== "object") {
-    return {
-      message: "متأسفم، نتونستم جواب بدم.",
-      actions: [],
-    };
+    return { message: "", actions: [] };
   }
 
   const taskMap = new Map(tasks.map((t) => [t.id, t]));
@@ -126,12 +111,6 @@ export function validateChatResponse(response, tasks) {
   };
 }
 
-/**
- *  actions
- * @param {Array} actions
- * @param {Object} handlers - { createTask, updateTask, deleteTask, completeTask }
- * @returns {Promise<Array>} results
- */
 export async function executeActions(actions, handlers) {
   const results = [];
 
@@ -142,7 +121,6 @@ export async function executeActions(actions, handlers) {
           await handlers.createTask(action.payload);
           results.push({ action, success: true });
           break;
-
         case ACTION_TYPES.UPDATE_TASK:
           await handlers.updateTask(
             action.payload.taskId,
@@ -150,17 +128,14 @@ export async function executeActions(actions, handlers) {
           );
           results.push({ action, success: true });
           break;
-
         case ACTION_TYPES.DELETE_TASK:
           await handlers.deleteTask(action.payload.taskId);
           results.push({ action, success: true });
           break;
-
         case ACTION_TYPES.COMPLETE_TASK:
           await handlers.completeTask(action.payload.taskId);
           results.push({ action, success: true });
           break;
-
         default:
           results.push({ action, success: false, error: "Unknown action" });
       }

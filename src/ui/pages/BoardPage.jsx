@@ -43,6 +43,28 @@ const PRIORITY_STYLE = {
   low: "bg-[var(--success-soft)] text-[var(--success)]",
 };
 
+const handleDragEnd = ({ active, over }) => {
+  setActiveId(null);
+  if (!over) return;
+
+  const overId = String(over.id);
+
+  const column = overId.match(/^(col|tab)-(todo|doing|done)$/);
+  if (column) {
+    onMove(active.id, column[2]);
+    if (column[1] === "tab") setMobileTab(column[2]);
+    return;
+  }
+
+  // Dropped on another card: resolve that card's column.
+  const target = tasks.find((t) => t.id === overId);
+  if (target) {
+    const status = getTaskStatus(target);
+    onMove(active.id, status);
+    setMobileTab(status);
+  }
+};
+
 // Prefer the pointer position; fall back to rectangles (keyboard dragging)
 function collisionDetection(args) {
   const hits = pointerWithin(args);
